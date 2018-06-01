@@ -1,0 +1,47 @@
+@{
+    Layout = "_Layout";
+}
+
+<div id="wrapper" class="container-fluid">
+    <br>
+    <table class="bg-pan-right">
+        <tr>
+            <td class="MovieGameHeaderTable"><h1><b>Movie Game</b></h1></td>
+            <td class="HeaderLinks"><a href="/">Home</a></td>
+            <td class="HeaderLinks"><a href="/addMoviePage">Add Movie</a></td>
+            <td class="HeaderLinks"><a href="allmovies">All Movies</a></td>
+        </tr>
+    </table>
+    <hr class="linebreak1">
+
+    <table class="oneMovieTable">
+        <tr>
+            <td><b>TITLE: </b>@ViewBag.Movies.Title</td>
+        </tr>
+        <tr>
+            <td><b>ACTORS: </b>@ViewBag.Actors</td>
+        </tr>
+        <tr>
+            <td><b>DESCRIPTION: </b>@ViewBag.Movies.Description</td>
+        </tr>
+        <tr>
+            <td><b>DIRECTOR: </b>@ViewBag.Movies.Director</td>
+        </tr>
+        <tr>
+            <td><b>WRITER(s): </b>@ViewBag.MovieWriter</td>
+        </tr>
+        <tr>
+            <td><b>YEAR: </b>@ViewBag.Movies.Year</td>
+        </tr>
+        <tr>
+            <td>
+                <ul> <b>CLUES: </b>
+                    @foreach (var Clue in ViewBag.Movies.Clues)
+                    {
+                        <li>@Clue.ClueText</li>
+                    }
+                </ul>
+            </td>
+        </tr>
+    </table>
+</div>

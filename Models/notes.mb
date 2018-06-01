@@ -1,0 +1,158 @@
+<div id="clueList">
+    <div class="clueTable">
+
+        <ul id="clueText"></ul>
+
+    </div>
+</div>
+
+
+<select name="movieGuessSelect">
+    @foreach(var movie in ViewBag.Movies)
+    {
+        <option>@movie.Title</option>
+    }
+
+
+</select>
+
+
+
+<!-- DROP DOWN -->
+        <script runat="server" >
+
+                void Selection_Change(Object sender, EventArgs e)
+                {
+
+                        // Set the background color for days in the Calendar control
+                        // based on the value selected by the user from the
+                        // DropDownList control.
+                        Calendar1.DayStyle.BackColor =
+                        System.Drawing.Color.FromName(ColorList.SelectedItem.Value);
+
+                }
+
+                void Page_Load(Object sender, EventArgs e)
+                {
+
+                        // Load data for the DropDownList control only once, when the
+                        // page is first loaded.
+                        if(!IsPostBack)
+                        {
+
+                        // Specify the data source and field names for the Text
+                        // and Value properties of the items (ListItem objects)
+                        // in the DropDownList control.
+                        ColorList.DataSource = CreateDataSource();
+                        ColorList.DataTextField = "ColorTextField";
+                        ColorList.DataValueField = "ColorValueField";
+
+                        // Bind the data to the control.
+                        ColorList.DataBind();
+
+                        // Set the default selected item, if desired.
+                        ColorList.SelectedIndex = 0;
+
+                        }
+
+                }
+
+                ICollection CreateDataSource()
+                {
+
+                        // Create a table to store data for the DropDownList control.
+                        DataTable dt = new DataTable();
+
+                        // Define the columns of the table.
+                        dt.Columns.Add(new DataColumn("ColorTextField", typeof(String)));
+                        dt.Columns.Add(new DataColumn("ColorValueField", typeof(String)));
+
+                        // Populate the table with sample values.
+                        dt.Rows.Add(CreateRow("White", "White", dt));
+                        dt.Rows.Add(CreateRow("Silver", "Silver", dt));
+                        dt.Rows.Add(CreateRow("Dark Gray", "DarkGray", dt));
+                        dt.Rows.Add(CreateRow("Khaki", "Khaki", dt));
+                        dt.Rows.Add(CreateRow("Dark Khaki", "DarkKhaki", dt));
+
+                        // Create a DataView from the DataTable to act as the data source
+                        // for the DropDownList control.
+                        DataView dv = new DataView(dt);
+                        return dv;
+
+                }
+
+                DataRow CreateRow(String Text, String Value, DataTable dt)
+                {
+
+                        // Create a DataRow using the DataTable defined in the
+                        // CreateDataSource method.
+                        DataRow dr = dt.NewRow();
+
+                        // This DataRow contains the ColorTextField and ColorValueField
+                        // fields, as defined in the CreateDataSource method. Set the
+                        // fields with the appropriate value. Remember that column 0
+                        // is defined as ColorTextField, and column 1 is defined as
+                        // ColorValueField.
+                        dr[0] = Text;
+                        dr[1] = Value;
+
+                        return dr;
+
+                  }
+
+
+
+
+
+
+
+
+
+VIEWBAG.MOVIE GUESS stuff
+
+                // NOTE: viewbag.guess stuff
+                if(movieGuess == SessionMovieTitle)
+                {
+                    // ViewBag.GuessResponse = "THAT'S RIGHT! " + movieGuess + " WAS THE CORRECT ANSWER. CONGRATULATIONS! YOU ARE A NERD";
+                    // ViewBag.RemainingGuesses = "";
+                    // ViewBag.SessionMovieObject = HttpContext.Session.GetString("sessionMovieObject");
+                    Console.WriteLine("CORRECT GUESS ---> " + movieGuess + " and " + SessionMovieTitle);
+                }
+                else
+                {
+                    // ViewBag.GuessResponse = "THAT'S INCORRECT! " + movieGuess + " WAS A TERRIBLE GUESS. YOU ARE A TOTAL FAILURE";
+                    // ViewBag.RemainingGuesses = ("YOU HAVE " + guessCount + " REMAINING GUESSES");
+                    Console.WriteLine("WRONG GUESS ---> " + movieGuess + " and " + SessionMovieTitle);
+
+                }
+
+                // GUESS RESPONSE ---> sends a blank string as a placeholder; the 'response' tells the user whether they were right or wrong
+                ViewBag.GuessResponse = "";
+
+
+
+
+                    if(realreslength>5)
+                    {
+                        // for(var i=0; i<=5; i++){
+                        //     $('#searchres').append(realres[i]["Title"]+"<br>");
+                        //     console.log("MARK1. " + "I is: " + i);
+                        // }
+
+                        for(var h = 0; h<realreslength; h++) {
+                            // ONE RESULT --> returns any movies with search term in it (e.g., 'good' leads to 'good will hunting' AND 'a few good men' etc. )
+                            var oneResult = realres[h]["Title"];
+                            $("#searchResult").append("<li>" + oneResult + "</li>")
+                        }
+
+                        $("#searchResult li").bind("click",function(){
+                            setText(this);
+                        });
+                    }
+                    else
+                    {
+                        for(var j=0; j<=realreslength; j++){
+                            $('#searchres').append(realres[j]["Title"]+"<br>");
+                            console.log("MARK2. " + "J is: " + j);
+                        }
+                    }

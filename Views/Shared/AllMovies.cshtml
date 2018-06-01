@@ -1,0 +1,48 @@
+@{
+    Layout = "_Layout";
+}
+
+<div id="wrapper" class="container-fluid">
+    <br>
+    <table class="bg-pan-right">
+        <tr>
+            <td class="MovieGameHeaderTable"><h1><b>Movie Game</b></h1></td>
+            <td class="HeaderLinks"><a href="/">Home</a></td>
+        </tr>
+    </table>
+    <hr class="linebreak1">
+    <br>
+
+    <table class="table">
+
+        <thead class="thead-light">
+            <tr class="allMovieTableHeader">
+                <th scope="col">Id</th>
+                <th scope="col">Title</th>
+                <th scope="col">Description</th>
+                <th scope="col">Year</th>
+                <th scope="col">Clues</th>
+            </tr>
+        </thead>
+
+        @foreach (var Movie in ViewBag.Movies)
+        {
+        <tr>
+            <th scope="row">@Movie.MovieId</th>
+            <td><a href="/getMovie/@Movie.MovieId">@Movie.Title</a></td>
+            <td>@Movie.Description</td>
+            <td>@Movie.Year</td>
+            <td>
+                <ul>
+                @foreach (var Clue in Movie.Clues)
+                {
+                    <li>@Clue.ClueId : @Clue.ClueText</li>
+                }
+                </ul>
+            </td>
+        </tr>
+        }
+
+
+    </table>
+</div>

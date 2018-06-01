@@ -1,0 +1,54 @@
+
+
+
+<div id="wrapper" class="container-fluid">
+    <br>
+    <table class="bg-pan-right">
+        <tr>
+            <td class="MovieGameHeaderTable"><h1><b>Movie Game</b></h1></td>
+            <td class="HeaderLinks"><a href="/">Home</a></td>
+            <td class="HeaderLinks"><a href="allmovies">All Movies</a></td>
+            <td class="HeaderLinks"><a href="getClue">Generates JSON</a></td>
+        </tr>
+    </table>
+    <hr class="linebreak1">
+    <br>
+
+    <div class="container">
+
+        <table class="allMovieTable">
+            <tr>
+                <td>
+                    <form action="AddClue" method="POST">
+                    <button asp-action="addClue" class="btn btn-primary" id="addClueButton" type="submit"> Add Clue</button>
+                    </form>
+                </td>
+                <td>
+                    <form asp-controller="Home" asp-action="addmovie" method="POST">
+                    <button  class="btn btn-primary" id="addMovieButton" >Add Movie</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <hr class="linebreak3">
+
+    <div class="container">
+
+        <form action="GetMovieJSON" method="GET">
+            <a href="#"><button  class="btn btn-warning" id="getMovieJSON" name="getMovieJSON">Get JSON</button></a>
+
+
+        <div style="border: 1px solid black" class="jsonContent">
+
+
+            <p style="border: 1px solid green">@ViewBag.Movie</p>
+
+        </div>
+
+        </form>
+
+    </div>
+
+</div>
