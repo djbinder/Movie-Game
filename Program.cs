@@ -9,12 +9,20 @@ using Microsoft.AspNetCore.Hosting;     // <--- 'IWebHost' and '.UseStartup<Star
 namespace movieGame {
     public class Program {
         public static void Main (string[] args) {
+
+            Console.WriteLine();
+            Console.WriteLine("---------------'MAIN METHOD' STARTED---------------");
+
             BuildWebHost (args).Run ();
+
+            Console.WriteLine("---------------'MAIN METHOD' COMPLETED---------------");
+            Console.WriteLine();
         }
 
         public static IWebHost BuildWebHost (string[] args) =>
             WebHost.CreateDefaultBuilder (args)
             .UseStartup<Startup> ()
             .Build ();
+
     }
 }

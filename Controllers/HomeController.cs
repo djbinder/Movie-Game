@@ -23,8 +23,11 @@ namespace movieGame.Controllers
     {
         private MovieContext _context;
 
+
+
         public HomeController (MovieContext context) {
             _context = context;
+
         }
 
 
@@ -496,7 +499,7 @@ namespace movieGame.Controllers
                     // CURRENT MOVIE TITLE ---> the title of the movie pulled from the database
                     var currentMovieTitle = currentMovie.Title;
 
-                    // CURRENT MOVIE YEAR ---> the relase year of the movie pulled from the database
+                    // CURRENT MOVIE YEAR ---> the release year of the movie pulled from the database
                     var currentMovieYear = currentMovie.Year;
                 // #endregion DATABASE QUERIES
 
