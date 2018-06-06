@@ -7,11 +7,11 @@ $(document).ready(function(){
             var allMovieInfo = res;
                 // console.log("ALL MOVIE INFO : ", allMovieInfo);
 
-            // ALL MOVIE CLUES ---> returns array of 10 [object object]
+            // ALL MOVIE CLUES ---> returns array of 10 [object object] of clues
             var allMovieClues = res.clues;
                 // console.log("ALL MOVIE CLUES: ", allMovieClues);
 
-            // ALL MOVIE CLUES LENGHT ---> 10
+            // ALL MOVIE CLUES LENGTH ---> 10
             var allMovieCluesLength = Object.keys(allMovieClues).length;
 
             // CONTENT LENGTH ---> content length starts at -1 and keeps counting up; errors out after final clue
@@ -22,17 +22,13 @@ $(document).ready(function(){
             var ClueId = res.clues[contentLength+1].clueId;
                 // console.log("CLUE ID: ", ClueId);
 
-
+            // CLUE POINTS --> '10', then '9', then '8' etc.
             var CluePoints = res.clues[contentLength+1].cluePoints;
-                console.log("CLUE POINTS: ", CluePoints);
+                // console.log("CLUE POINTS: ", CluePoints);
 
             // CLUE ---> lists off each clue  after each click; e.g., '<li>School bus</li>' etc.
-            var clue = "<li>" + allMovieClues[contentLength+1].clueText + "<br>" + "Pts: " + CluePoints + "</li>";
+            var clue = "<li>" + allMovieClues[contentLength+1].clueText + "<br>" + "<h6>" + "Pts: " + CluePoints + "</h6>" + "</li>";
                 // console.log("CLUE: ", clue);
-
-            var addedPoints = CluePoints;
-            // console.log("ADDED POINTS: ", addedPoints);
-
 
             // append 'clue' list item to ul list called 'clueText'
             $('ul#clueText').append(clue);
@@ -57,19 +53,13 @@ $(document).ready(function(){
             var SessionMovieTitle = res[0];
                 // console.log("SESSION MOVIE TITLE: ", SessionMovieTitle);
 
+            // SESSION MOVIE TITLE TO CAPS --> e.g., 'goodfellas' TO 'GOODFELLAS'
             var SessionMovieTitleToCaps = SessionMovieTitle.toUpperCase();
-                console.log("SESSION TITLE TO CAPS: ", SessionMovieTitleToCaps);
+                // console.log("SESSION TITLE TO CAPS: ", SessionMovieTitleToCaps);
 
             // GUESS COUNT ---> 2, then 1, then 0
             var guessCount = res[1];
-                console.log("GUESS COUNT: ", guessCount);
-
-
-            // CONTENT LENGTH ---> 2, then 1, then stays at 1
-            // var contentLength = $('ul#JQresponse > li').length - 1;
-            // console.log("CONTENT LENGTH: ", contentLength);
-
-
+                // console.log("GUESS COUNT: ", guessCount);
 
             // USER GUESS TO CAPS ---> 'GOODFELLAS' etc.
             var UserGuessToCaps = UserGuess.toUpperCase();
