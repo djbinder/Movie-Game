@@ -7,11 +7,6 @@ using System.Windows.Forms;
 using Microsoft.AspNetCore.Http;        // <--- set session variables (e.g., 'SetString', 'SetInt32', etc.)
 using Microsoft.AspNetCore.Mvc;         // <--- anything related to mvc (e.g., 'Controller', '[HttpGet]', 'HttpContext.Session')
 using Microsoft.EntityFrameworkCore;    // <--- 'include' in db queries
-using MongoDB;
-using MongoDB.Bson;
-using MongoDB.Bson.IO;
-using MongoDB.Driver;
-using MongoDB.Driver.Core.Events;
 using Newtonsoft.Json;                  // <--- 'JsonConvert'
 using Newtonsoft.Json.Linq;             // <--- 'JObject'
 using RestSharp;                        // <--- REST related things: 'RestClient', 'RestRequest', 'IRestResponse'
@@ -23,13 +18,10 @@ namespace movieGame.Controllers
     {
         private MovieContext _context;
 
-
-
         public HomeController (MovieContext context) {
             _context = context;
 
         }
-
 
         public int CheckSession()
         {
@@ -40,65 +32,6 @@ namespace movieGame.Controllers
             }
             return (int)id;
         }
-
-
-
-        #region MongoDB
-            private MongoClient _mongoClient;
-
-
-            private MongoClient CreateClient()
-            {
-                return new MongoClient(
-                    new MongoClientSettings
-                    {
-                        ClusterConfigurator = builder => {
-                            builder.Subscribe(new SingleEventSubscriber<CommandStartedEvent>(CmdStartHandlerForFindCommand));
-                            builder.Subscribe(new SingleEventSubscriber<CommandSucceededEvent>(CmdSuccessHandlerForFindCommand));
-                        }
-                    });
-            }
-
-            private void WithCoreEventsSubscription(Movie movie)
-            {
-                MongoClient client = CreateClient();
-                IMongoDatabase db = client.GetDatabase("movies");
-
-                IMongoCollection<Movie> MovieCollection = db.GetCollection<Movie>("movies");
-                MovieCollection.InsertOne(movie);
-
-                //Here our "CmdStartHandlerForFindCommand" will be triggered for Find request
-                //and as response our "CmdSuccessHandlerForFindCommand" will be triggered as well
-                movie = MovieCollection.Find(FilterDefinition<Movie>.Empty).Single();
-            }
-
-            private void CmdStartHandlerForFindCommand(CommandStartedEvent cmdStart)
-            {
-                if (cmdStart.CommandName == "find")
-                {
-                    WriteToConsole(cmdStart.Command, "request");
-                }
-            }
-
-            private void CmdSuccessHandlerForFindCommand(CommandSucceededEvent cmdSuccess)
-            {
-                if (cmdSuccess.CommandName == "find")
-                {
-                    WriteToConsole(cmdSuccess.Reply, "response");
-                }
-            }
-
-
-            private void WriteToConsole(BsonDocument data, string type)
-            {
-                Console.WriteLine($"--------------- Find {type} ---------------");
-                Console.WriteLine(data.ToJson(
-                    new JsonWriterSettings
-                    {
-                    Indent = true
-                    }));
-            }
-        #endregion MongoDB
 
 
 
@@ -130,15 +63,12 @@ namespace movieGame.Controllers
 
                 // EXISTS ---> movieGame.Models.Player
                 Player exists = _context.Players.FirstOrDefault(p => p.PlayerName == NameEntered);
-                    int existsID = exists.PlayerId;
-                    existsID.Intro("EXISTS ID");
-
+                //     Console.WriteLine("EXISTS --> ", exists);
 
                 if(exists == null)
                 {
-                    Console.WriteLine("IF ---> " + "NEW USER NAME ENTERED");
+                    Console.WriteLine("USER NAME ENTERED DOES NOT EXIST");
                     HttpContext.Session.SetString("player", NameEntered);
-                    HttpContext.Session.SetInt32("id", existsID);
 
                     Player newPlayer = new Player () {
                         PlayerName = NameEntered,
@@ -148,22 +78,24 @@ namespace movieGame.Controllers
 
                     _context.Add(newPlayer);
                     _context.SaveChanges();
+
+                    // QUERY PLAYER --> QUERY PLAYER ---> movieGame.Models.Player
+                    Player queryPlayer = _context.Players.FirstOrDefault(p => p.PlayerName == NameEntered);
+                    HttpContext.Session.SetInt32("id", queryPlayer.PlayerId);
                 }
 
+                // if the player is not a new player, go this way
                 else
                 {
-                    // ELSE ---> USER NAME ALREADY EXISTS
-                    Console.WriteLine("ELSE ---> " + "USER NAME ALREADY EXISTS");
+                    Console.WriteLine("USER NAME ALREADY EXISTS");
 
                     HttpContext.Session.SetString("player", NameEntered);
-                    HttpContext.Session.SetInt32("id", existsID);
+                    HttpContext.Session.SetInt32("id", exists.PlayerId);
 
                     exists.GamesPlayed = exists.GamesPlayed + 1;
 
                     _context.SaveChanges();
 
-                    // NEW GAMES PLAYED ---> '1' OR '2' etc.
-                    exists.GamesPlayed.Intro("NEW GAMES PLAYED");
                 }
 
                 Console.WriteLine("---------------'ENTER NAME' METHOD COMPLETED---------------");
@@ -182,37 +114,31 @@ namespace movieGame.Controllers
                 // PLAYER ID ---> '1' OR '2' etc.
                 int? PlayerId = ViewBag.PlayerId = HttpContext.Session.GetInt32("id");
 
-
                 // PLAYERNAME---> retrieves the current players name
                 string PlayerName = ViewBag.PlayerName = HttpContext.Session.GetString("player");
 
                 if(CheckSession() == 0)
                 {
-                    Console.WriteLine("CHECK SESSION NONE ---> " + User);
+                    Console.WriteLine("THIS IS THE START OF A NEW SESSION --> " + User);
                 }
 
                 else
                 {
                     // CHECK SESSION YES ---> System.Security.Claims.ClaimsPrincipal
-                    Console.WriteLine("CHECK SESSION YES ---> " + User);
+                    Console.WriteLine("THIS IS A CONTINUATION OF EXISTING SESSION ---> " + User);
                 }
 
                 // MOVIES IN DATABASE ---> '2' OR '3' etc.
                 var moviesInDatabase = _context.Movies.Count();
 
-
-
                 // RANDOM R ---> generates a 'System.Random' variable
                 Random r = new Random();
 
                 // SET MOVIE ID ---> uses 'r' to pick random movie id inclusive of the first value, exclusive of the second value
-                var SetMovieId = r.Next(1,3);
+                var SetMovieId = r.Next(1,moviesInDatabase + 1);
 
                 // ONE MOVIE ---> movieGame.Models.Movie
                 var SetMovieObject = _context.Movies.Include(w => w.Clues).SingleOrDefault(x => x.MovieId == SetMovieId);
-
-                // VIEWBAG.SETMOVIE ---> used to send information to the HTML page
-                // ViewBag.SetMovieObject = SetMovieObject;
 
                 // SESSION MOVIE ID & NAME ---> sets the name and id for the movie that was selected
                 HttpContext.Session.SetString("sessionMovieObject", SetMovieObject.ToString());
@@ -224,46 +150,24 @@ namespace movieGame.Controllers
                 ViewBag.SessionMovieTitle_testing = HttpContext.Session.GetString("sessionMovieTitle");
                 ViewBag.SessionMovieId_testing = HttpContext.Session.GetInt32("sessionMovieId");
 
-                // GUESS RESPONSE ---> sends a blank string as a placeholder; the 'response' tells the user whether they were right or wrong
-                ViewBag.SessionMovieObject = "";
-                ViewBag.GuessResponse = "";
-                ViewBag.RemainingGuesses = ("YOU HAVE " + 3 + " REMAINING GUESSES");
-
-                ViewBag.Movies = _context.Movies.OrderBy(d => d.MovieId).ToList();
+                // ViewBag.Movies = _context.Movies.OrderBy(d => d.MovieId).ToList();
 
                 Console.WriteLine("----------------'INITIATE GAME' METHOD COMPLETED---------------");
                 Console.WriteLine("----------------'PLAY GAME' PAGE LOADED---------------");
 
-                return View ("playgame");
+                return View ("PlayGame");
             }
         #endregion InitiateGame
 
 
 
         #region PlayGame
-        // get another clue during game; 10 clues per movie
+            // get another clue during game; 10 clues per movie
             [HttpGet]
             [Route("/getClue")]
             public JsonResult GetClue()
             {
                 Console.WriteLine("---------------'GET CLUE' METHOD STARTED---------------");
-
-                // ATTEMPT ---> if previous attempts, it's attempt number; if not, it's blank
-                int? attempt = HttpContext.Session.GetInt32("attempt");
-                    attempt.Intro("attempt");
-
-                    // ATTEMPT ---> if first attempt, set 'attempt' to 1; if not, increment 'attempt' by 1
-                    if(attempt == null)
-                    {
-                        HttpContext.Session.SetInt32("attempt", 1);
-                    }
-                    else
-                    {
-                        attempt += 1;
-                        HttpContext.Session.SetInt32("attempt", (int)attempt);
-                    }
-
-                    attempt.Intro("attempt");
 
                 // SESSION MOVIE ID ---> retrieved to be used set JSON info below
                 int? SessionMovieId = HttpContext.Session.GetInt32("sessionMovieId");
@@ -291,6 +195,13 @@ namespace movieGame.Controllers
                     // ONE CLUE ---> movieGame.Models.Clue
                     Clue oneClue = new Clue
                     {
+
+                        // CLUE DIFFICULTY --> actual #; 1 is highest difficulty
+                        ClueDifficulty = Clues[CountUp].ClueDifficulty,
+
+                        // CLUE POINTS --> from 10 to 1
+                        CluePoints = Clues[CountUp].CluePoints,
+
                         // CLUE TEXT ---> actual clue text
                         ClueText = Clues[CountUp].ClueText,
 
@@ -305,10 +216,8 @@ namespace movieGame.Controllers
                     CountUp++;
                 }
 
-                CountUp.Intro("COUNT UP");
-
                 // MOVIE CLUES ---> System.Collections.Generic.List`1[movieGame.Models.Clue]
-                    Console.WriteLine("MOVIE CLUES ---> " + movie.Clues);
+                    // Console.WriteLine("MOVIE CLUES ---> " + movie.Clues);
 
                 Console.WriteLine("---------------'GET CLUE' METHOD COMPLETED---------------");
 
@@ -351,9 +260,6 @@ namespace movieGame.Controllers
                         {
                             Console.WriteLine("GUESS COUNT ZERO ---> " + guessCount);
                             Console.WriteLine("GAME OVER----------------");
-                            // string GameOverMessage = "Game Over";
-                            // MessageBox.Show(text: GameOverMessage);
-
                         }
 
                         else {
@@ -365,31 +271,7 @@ namespace movieGame.Controllers
 
                 // SESSION MOVIE TITLE ---> retrieves the title of current movie being guessed
                 string SessionMovieTitle = HttpContext.Session.GetString("sessionMovieTitle");
-                    Console.WriteLine("SESSION MOVIE TITLE ---> " + SessionMovieTitle);
-
-                // SESSION MOVIE ID ---> retrieved to be used set JSON info below
-                int? SessionMovieId = HttpContext.Session.GetInt32("sessionMovieId");
-
-                // MOVIE GUESS ---> gets the text of the guess inputed in HTML form
-                string movieGuess = movieGuessInput;
-                    movieGuess.Intro("controller movie guess");
-
-
-
-
-                // NOTE: viewbag.guess stuff
-                if(movieGuess == SessionMovieTitle)
-                {
-                    Console.WriteLine("CORRECT GUESS ---> " + movieGuess + " and " + SessionMovieTitle);
-                }
-                else
-                {
-                    Console.WriteLine("WRONG GUESS ---> " + movieGuess + " and " + SessionMovieTitle);
-                }
-
-
-                // ViewBag.Movies = _context.Movies.OrderBy(d => d.MovieId).ToList();
-
+                    // Console.WriteLine("SESSION MOVIE TITLE ---> " + SessionMovieTitle);
 
                 // MOVIEGUESSITEMS ---> System.Collections.ArrayList
                 ArrayList MovieGuessItems = new ArrayList();
@@ -397,12 +279,7 @@ namespace movieGame.Controllers
                 MovieGuessItems.Add(guessCount);
 
                 // MOVIEGUESSITEMS ---> System.Collections.ArrayList
-                MovieGuessItems.Intro("MovieGuessItems");
-
-                foreach(var item in MovieGuessItems)
-                {
-                    Console.WriteLine("ITEM ---> " + item);
-                }
+                    // MovieGuessItems.Intro("MovieGuessItems");
 
                 Console.WriteLine("---------------'GUESS MOVIE' METHOD COMPLETED---------------");
 
@@ -546,7 +423,7 @@ namespace movieGame.Controllers
                 Console.WriteLine("---------------'ADD MOVIE PAGE' METHOD STARTED---------------");
 
                 Console.WriteLine("---------------'ADD MOVIE PAGE' METHOD COMPLETED---------------");
-                return View ("generate");
+                return View ("Generate");
             }
 
 
@@ -566,12 +443,6 @@ namespace movieGame.Controllers
                     Year = 1990,
                 };
 
-                // var MongoClient = new MongoClient();
-
-
-                // newMovie.Dump();
-                // Console.WriteLine(typeof(Movie));
-
                 _context.Add(newMovie);
                 _context.SaveChanges();
 
@@ -586,7 +457,7 @@ namespace movieGame.Controllers
             {
                 Console.WriteLine("---------------ADD CLUE METHOD EXECUTED---------------");
 
-                int MovieId = 2;
+                int MovieId = 1;
 
                 String Xclue1 =  "Helicopter";
                 String Xclue2 =  "Trunk";
@@ -604,7 +475,7 @@ namespace movieGame.Controllers
                     {
                         MovieId = MovieId,
                         ClueDifficulty = 10,
-                        CluePoints = 10,
+                        CluePoints = 1,
                         ClueText = Xclue1
                     };
 
@@ -616,7 +487,7 @@ namespace movieGame.Controllers
                     {
                         MovieId = MovieId,
                         ClueDifficulty = 9,
-                        CluePoints = 9,
+                        CluePoints = 2,
                         ClueText = Xclue2
 
                     };
@@ -629,7 +500,7 @@ namespace movieGame.Controllers
                     {
                         MovieId = MovieId,
                         ClueDifficulty = 8,
-                        CluePoints = 8,
+                        CluePoints = 3,
                         ClueText = Xclue3
 
                     };
@@ -642,7 +513,7 @@ namespace movieGame.Controllers
                     {
                         MovieId = MovieId,
                         ClueDifficulty = 7,
-                        CluePoints = 7,
+                        CluePoints = 4,
                         ClueText = Xclue4
                     };
 
@@ -654,7 +525,7 @@ namespace movieGame.Controllers
                     {
                         MovieId = MovieId,
                         ClueDifficulty = 6,
-                        CluePoints = 6,
+                        CluePoints = 5,
                         ClueText = Xclue5
                     };
 
@@ -666,7 +537,7 @@ namespace movieGame.Controllers
                     {
                         MovieId = MovieId,
                         ClueDifficulty = 5,
-                        CluePoints = 5,
+                        CluePoints = 6,
                         ClueText = Xclue6
                     };
 
@@ -677,7 +548,7 @@ namespace movieGame.Controllers
                     {
                         MovieId = MovieId,
                         ClueDifficulty = 4,
-                        CluePoints = 4,
+                        CluePoints = 7,
                         ClueText = Xclue7
                     };
 
@@ -689,7 +560,7 @@ namespace movieGame.Controllers
                     {
                         MovieId = MovieId,
                         ClueDifficulty = 3,
-                        CluePoints = 3,
+                        CluePoints = 8,
                         ClueText = Xclue8
                     };
 
@@ -701,7 +572,7 @@ namespace movieGame.Controllers
                     {
                         MovieId = MovieId,
                         ClueDifficulty = 2,
-                        CluePoints = 2,
+                        CluePoints = 9,
                         ClueText = Xclue9
                     };
 
@@ -713,7 +584,7 @@ namespace movieGame.Controllers
                     {
                         MovieId = MovieId,
                         ClueDifficulty = 1,
-                        CluePoints = 1,
+                        CluePoints = 10,
                         ClueText = Xclue10
                     };
 
