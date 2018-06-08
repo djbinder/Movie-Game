@@ -5,7 +5,12 @@ $(document).ready(function(){
 
             // ALL MOVIE INFO ---> gives you all info about the movie
             var allMovieInfo = res;
-                // console.log("ALL MOVIE INFO : ", allMovieInfo);
+                console.log("ALL MOVIE INFO : ", allMovieInfo);
+                console.table(allMovieInfo);
+                console.trace("TRACE");
+
+
+
 
             // ALL MOVIE CLUES ---> returns array of 10 [object object] of clues
             var allMovieClues = res.clues;

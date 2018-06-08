@@ -156,3 +156,66 @@ VIEWBAG.MOVIE GUESS stuff
                             console.log("MARK2. " + "J is: " + j);
                         }
                     }
+
+
+<body>
+<div class="imdbBackground" style="background-image:url('https://image.tmdb.org/t/p/original/{{background.poster_path}}')">
+
+
+<div><img src="https://image.tmdb.org/t/p/w200/@ViewBag.MoviePoster" alt="MOVIE POSTER"/>
+<br>
+<a href="https://image.tmdb.org/t/p/w500/@ViewBag.MoviePoster">Poster Link</a>
+</div>
+
+</div>
+<p>test</p>
+
+
+
+                Random r = new Random();
+
+                var MoviePosterIndex = r.Next(0,21);
+
+                // MOVIE POSTER ---> /to0spRl1CMDvyUbOnbb4fTk3VAd.jpg
+                string MoviePoster = ViewBag.MoviePoster = (string)backgroundJSON["results"][MoviePosterIndex]["poster_path"];
+                MoviePoster.Intro("movie poster");
+
+
+
+                                foreach(var Item in (string)backgroundJSON["results"][countUP]["poster_path"])
+                {
+                    string onePoster = "";
+                    {
+                        onePoster = (string)backgroundJSON["results"][countUP]["poster_path"];
+                        onePoster.Intro("one poster");
+                        TopMoviePosters.Add(onePoster);
+                    };
+
+                    // countUP++;
+                }
+
+                TopMoviePosters.Intro("top movie posters");
+
+
+<body style="background-image:url("
+        @foreach(var poster in @ViewBag.TopMoviePosters)
+        {
+            "https://image.tmdb.org/t/p/w200/@poster"
+        }
+    >
+
+
+
+
+
+
+
+<style type="text/css">
+
+
+body {
+    background: url(@ViewBag.PullPoster) repeat;
+    opacity: .6;
+}
+
+</style>
