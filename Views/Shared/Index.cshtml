@@ -2,66 +2,85 @@
     Layout = "_Layout";
 }
 
-<div id="wrapper" class="container-fluid">
-    <br>
-    <table class="bg-pan-right">
-        <tr>
-            <td class="MovieGameHeaderTable"><h1><b>Movie Game</b></h1></td>
-            <td class="HeaderLinks"><a href="/">Home</a></td>
-            <td class="HeaderLinks"><a href="allmovies">All Movies</a></td>
-            <td class="HeaderLinks"><a href="addMoviePage">Admin Page</a></td>
-        </tr>
-    </table>
-    <hr class="linebreak1">
-    <br>
-    <h3>Overview</h3>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sollicitudin erat nec ullamcorper posuere. Fusce ut arcu pellentesque, vulputate est id, dignissim tellus. Nam ac leo ipsum. Pellentesque at neque ut augue ultrices hendrerit ut dictum elit. Ut quis massa egestas, lobortis ipsum eu, vehicula tellus. Integer a laoreet dolor. Duis elementum sed tortor volutpat eleifend. Mauris ac lectus placerat magna imperdiet suscipit.</p>
-    <br>
 
-    <div  class="bounce-in-top">
-        <form action="EnterName" method="POST" class="enterNameForm">
-            <table>
+
+<body>
+    <div class="background">
+
+        <div id="posters">
+
+            @foreach(var poster in @ViewBag.TopMoviePosters)
+            {
+                <img src="https://image.tmdb.org/t/p/w200/@poster" alt="MOVIE POSTER" />
+            }
+        </div>
+
+        <div id="indexcontent" class="container-fluid">
+            <br>
+
+            <table id="adminLinks">
                 <tr>
-                    <td><b>Enter Your Name</b></td>
-                    <td><input class="form-control" name="NameEntered" type="text"></td>
+                    <td class="HeaderLinks"><a href="allmovies">All Movies </a></td>
+                    <td class="HeaderLinks"><a href="/test">Test Page </a></td>
+                    <td class="HeaderLinks"><a href="addMoviePage"> Admin Page</a></td>
                 </tr>
             </table>
-            <br><br>
 
-            <button class="btn btn-primary">Click to Start Game</button>
-        </form>
+            <table id="topHeader" class="bg-pan-right">
+                <tr>
+                    <td class="MovieGameHeaderTable"><h1><b>#CDawgs Awesome Movie Game</b></h1></td>
+                </tr>
+            </table>
+            <br>
+
+            <div class="row">
+
+                <div id="EnterNameBox" class="col-xs-6">
+                    <form action="EnterName" method="POST" class="enterNameForm">
+                        <table>
+                            <tr>
+                                <td><b>Enter Your Name</b></td>
+                                <td><input class="form-control" name="NameEntered" type="text"></td>
+                            </tr>
+                        </table>
+                        <br><br>
+
+                        <button class="btn btn-primary">Click to Start Game</button>
+                    </form>
+                </div>
+
+                <div id="LeaderboardSection" class="col-xs-6" >
+                    <table class="leaderboard">
+                        <tr>
+                            <th>Player</th>
+                            <th>Total Points</th>
+                            <th>Games Played</th>
+                            <th>Pts. Per Game</th>
+                        </tr>
+                        <tr>
+                            <td>Michael Scott</td>
+                            <td>100</td>
+                            <td>10</td>
+                            <td>10</td>
+                        </tr>
+                        <tr>
+                            <td>Dwight Shrute</td>
+                            <td>70</td>
+                            <td>10</td>
+                            <td>7</td>
+                        </tr>
+                        <tr>
+                            <td>etc.</td>
+                            <td>etc.</td>
+                            <td>etc.</td>
+                            <td>etc.</td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
     </div>
 
-    <br>
-    <h3>Instructions</h3>
-        <p>Add some simple instructions / rules here</p>
-
-    <br>
-    <h3>Leader Board</h3>
-    <table class="leaderboard">
-        <tr>
-            <th>Player</th>
-            <th>Total Points</th>
-            <th>Games Played</th>
-            <th>Pts. Per Game</th>
-        </tr>
-        <tr>
-            <td>Michael Scott</td>
-            <td>100</td>
-            <td>10</td>
-            <td>10</td>
-        </tr>
-        <tr>
-            <td>Dwight Shrute</td>
-            <td>70</td>
-            <td>10</td>
-            <td>7</td>
-        </tr>
-        <tr>
-            <td>etc.</td>
-            <td>etc.</td>
-            <td>etc.</td>
-            <td>etc.</td>
-        </tr>
-    </table>
-</div>
+</body>

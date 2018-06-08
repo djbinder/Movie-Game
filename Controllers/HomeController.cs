@@ -34,7 +34,6 @@ namespace movieGame.Controllers
         }
 
 
-
         #region InitiateGame
             // view landing page
             [HttpGet]
@@ -45,6 +44,8 @@ namespace movieGame.Controllers
 
                 HttpContext.Session.SetString("player", "null");
                 HttpContext.Session.SetInt32("id", 0);
+
+                GetBackgroundPosters();
 
                 Console.WriteLine("---------------'INDEX METHOD' COMPLETED---------------");
 
@@ -411,6 +412,101 @@ namespace movieGame.Controllers
                 Console.WriteLine("---------------'SHOW MOVIE' METHOD COMPLETED--------------------");
                 return View("Movie");
             }
+
+            [HttpGet]
+            [Route("test")]
+            public IActionResult Test ()
+            {
+            Console.WriteLine("---------------'TEST METHOD' STARTED---------------");
+
+            GetBackgroundPosters();
+
+            Console.WriteLine("---------------'TEST METHOD' COMPLETED---------------");
+            return View ("test");
+            }
+
+
+            [HttpGet]
+            [Route("getBackgroundPosters")]
+
+            public JsonResult GetBackgroundPosters()
+            {
+                Console.WriteLine("---------------'GET BACKGROUND POSTERS' METHOD STARTED---------------");
+
+                // MOVIE DB PAGES --> set the number of api pages you want to query; 20 posters per page
+                int movieDBpages = 2;
+
+                // TOP MOVIE POSTERS ---> System.Collections.ArrayList
+                ArrayList TopMoviePosters = new ArrayList();
+
+                ArrayList AllPosterURLs = new ArrayList();
+
+                for(var x = 1; x <= movieDBpages; x++)
+                {
+
+                    var client = new RestClient("https://api.themoviedb.org/3/movie/popular?api_key=1a1ef1aa4b51f19d38e4a7cb134a5699&language=en-US&page=" + x + "&region=us");
+
+                    var request = new RestRequest(Method.GET);
+
+                    request.AddHeader("Postman-Token", "1348f187-6d98-4453-ad72-0f795b433479");
+                    request.AddHeader("Cache-Control", "no-cache");
+
+                    // RESPONSE ---> 'RestSharp.RestResponse'
+                    IRestResponse response = client.Execute(request);
+
+
+                    // MESSY JSON ---> all movie JSON all garbled up (i.e., not parsed)
+                    var responseJSON = response.Content;
+
+                    // BACKGROUND JSON ---> all movie JSON presented more cleanly (i.e., it has been parsed)
+                    JObject backgroundJSON= JObject.Parse(responseJSON);
+
+                    // BACKGROUND COUNT --> 20 (i.e., the number of posters on each api page)
+                    var backgroundCount = backgroundJSON["results"].Count();
+
+                    for(var i = 0; i <= backgroundCount - 1; i++)
+                    {
+                        // ONE POSTER ---> '/inVq3FRqcYIRl2la8iZikYYxFNR.jpg' etc.
+                        var onePoster = (string)backgroundJSON["results"][i]["poster_path"];
+
+                        var posterURL = "https://image.tmdb.org/t/p/w200" + onePoster;
+                            posterURL.Intro("poster URL");
+
+                        // ONE TITLE ---> 'Deadpool' OR 'Justice League' etc.
+                        var oneTitle = (string)backgroundJSON["results"][i]["title"];
+
+                        TopMoviePosters.Add(onePoster);
+                        AllPosterURLs.Add(posterURL);
+                    };
+
+                    ViewBag.TopMoviePosters = TopMoviePosters;
+
+                    Random r = new Random();
+
+                    var xCount = AllPosterURLs.Count;
+                    xCount.Intro("x count");
+
+                    var pullPosterNumber = r.Next(0, AllPosterURLs.Count - 1);
+                    pullPosterNumber.Intro("pull poster");
+
+                    var pullPoster = AllPosterURLs[pullPosterNumber];
+                    pullPoster.Intro("pull poster");
+
+                    ViewBag.PullPoster = pullPoster;
+
+
+
+
+
+
+
+                }
+                Console.WriteLine("---------------'GET BACKGROUND POSTERS' METHOD COMPLETED---------------");
+
+                return Json(TopMoviePosters);
+            }
+
+
         #endregion ViewMovieInfo
 
 
@@ -421,6 +517,7 @@ namespace movieGame.Controllers
             public IActionResult AddMoviePage ()
             {
                 Console.WriteLine("---------------'ADD MOVIE PAGE' METHOD STARTED---------------");
+
 
                 Console.WriteLine("---------------'ADD MOVIE PAGE' METHOD COMPLETED---------------");
                 return View ("Generate");
@@ -596,48 +693,6 @@ namespace movieGame.Controllers
             }
         #endregion Add new movie and clues
 
-
-
-
-
-
-
-        #region SetDropDownList
-
-        //     private IEnumerable<SelectListItem> GetMovies()
-        //     {
-        //         // var dbMovieNames = new DbUserRoles();
-
-        //         var allMovies = _context.GetMovies().Select(x => new SelectListItem
-        //         {
-        //             Value = x.MovieId.ToString();
-        //             Text = x.MovieTitle;
-        //         });
-
-        //         Movies.Include(w => w.Clues).OrderBy(d => d.MovieId).ToList();
-
-        //         // var roles = dbMovieNames
-        //         //             .GetRoles()
-        //         //             .Select(x =>
-        //         //                     new SelectListItem
-        //         //                         {
-        //         //                             Value = x.UserRoleId.ToString(),
-        //         //                             Text = x.UserRole
-        //         //                         });
-
-        //         return new SelectList(allMovies, "Value", "Text");
-        //     }
-
-        //     public ActionResult AddNewUser()
-        //     {
-        //         var model = new MovieView
-        //                         {
-        //                             MovieNameItems = GetMovies()
-        //                         };
-        //         return View(model);
-        //     }
-
-        #endregion SetDropDownList
 
 
 

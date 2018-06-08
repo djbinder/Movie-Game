@@ -5,22 +5,6 @@
             padding    : 0px 0px 0px 0px;
         }
 
-        html, body {
-
-            height: 100vh;
-            width : 100vh;
-        }
-
-        body {
-            min-width : 100vh;
-            min-height: 100vh;
-        }
-
-        #wrapper {
-            height: 100vh;
-            width : 100vh;
-        }
-
         .bg-pan-right {
             animation: bg-pan-right 8s both;
         }
@@ -28,11 +12,11 @@
         @keyframes bg-pan-right {
             0% {
                 background-position: 0% 50%;
-                background         : #d53d3d;
+                background         : white;
             }
             100% {
                 background-position: 100% 50%;
-                background         : slateblue;
+                background         : black;
             }
         }
 /* #endregion */
@@ -63,13 +47,24 @@
 
 /* #region Header */
 .MovieGameHeaderTable {
-    color  : white;
-    width  : 1000px;
-    padding: 5px;
+    color     : white;
+    width     : 900px;
+    padding   : 5px;
+    text-align: center;
+    box-shadow: 0px 2px 2px 0px gray;
+    /* border    : 3px solid black; */
+}
+
+#topHeader {
+    margin-left: 100px;
+}
+
+#adminLinks {
+    margin-left: 100px;
 }
 
 .HeaderLinks {
-    width     : 175px;
+    width     : 100px;
     text-align: center;
     color     : white;
 }
@@ -136,25 +131,32 @@
   }
 /* #endregion */
 
+/*
+#LeaderboardSection {
+    border       : 3px solid red;
+    padding-right: 25px; */
+    /* margin-right : 50px;
+} */
 
 .leaderboard {
-    border    : 1px solid black;
-    width     : 500px;
+    width     : 400px;
     text-align: center;
-    /* color     : blue; */
+    box-shadow: 0px 2px 2px 0px gray;
 }
 
 .leaderboard th {
-    border    : 1px solid black;
+
     text-align: center;
+    background: darkslategray;
+    color     : white;
 }
 
 .leaderboard td {
-    border: 1px solid black;
+    border-bottom-style: solid;
+    border-bottom-color: lightslategray;
+    height             : 40px;
+    background-color   : white;
 }
-
-
-
 
 /* #region ADD MOVIE AND CLUES */
 #addMovieButton {
@@ -175,9 +177,6 @@
 
 
 /* #region CLUES */
-/* #clueSection {
-    border: .5px solid blue;
-} */
 
 #clueList {
     height: 84px;
@@ -190,23 +189,6 @@
     display: auto;
     margin : 0 auto;
 }
-/*
-ul#clueText {
-    height    : 84px;
-    min-width : 696px;
-    list-style: none;
-    padding   : 20px;
-}
-
-ul#clueText li {
-    margin-left: 10px;
-    padding    : 10px;
-    display    : inline;
-    border     : .5px solid slateblue;
-    box-shadow : 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-} */
-
-
 
 #clueList2 {
     height: 84px;
@@ -261,10 +243,6 @@ ul.clueText2 li {
     padding-left: 5px;
 
 }
-
-/* #movieGuessSection form button{
-    border: 2px solid blue;
-} */
 
 #guessResponse {
     color: rgb(207, 27, 96);
@@ -346,3 +324,27 @@ input[type=text]{
     border     : .5px solid slateblue;
 }
 /* #endregion ONVE MOVIE DETAILS */
+
+
+
+.background {
+    position: relative;
+    top     : 0;
+    left    : 0;
+}
+
+#posters {
+    opacity : .5;
+    position: relative;
+    top     : 0;
+    left    : 0;
+    /* border      : 3px solid blue; */
+    padding-left: 50px;
+}
+
+#indexcontent {
+    position: absolute;
+    top     : 30px;
+    z-index : 2;
+    /* left    : 70px; */
+}
