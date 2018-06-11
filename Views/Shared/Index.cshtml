@@ -3,7 +3,6 @@
 }
 
 
-
 <body>
     <div class="background">
 
@@ -26,58 +25,60 @@
                 </tr>
             </table>
 
-            <table id="topHeader" class="bg-pan-right">
-                <tr>
-                    <td class="MovieGameHeaderTable"><h1><b>#CDawgs Awesome Movie Game</b></h1></td>
-                </tr>
-            </table>
-            <br>
+            <div id="topHeader">
+                <h1 class="MovieGameTitle"><b>#CDawgs Awesome Movie Game</b></h1>
+            </div>
 
-            <div class="row">
+            <br><br>
 
-                <div id="EnterNameBox" class="col-xs-6">
-                    <form action="EnterName" method="POST" class="enterNameForm">
-                        <table>
-                            <tr>
-                                <td><b>Enter Your Name</b></td>
-                                <td><input class="form-control" name="NameEntered" type="text"></td>
-                            </tr>
-                        </table>
-                        <br><br>
 
-                        <button class="btn btn-primary">Click to Start Game</button>
-                    </form>
-                </div>
-
-                <div id="LeaderboardSection" class="col-xs-6" >
-                    <table class="leaderboard">
+            <div id="EnterNameBox">
+                <form action="EnterName" method="POST" class="enterNameForm">
+                    <table>
                         <tr>
-                            <th>Player</th>
-                            <th>Total Points</th>
-                            <th>Games Played</th>
-                            <th>Pts. Per Game</th>
-                        </tr>
-                        <tr>
-                            <td>Michael Scott</td>
-                            <td>100</td>
-                            <td>10</td>
-                            <td>10</td>
-                        </tr>
-                        <tr>
-                            <td>Dwight Shrute</td>
-                            <td>70</td>
-                            <td>10</td>
-                            <td>7</td>
-                        </tr>
-                        <tr>
-                            <td>etc.</td>
-                            <td>etc.</td>
-                            <td>etc.</td>
-                            <td>etc.</td>
+                            <td><b>Enter Your Name</b></td>
+                            <td><input class="form-control" name="NameEntered" type="text"></td>
                         </tr>
                     </table>
-                </div>
+                    <br><br>
 
+                    <button class="btn btn-primary">Click to Start Game</button>
+                </form>
+            </div>
+
+            <br><br><br>
+
+            <div id="LeaderboardSection">
+                <table class="leaderboard">
+                    <tr>
+                        <th>Rank</th>
+                        <th>Player</th>
+                        <th>Total Points</th>
+                        <th>Games Played</th>
+                        <th>Pts. Per Game</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Michael Scott</td>
+                        <td>100</td>
+                        <td>10</td>
+                        <td>10</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Dwight Shrute</td>
+                        <td>70</td>
+                        <td>10</td>
+                        <td>7</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>etc.</td>
+                        <td>etc.</td>
+                        <td>etc.</td>
+                        <td>etc.</td>
+                    </tr>
+                </table>
             </div>
         </div>
 

@@ -17,6 +17,7 @@
     <PackageReference Include="ObjectDumper" Version="1.0.0.12"/>
     <PackageReference Include="RestSharp" Version="106.2.2"/>
     <PackageReference Include="System.Windows.Forms" Version="*"/>
+
     <PackageReference Include="System.Windows.Forms.Ribbon35" Version="*"/>
     <PackageReference Include="AWS.Net" Version="*"/>
     <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="2.0.0"/>

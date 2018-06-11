@@ -141,6 +141,8 @@ namespace movieGame.Controllers
                 // ONE MOVIE ---> movieGame.Models.Movie
                 var SetMovieObject = _context.Movies.Include(w => w.Clues).SingleOrDefault(x => x.MovieId == SetMovieId);
 
+                SetMovieObject.Title.Intro("this games movie");
+
                 // SESSION MOVIE ID & NAME ---> sets the name and id for the movie that was selected
                 HttpContext.Session.SetString("sessionMovieObject", SetMovieObject.ToString());
                 HttpContext.Session.SetString("sessionMovieTitle", SetMovieObject.Title);
@@ -215,6 +217,7 @@ namespace movieGame.Controllers
 
                     movie.Clues.Add(oneClue);
                     CountUp++;
+                    oneClue.CluePoints.Intro("Clue points");
                 }
 
                 // MOVIE CLUES ---> System.Collections.Generic.List`1[movieGame.Models.Clue]
@@ -228,9 +231,8 @@ namespace movieGame.Controllers
 
             // guess movie based on the clues given
             [HttpGet]
-            [Route("guessMovie")]
-            public JsonResult GuessMovie (string movieGuessInput)
-            // public IActionResult GuessMovie (string movieGuessInput, string movieGuessSelect)
+            [Route("/guessMovie")]
+            public JsonResult GuessMovie ()
             {
                 Console.WriteLine("---------------'GUESS MOVIE' METHOD STARTED---------------");
 
@@ -279,6 +281,7 @@ namespace movieGame.Controllers
                 MovieGuessItems.Add(SessionMovieTitle);
                 MovieGuessItems.Add(guessCount);
 
+
                 // MOVIEGUESSITEMS ---> System.Collections.ArrayList
                     // MovieGuessItems.Intro("MovieGuessItems");
 
@@ -286,6 +289,19 @@ namespace movieGame.Controllers
 
 
                 return Json(MovieGuessItems);
+            }
+
+
+
+            [HttpGet]
+            [Route("/updatePlayerPoints")]
+
+            public IActionResult UpdatePlayerPoints ()
+            {
+                Console.WriteLine("---------------'UPDATE PLAYER POINTS' METHOD STARTED---------------");
+                Console.WriteLine("---------------'UPDATE PLAYER POINTS' METHOD COMPLETED---------------");
+
+                return View("Index");
             }
 
 
@@ -376,6 +392,7 @@ namespace movieGame.Controllers
 
                     // CURRENT MOVIE TITLE ---> the title of the movie pulled from the database
                     var currentMovieTitle = currentMovie.Title;
+                    // currentMovieTitle.Intro("current movie title");
 
                     // CURRENT MOVIE YEAR ---> the release year of the movie pulled from the database
                     var currentMovieYear = currentMovie.Year;
@@ -394,6 +411,7 @@ namespace movieGame.Controllers
 
                     // MOVIE JSON ---> JSON STRING but cleaner/parsed
                     JObject movieJSON = JObject.Parse(jsonString);
+                    Console.WriteLine(movieJSON);
                 // #endregion API QUERIES
 
 
@@ -406,7 +424,10 @@ namespace movieGame.Controllers
                     string MovieDirector = (string)movieJSON["Value"]["Director"];
                     string MovieRating = (string)movieJSON["Value"]["Rated"];
                     string MovieYear = (string)movieJSON["Value"]["Year"];
+                    string MoviePoster = ViewBag.MoviePoster = (string)movieJSON["Value"]["Poster"];
                 // #endregion API MOVIE INFO
+
+                MovieTitle.Intro("movie title");
 
 
                 Console.WriteLine("---------------'SHOW MOVIE' METHOD COMPLETED--------------------");
@@ -417,12 +438,12 @@ namespace movieGame.Controllers
             [Route("test")]
             public IActionResult Test ()
             {
-            Console.WriteLine("---------------'TEST METHOD' STARTED---------------");
+                Console.WriteLine("---------------'TEST METHOD' STARTED---------------");
 
-            GetBackgroundPosters();
+                GetBackgroundPosters();
 
-            Console.WriteLine("---------------'TEST METHOD' COMPLETED---------------");
-            return View ("test");
+                Console.WriteLine("---------------'TEST METHOD' COMPLETED---------------");
+                return View ("test");
             }
 
 
@@ -454,8 +475,8 @@ namespace movieGame.Controllers
                     // RESPONSE ---> 'RestSharp.RestResponse'
                     IRestResponse response = client.Execute(request);
 
-
                     // MESSY JSON ---> all movie JSON all garbled up (i.e., not parsed)
+
                     var responseJSON = response.Content;
 
                     // BACKGROUND JSON ---> all movie JSON presented more cleanly (i.e., it has been parsed)
@@ -469,8 +490,8 @@ namespace movieGame.Controllers
                         // ONE POSTER ---> '/inVq3FRqcYIRl2la8iZikYYxFNR.jpg' etc.
                         var onePoster = (string)backgroundJSON["results"][i]["poster_path"];
 
+                        // POSTER URL ---> e.g., https://image.tmdb.org/t/p/w200/wridRvGxDqGldhzAIh3IcZhHT5F.jpg
                         var posterURL = "https://image.tmdb.org/t/p/w200" + onePoster;
-                            posterURL.Intro("poster URL");
 
                         // ONE TITLE ---> 'Deadpool' OR 'Justice League' etc.
                         var oneTitle = (string)backgroundJSON["results"][i]["title"];
@@ -480,25 +501,6 @@ namespace movieGame.Controllers
                     };
 
                     ViewBag.TopMoviePosters = TopMoviePosters;
-
-                    Random r = new Random();
-
-                    var xCount = AllPosterURLs.Count;
-                    xCount.Intro("x count");
-
-                    var pullPosterNumber = r.Next(0, AllPosterURLs.Count - 1);
-                    pullPosterNumber.Intro("pull poster");
-
-                    var pullPoster = AllPosterURLs[pullPosterNumber];
-                    pullPoster.Intro("pull poster");
-
-                    ViewBag.PullPoster = pullPoster;
-
-
-
-
-
-
 
                 }
                 Console.WriteLine("---------------'GET BACKGROUND POSTERS' METHOD COMPLETED---------------");
