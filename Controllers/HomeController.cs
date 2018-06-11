@@ -512,6 +512,7 @@ namespace movieGame.Controllers
         #endregion ViewMovieInfo
 
 
+
         #region Add new movie and clues
             // go to the page to add new movie and clues
             [HttpGet]
