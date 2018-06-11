@@ -5,95 +5,73 @@
 }
 
 
+
+<div class="container" id="playGameContainer">
+
+    <h4><b>Gameplay Instructions</b></h4>
+    <ol id="instructionsList">
+        <li>Click the 'Get Next Clue' Button to get a new clue. There are 10 clues total.</li>
+        <li>To guess the movie, enter the movie title and click the 'Click to Guess' Button</li>
+        <li>Rinse and repeat...</li>
+    </ol>
+
+    <div class="row" id="allContent">
+
+        <div id="clueSection" class="col-md-8">
+            <h4><b>List of Clues</b></h4>
+            <div class="row">
+                <div class="col-md-6"><a href="#"><button class="btn btn-danger" id="getClueButton"><span id="clueButtonText">Begin Game</span> </button></a></div>
+                <div id="cluePoints" class="col-md-3"></div>
+                <div class="col-md-3"><span id="justPoints"></span></div>
+            </div>
+                <br><br>
+                <div id="clueList2">
+                    <div id="clueTable2">
+                        <ul id="clueText" class="clueText2"></ul>
+                    </div>
+                </div>
+        </div>
+
+        <div id="guessSection" class="col-md-4">
+            <div class="row">
+                <div class="col-md-9"><h4><b>Guess Movie</b></h4></div>
+                <div id="startOver" class="col-md-3"><a href="/clear">Start Over</a></div>
+            </div>
+
+            <div id="remainingGuesses">Remaining Guesses: 3</div>
+            <hr class="linebreak3">
+            <br>
+
+            <ul id="JQresponse"></ul>
+
+            <form action="guessMovie" method="GET" id="guessMovie">
+                <div class="row" id="inputAndButton">
+                    <div class="col-sm-8">
+                        <input type="text" id="movieGuessInput" name="movieGuessInput" placeholder="Enter Your Guess Here..."/>
+                    </div>
+                    <div class="col-sm-4">
+                        <a href="#"><button class="btn btn-info" id="guessButton">Click to Guess</button></a>
+                    </div>
+                </div>
+
+                <div class="searchResContainer">
+                    <div id="div_content">
+                        <ul id="searchResult"></ul>
+                        <div class="clear"></div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+    </div>
+</div>
+
+<hr>
+<h6>Admin Stuff</h6>
 <p>
     <b>Movied ID: </b> @ViewBag.SessionMovieId_testing   |
     <b>Movie Title: </b> @ViewBag.SessionMovieTitle_testing |
     <b>Current Player Name: </b> @ViewBag.PlayerName
 </p>
-
-<br>
-<table class="bg-pan-right">
-    <tr>
-        <td class="MovieGameHeaderTable"><h1><b>Movie Game</b></h1></td>
-        <td class="HeaderLinks"><a href="/">Home</a></td>
-        <td class="HeaderLinks"><a href="/clear">Start Over</a></td>
-    </tr>
-</table>
-<hr class="linebreak2">
-
-<div class="container-fluid">
-
-    <div class="row">
-
-        <div id="movieGuessSection" class="col-12" style="border: 1px solid black">
-            <h4>Guess Movie</h4>
-
-            <ul id="JQresponse">
-
-            </ul>
-
-            <form action="guessMovie" method="GET" id="guessMovie">
-
-                <input type="text" id="movieGuessInput" name="movieGuessInput" placeholder="Enter Your Guess Here...">
-
-                <br>
-                <div class="searchResContainer">
-
-                    <div id="div_content">
-
-                        <ul id="searchResult"></ul>
-                        <div class="clear"></div>
-                        <div id="movieDetail"></div>
-
-                    </div>
-
-                </div>
-
-                <br>
-
-                <a href="#"><button class="btn btn-info" id="guessButton">Click to Guess</button></a>
-            </form>
-
-            <br>
-
-
-
-
-        </div>
-
-    </div>
-
-    <br>
-    <hr class="linebreak3">
-
-    <div class="row">
-
-        <div id="clueSection" class="col">
-            <h4>List of Clues</h4>
-
-                <a href="#"><button class="btn btn-danger" id="getClue">Get Next Clue</button></a>
-                <a href="/clear"><button class="btn btn-warning">Start Over</button></a>
-
-                <br>
-
-
-
-
-                <br>
-
-                <div id="clueList2">
-                    <div id="clueTable2">
-
-                        <ul id="clueText" class="clueText2"></ul>
-
-                    </div>
-                </div>
-
-        </div>
-
-    </div>
-
-
-
-
-</div>

@@ -1,16 +1,16 @@
 $(document).ready(function(){
 
-    $("#getClue").click(function() {
+    $("#getClueButton").click(function() {
         $.get("getClue", function(res){
+
+            $("#clueButtonText").empty();
+            $("#clueButtonText").append("Get Next Clue");
 
             // ALL MOVIE INFO ---> gives you all info about the movie
             var allMovieInfo = res;
-                console.log("ALL MOVIE INFO : ", allMovieInfo);
-                console.table(allMovieInfo);
-                console.trace("TRACE");
-
-
-
+                // console.log("ALL MOVIE INFO : ", allMovieInfo);
+                // console.log("ALL MOVIE INFO TABLE: ");
+                // console.table(allMovieInfo);
 
             // ALL MOVIE CLUES ---> returns array of 10 [object object] of clues
             var allMovieClues = res.clues;
@@ -32,11 +32,35 @@ $(document).ready(function(){
                 // console.log("CLUE POINTS: ", CluePoints);
 
             // CLUE ---> lists off each clue  after each click; e.g., '<li>School bus</li>' etc.
-            var clue = "<li>" + allMovieClues[contentLength+1].clueText + "<br>" + "<h6>" + "Pts: " + CluePoints + "</h6>" + "</li>";
+            var clue = "<li>" + allMovieClues[contentLength+1].clueText + "</li>";
                 // console.log("CLUE: ", clue);
 
-            // append 'clue' list item to ul list called 'clueText'
-            $('ul#clueText').append(clue);
+            // if you reach the 10th clue, disable the 'getClueButton'
+            if (contentLength == 8)
+            {
+                // append 'clue' list item to ul list called 'clueText'
+                $('ul#clueText').append(clue);
+
+                $('#cluePoints').empty();
+                $('#cluePoints').append("Current Clue Point Value: ", CluePoints);
+
+                $('#justPoints').empty();
+                $('#justPoints').append(CluePoints);
+
+                $("#getClueButton").prop("disabled", true);
+            }
+
+            // do not disable the 'getClueButton' for every clue before the final clue
+            else {
+                $('#cluePoints').empty();
+                $('#cluePoints').append("Current Clue Point Value: ", CluePoints);
+
+                $('#justPoints').empty();
+                $('#justPoints').append(CluePoints);
+
+                // append 'clue' list item to ul list called 'clueText'
+                $('ul#clueText').append(clue);
+            }
         });
     })
 
@@ -48,15 +72,20 @@ $(document).ready(function(){
         var UserGuess = $("input:first").val().toString();
         // console.log("USER GUESS: ", UserGuess);
 
+
         $.get("guessMovie", function(res) {
 
+            var currentPoints = $("#cluePoints").text();
+            console.log("CURRENT POINTS: ", currentPoints);
+
+            var currentPointsInt = $("#justPoints").html();
+            console.log("JUST POINTS INT: ", currentPointsInt);
+
             // MOVIE GUESS ITEMS ---> array of session movie title and session guess count
-            var MovieGuessItems = res;
-                // console.log("MOVIE GUESS ITEMS: ", MovieGuessItems);
+                // var MovieGuessItems = res;
 
             // SESSION MOVIE TITLE ---> 'Goodfellas' etc.
-            var SessionMovieTitle = res[0];
-                // console.log("SESSION MOVIE TITLE: ", SessionMovieTitle);
+                var SessionMovieTitle = res[0];
 
             // SESSION MOVIE TITLE TO CAPS --> e.g., 'goodfellas' TO 'GOODFELLAS'
             var SessionMovieTitleToCaps = SessionMovieTitle.toUpperCase();
@@ -71,80 +100,98 @@ $(document).ready(function(){
                 // console.log(UserGuessToCaps);
 
             // GUESS RESPONSE WRONG --> concatenated response to wrong answer
-            var guessResponseWrong = "Your Answer: " + "<b>" + UserGuessToCaps + "</b>" + " is WRONG. " + "<br>" + "You have " + guessCount + " remaining guesses" + "<br>";
+            var guessResponseWrong = "Your Answer: " + "<b>" + UserGuessToCaps + "</b>" + " is WRONG.";
                 // console.log("GUESS RESPONSE WRONG: ", guessResponseWrong);
 
 
             if(guessCount > 0)
             {
-
+                // guesses remaining; the player WON
                 if(UserGuessToCaps == SessionMovieTitleToCaps)
                 {
-                    console.log('------------------------------------');
-                    console.log("EQUAL --- MARK 1");
-                    console.log(UserGuessToCaps," ",SessionMovieTitleToCaps);
-                    console.log('------------------------------------');
+                    console.log("USER GUESS: ", UserGuessToCaps," ", "SESSION MOVIE: " , SessionMovieTitleToCaps);
 
-                    $('ul#JQresponse').append("YOU WIN THE GAME!!!!");
+                    $("#remainingGuesses").empty();
+                    // $("#remainingGuesses").append("Remaining Guesses: ", guessCount);
+
+                    $("#movieGuessInput").val('');
+
+                    $("#guessButton").prop("disabled", true);
+                    console.log("MARK 1-----------------");
+
+
+                    // function saveData() {
+                    //     console.log("POINTS TO ADD: ", currentPoints);
+                    //     var UserId = 1;
+
+                    //     $.ajax({
+                    //         type: "POST",
+                    //     })
+                    // }
+                    console.log("MARK 2-----------------");
+
+                    alert("CORRECT! YOU WIN THE GAME. Points received: " + currentPoints);
+
                 }
+                // guesses remaining; the player's guess was WRONG
+                else
+                {
+                    console.log("USER GUESS: ", UserGuessToCaps," ", "SESSION MOVIE: " , SessionMovieTitleToCaps);
 
-                else{
-                    console.log('------------------------------------');
-                    console.log("NOT EQUAL --- MARK 1");
-                    console.log(UserGuessToCaps," ",SessionMovieTitleToCaps);
-                    console.log('------------------------------------');
+                    $("#remainingGuesses").empty();
+                    $("#remainingGuesses").append("Remaining Guesses: ", guessCount);
 
+                    $("#movieGuessInput").val('');
+
+                    $("ul#JQresponse").empty();
                     $('ul#JQresponse').append(guessResponseWrong);
 
                 }
-
             }
 
-
+            // user is out of guesses
             if(guessCount == 0)
             {
+                // out of guesses and the player won
                 if(UserGuessToCaps == SessionMovieTitleToCaps)
                 {
-                    console.log('------------------------------------');
-                    console.log("EQUAL --- MARK 2");
-                    console.log(UserGuessToCaps," ",SessionMovieTitleToCaps);
-                    console.log('------------------------------------');
+                    console.log("USER GUESS: ", UserGuessToCaps," ", "SESSION MOVIE: " , SessionMovieTitleToCaps);
 
-                    $('ul#JQresponse').append("YOU WIN THE GAME!!!!");
-                }
-                else {
-                    console.log('------------------------------------');
-                    console.log("NOT EQUAL --- MARK 2");
-                    console.log(UserGuessToCaps," ",SessionMovieTitleToCaps);
-                    console.log('------------------------------------');
+                    $("#remainingGuesses").empty();
+                    $('#remainingGuesses').append("THE GAME IS OVER. Click 'Start Over' to begin a new game");
 
-                    $('ul#JQresponse').append("THE GAME IS OVER" + "<br>" + guessResponseWrong);
+                    $("ul#JQresponse").empty();
+                    $("#movieGuessInput").val('');
+
+                    $("#guessButton").prop("disabled", true);
+                    alert("CORRECT! YOU WIN THE GAME. Points received: " + currentPoints);
                 }
+
+                // out of guesses and the player lost
+                else
+                {
+                    console.log("USER GUESS: ", UserGuessToCaps," ", "SESSION MOVIE: " , SessionMovieTitleToCaps);
+
+                    $("#remainingGuesses").empty();
+                    $('#remainingGuesses').append("THE GAME IS OVER. Click 'Start Over' to begin a new game");
+
+                    $("ul#JQresponse").empty();
+                    $("#movieGuessInput").val('');
+
+                    $("#guessButton").prop("disabled", true);
+                    alert("SORRY! YOU LOSE!");
+                }
+
             }
-
         })
 
         event.preventDefault();
 
-
-        // $('ul#JQresponse').append(UserGuess);
-
     })
 
-    // var xTriggered = 0;
-    $('#movieGuessInput').keyup(function(event){
 
-        // this code created a 'handler' log; not necessary but kind of interesting
-            // xTriggered++;
-            // var msg = "Handler for .keyup() called " + xTriggered + " time(s).";
-            // console.log('------------------------------------');
-                // MESSAGE --> 'Handler for .keyup() called 4 time(s). html' etc.
-                    // console.log("MESSAGE: ", msg, "html" );
-                // EVENT --> logs a ton of information within an object about the 'event' (i.e., 'keyup');
-                    // console.log("EVENT: ", event );
-            // console.log('------------------------------------');
-
-
+    $('#movieGuessInput').keyup(function(event)
+    {
         // SEARCH QUERY --> 'godfa' OR 'godfathe' OR 'godfather' etc.
         var SearchQuery = $('#movieGuessInput').val();
 
@@ -187,6 +234,7 @@ $(document).ready(function(){
 });
 
 
+
 function setText(element) {
 
     console.log("-----'SET TEXT' FUNCTION STARTED-----");
@@ -208,21 +256,17 @@ function setText(element) {
         success: function (serverResponse) {
 
             // REAL RES --> returns an array of movie objects (including 'title', 'release year' , etc.) that meet search criteria
-            var realres = serverResponse["Search"]
+            var realres = serverResponse["Search"];
 
-            var realresLength = realres.length;
-            console.log("REAL RES LENGTH: ", realresLength);
+            // $("#movieDetail").empty();
+            // if(realresLength > 0){
 
+            //     var oneResult = realres[0]["Title"];
+            //     console.log("SET TEXT ONE RESULT: ", oneResult);
 
-            $("#movieDetail").empty();
-            if(realresLength > 0){
+            //     $("#movieDetail").append("Title : " + oneResult + "<br/>");
 
-                var oneResult = realres[0]["Title"];
-                console.log("SET TEXT ONE RESULT: ", oneResult);
-
-                $("#movieDetail").append("Title : " + oneResult + "<br/>");
-
-            }
+            // }
 
         }
     })
