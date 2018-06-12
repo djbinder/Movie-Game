@@ -22,7 +22,7 @@ namespace movieGame {
         public static IWebHost BuildWebHost (string[] args) =>
             WebHost.CreateDefaultBuilder (args)
             .UseStartup<Startup> ()
-            .UseUrls(urls: "http://localhost:10000")
+            .UseUrls(urls: "http://localhost:10001")
             .Build ();
 
     }
