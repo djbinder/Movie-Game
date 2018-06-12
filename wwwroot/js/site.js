@@ -14,26 +14,21 @@ $(document).ready(function(){
 
             // ALL MOVIE CLUES ---> returns array of 10 [object object] of clues
             var allMovieClues = res.clues;
-                // console.log("ALL MOVIE CLUES: ", allMovieClues);
 
             // ALL MOVIE CLUES LENGTH ---> 10
             var allMovieCluesLength = Object.keys(allMovieClues).length;
 
             // CONTENT LENGTH ---> content length starts at -1 and keeps counting up; errors out after final clue
             var contentLength = $('ul#clueText > li').length - 1 ;
-                // console.log("CONTENT LENGTH: ", contentLength);
 
             // CLUE ID ---> '1', then '2', OR '11', then '12', etc.
             var ClueId = res.clues[contentLength+1].clueId;
-                // console.log("CLUE ID: ", ClueId);
 
             // CLUE POINTS --> '10', then '9', then '8' etc.
             var CluePoints = res.clues[contentLength+1].cluePoints;
-                // console.log("CLUE POINTS: ", CluePoints);
 
             // CLUE ---> lists off each clue  after each click; e.g., '<li>School bus</li>' etc.
             var clue = "<li>" + allMovieClues[contentLength+1].clueText + "</li>";
-                // console.log("CLUE: ", clue);
 
             // if you reach the 10th clue, disable the 'getClueButton'
             if (contentLength == 8)
@@ -42,7 +37,7 @@ $(document).ready(function(){
                 $('ul#clueText').append(clue);
 
                 $('#cluePoints').empty();
-                $('#cluePoints').append("Current Clue Point Value: ", CluePoints);
+                $('#cluePoints').append("Current Clue Point Value: ");
 
                 $('#justPoints').empty();
                 $('#justPoints').append(CluePoints);
@@ -53,7 +48,7 @@ $(document).ready(function(){
             // do not disable the 'getClueButton' for every clue before the final clue
             else {
                 $('#cluePoints').empty();
-                $('#cluePoints').append("Current Clue Point Value: ", CluePoints);
+                $('#cluePoints').append("Current Clue Point Value: ");
 
                 $('#justPoints').empty();
                 $('#justPoints').append(CluePoints);
@@ -65,21 +60,30 @@ $(document).ready(function(){
     })
 
 
+    $("#buttonText").on("click", function() {
+        var el = $(this);
+        if (el.text() ==el.data("text-swap")) {
+            el.text(el.data("text-original"));
+        }
+        else {
+            el.data("text-original", el.text());
+            el.text(el.data("text-swap"));
+        }
+    })
 
+
+    // #region  --> GUESS MOVIE
     $("#guessMovie").submit(function(event) {
+
+        console.log("-----'GUESS MOVIE' FUNCTION STARTED-----");
 
         // USER GUESS ---> 'Goodfellas' etc.
         var UserGuess = $("input:first").val().toString();
-        // console.log("USER GUESS: ", UserGuess);
-
 
         $.get("guessMovie", function(res) {
 
-            var currentPoints = $("#cluePoints").text();
-            console.log("CURRENT POINTS: ", currentPoints);
-
             var currentPointsInt = $("#justPoints").html();
-            console.log("JUST POINTS INT: ", currentPointsInt);
+            // console.log("JUST POINTS INT | GUESS MOVIE: ", currentPointsInt);
 
             // MOVIE GUESS ITEMS ---> array of session movie title and session guess count
                 // var MovieGuessItems = res;
@@ -89,48 +93,34 @@ $(document).ready(function(){
 
             // SESSION MOVIE TITLE TO CAPS --> e.g., 'goodfellas' TO 'GOODFELLAS'
             var SessionMovieTitleToCaps = SessionMovieTitle.toUpperCase();
-                // console.log("SESSION TITLE TO CAPS: ", SessionMovieTitleToCaps);
 
             // GUESS COUNT ---> 2, then 1, then 0
             var guessCount = res[1];
-                // console.log("GUESS COUNT: ", guessCount);
 
             // USER GUESS TO CAPS ---> 'GOODFELLAS' etc.
             var UserGuessToCaps = UserGuess.toUpperCase();
-                // console.log(UserGuessToCaps);
 
             // GUESS RESPONSE WRONG --> concatenated response to wrong answer
             var guessResponseWrong = "Your Answer: " + "<b>" + UserGuessToCaps + "</b>" + " is WRONG.";
-                // console.log("GUESS RESPONSE WRONG: ", guessResponseWrong);
-
 
             if(guessCount > 0)
             {
                 // guesses remaining; the player WON
                 if(UserGuessToCaps == SessionMovieTitleToCaps)
                 {
-                    console.log("USER GUESS: ", UserGuessToCaps," ", "SESSION MOVIE: " , SessionMovieTitleToCaps);
-
+                    // clears the 'remaining guesses'div if players wins the game
                     $("#remainingGuesses").empty();
-                    // $("#remainingGuesses").append("Remaining Guesses: ", guessCount);
 
+                    // clears the 'movie guess input' text box if the player wins the game
                     $("#movieGuessInput").val('');
 
+                    // disable the 'guess button' if the player wins the game
                     $("#guessButton").prop("disabled", true);
-                    console.log("MARK 1-----------------");
 
+                    // calls the 'UpdatePlayerPoints' function; this sends the point value of the clue the movie was guessed on back to the controller
+                    UpdatePlayerPoints("#guessMovieForm");
 
-                    // function saveData() {
-                    //     console.log("POINTS TO ADD: ", currentPoints);
-                    //     var UserId = 1;
-
-                    //     $.ajax({
-                    //         type: "POST",
-                    //     })
-                    // }
-                    console.log("MARK 2-----------------");
-
-                    alert("CORRECT! YOU WIN THE GAME. Points received: " + currentPoints);
+                    alert("CORRECT! YOU WIN THE GAME. Points received: " + currentPointsInt);
 
                 }
                 // guesses remaining; the player's guess was WRONG
@@ -164,7 +154,11 @@ $(document).ready(function(){
                     $("#movieGuessInput").val('');
 
                     $("#guessButton").prop("disabled", true);
-                    alert("CORRECT! YOU WIN THE GAME. Points received: " + currentPoints);
+
+                    // calls the 'UpdatePlayerPoints' function; this sends the point value of the clue the movie was guessed on back to the controller
+                    UpdatePlayerPoints("#guessMovieForm");
+
+                    alert("CORRECT! YOU WIN THE GAME. Points received: " + currentPointsInt);
                 }
 
                 // out of guesses and the player lost
@@ -185,9 +179,13 @@ $(document).ready(function(){
             }
         })
 
+        console.log("-----'GUESS MOVIE' FUNCTION COMPLETED-----");
+
         event.preventDefault();
 
     })
+
+
 
 
     $('#movieGuessInput').keyup(function(event)
@@ -206,7 +204,7 @@ $(document).ready(function(){
             success: function (serverResponse) {
 
                 // REAL RES --> returns an array of movie objects (including 'title', 'release year' , etc.) that meet search criteria
-                var realres = serverResponse["Search"]
+                var realres = serverResponse["Search"];
 
                 // REAL RES LENGTH --> seems to always be 10?
                 var realreslength = realres.length;
@@ -234,7 +232,7 @@ $(document).ready(function(){
 });
 
 
-
+// #region SET TEXT
 function setText(element) {
 
     console.log("-----'SET TEXT' FUNCTION STARTED-----");
@@ -258,18 +256,48 @@ function setText(element) {
             // REAL RES --> returns an array of movie objects (including 'title', 'release year' , etc.) that meet search criteria
             var realres = serverResponse["Search"];
 
-            // $("#movieDetail").empty();
-            // if(realresLength > 0){
-
-            //     var oneResult = realres[0]["Title"];
-            //     console.log("SET TEXT ONE RESULT: ", oneResult);
-
-            //     $("#movieDetail").append("Title : " + oneResult + "<br/>");
-
-            // }
-
         }
     })
 
-
+    console.log("-----'SET TEXT' FUNCTION COMPLETED-----");
 }
+
+
+// #region UPDATE PLAYER POINTS
+function UpdatePlayerPoints (formContainer)
+{
+    console.log();
+    console.log("-----'UPDATE USER POINTS' JS FUNCTION STARTED-----");
+
+    $.ajax ({
+        type: "POST",
+        url : "/updatePlayerPoints",
+        data: {
+            CluePoints: $("#justPoints").html(),
+        },
+        success: function(data) {
+            console.log("SUCCESSSSS!!!!");
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+        },
+    })
+    console.log("-----'UPDATE USER POINTS' JS FUNCTION COMPLETED-----");
+    console.log();
+}
+
+
+
+
+// $(function () {
+
+//     console.log("-----'SUBMIT BUTTON' FUNCTION STARTED-----");
+
+//     var guessButton    = $("#guessButton");
+//     var guessMovieForm = $("#guessMovieForm");
+
+//     guessButton.click(function () {
+//         UpdatePlayerPoints(guessMovieForm);
+//     });
+
+//     console.log("-----'SUBMIT BUTTON' FUNCTION COMPLETED-----");
+// });

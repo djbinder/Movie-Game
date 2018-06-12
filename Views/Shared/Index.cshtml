@@ -26,7 +26,8 @@
             </table>
 
             <div id="topHeader">
-                <h1 class="MovieGameTitle"><b>#CDawgs Awesome Movie Game</b></h1>
+                <h1 class="MovieGameTitle"><b>The Awesome and/or Amazing Movie Game</b></h1>
+                <p>(for serious players only)</p>
             </div>
 
             <br><br>
@@ -40,7 +41,9 @@
                             <td><input class="form-control" name="NameEntered" type="text"></td>
                         </tr>
                     </table>
-                    <br><br>
+                    <br>
+                        <p id="NameError">@ViewBag.ErrorMessage</p>
+                    <br>
 
                     <button class="btn btn-primary">Click to Start Game</button>
                 </form>
@@ -57,27 +60,31 @@
                         <th>Games Played</th>
                         <th>Pts. Per Game</th>
                     </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>Michael Scott</td>
-                        <td>100</td>
-                        <td>10</td>
-                        <td>10</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Dwight Shrute</td>
-                        <td>70</td>
-                        <td>10</td>
-                        <td>7</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>etc.</td>
-                        <td>etc.</td>
-                        <td>etc.</td>
-                        <td>etc.</td>
-                    </tr>
+                    @{
+                        var counter = 0;
+                        foreach(var Player in ViewBag.Leaders)
+                        {
+                            <tr>
+                                <td>@(++counter)</td>
+                                <td>@Player.PlayerName</td>
+                                <td>@Player.Points</td>
+                                <td>@Player.GamesPlayed</td>
+                                @if(@Player.GamesPlayed == 0)
+                                {
+                                    <td>NA</td>
+                                }
+                                else if(@Player.Points == 0)
+                                {
+
+                                    <td>NA</td>
+                                }
+                                else {
+                                    <td>@(@Player.Points/@Player.GamesPlayed)</td>
+                                }
+                            </tr>
+                        }
+                    }
+
                 </table>
             </div>
         </div>

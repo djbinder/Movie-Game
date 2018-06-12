@@ -8,21 +8,27 @@
 
 <div class="container" id="playGameContainer">
 
-    <h4><b>Gameplay Instructions</b></h4>
-    <ol id="instructionsList">
-        <li>Click the 'Get Next Clue' Button to get a new clue. There are 10 clues total.</li>
-        <li>To guess the movie, enter the movie title and click the 'Click to Guess' Button</li>
-        <li>Rinse and repeat...</li>
-    </ol>
+    <br>
+    <h6 id="instructionsButton" role="button" data-toggle="collapse" aria-expanded="true" href="#collapseExample">
+        <span id="buttonText" data-text-swap="Click to View Instructions">Click to Hide Instructions</span>
+    </h6>
+    <div class="collapse show" id="collapseExample">
+        <ol id="instructionsList" class="card card-body">
+            <li>Click the 'Get Next Clue' Button to get a new clue. There are 10 clues total.</li>
+            <li>To guess the movie, enter the movie title and click the 'Click to Guess' Button</li>
+            <li>Rinse and repeat...</li>
+        </ol>
+    </div>
 
+    <hr class="linebreak3">
     <div class="row" id="allContent">
 
         <div id="clueSection" class="col-md-8">
             <h4><b>List of Clues</b></h4>
             <div class="row">
-                <div class="col-md-6"><a href="#"><button class="btn btn-danger" id="getClueButton"><span id="clueButtonText">Begin Game</span> </button></a></div>
-                <div id="cluePoints" class="col-md-3"></div>
-                <div class="col-md-3"><span id="justPoints"></span></div>
+                <div class="col-md-8"><a href="#"><button class="btn btn-danger" id="getClueButton"><span id="clueButtonText">Begin Game</span> </button></a></div>
+                <div id="cluePoints" class="col-md-2.5"></div>
+                <div class="col-md-1" ><span id="justPoints"></span></div>
             </div>
                 <br><br>
                 <div id="clueList2">
@@ -35,7 +41,7 @@
         <div id="guessSection" class="col-md-4">
             <div class="row">
                 <div class="col-md-9"><h4><b>Guess Movie</b></h4></div>
-                <div id="startOver" class="col-md-3"><a href="/clear">Start Over</a></div>
+                <div id="startOver" class="col-md-3"><a href="/startOver">Start Over</a></div>
             </div>
 
             <div id="remainingGuesses">Remaining Guesses: 3</div>
@@ -44,24 +50,24 @@
 
             <ul id="JQresponse"></ul>
 
-            <form action="guessMovie" method="GET" id="guessMovie">
-                <div class="row" id="inputAndButton">
-                    <div class="col-sm-8">
-                        <input type="text" id="movieGuessInput" name="movieGuessInput" placeholder="Enter Your Guess Here..."/>
+            <fieldset id="guessMovieForm">
+                <form action="guessMovie" method="GET" id="guessMovie">
+                    <div class="row" id="inputAndButton">
+                        <div class="col-sm-8">
+                            <input type="text" asp-for="Title" id="movieGuessInput" name="movieGuessInput" placeholder="Enter Your Guess Here..."/>
+                        </div>
+                        <div class="col-sm-4">
+                            <a href="#"><button class="btn btn-info" id="guessButton">Click to Guess</button></a>
+                        </div>
                     </div>
-                    <div class="col-sm-4">
-                        <a href="#"><button class="btn btn-info" id="guessButton">Click to Guess</button></a>
+                    <div class="searchResContainer">
+                        <div id="div_content">
+                            <ul id="searchResult"></ul>
+                            <div class="clear"></div>
+                        </div>
                     </div>
-                </div>
-
-                <div class="searchResContainer">
-                    <div id="div_content">
-                        <ul id="searchResult"></ul>
-                        <div class="clear"></div>
-
-                    </div>
-                </div>
-            </form>
+                </form>
+            </fieldset>
         </div>
 
 
@@ -69,9 +75,12 @@
 </div>
 
 <hr>
-<h6>Admin Stuff</h6>
-<p>
-    <b>Movied ID: </b> @ViewBag.SessionMovieId_testing   |
-    <b>Movie Title: </b> @ViewBag.SessionMovieTitle_testing |
-    <b>Current Player Name: </b> @ViewBag.PlayerName
-</p>
+
+<div id="adminStuff">
+    <h6>Admin Stuff</h6>
+    <p>
+        <b>Movied ID: </b> @ViewBag.SessionMovieId_testing   |
+        <b>Movie Title: </b> @ViewBag.SessionMovieTitle_testing |
+        <b>Current Player Name: </b> @ViewBag.PlayerName
+    </p>
+</div>

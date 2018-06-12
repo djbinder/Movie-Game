@@ -2,8 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;       // <--- 'List'
 using System.Linq;                      // <--- various db queries (e.g., 'FirstOrDefault', 'OrderBy', etc.)
-using System.Windows;
-using System.Windows.Forms;
+// using System.Windows;
+// using System.Windows.Forms;
+
 using Microsoft.AspNetCore.Http;        // <--- set session variables (e.g., 'SetString', 'SetInt32', etc.)
 using Microsoft.AspNetCore.Mvc;         // <--- anything related to mvc (e.g., 'Controller', '[HttpGet]', 'HttpContext.Session')
 using Microsoft.EntityFrameworkCore;    // <--- 'include' in db queries
@@ -42,10 +43,15 @@ namespace movieGame.Controllers
             {
                 Console.WriteLine("---------------'INDEX METHOD' STARTED---------------");
 
-                HttpContext.Session.SetString("player", "null");
-                HttpContext.Session.SetInt32("id", 0);
-
                 GetBackgroundPosters();
+
+                ViewBag.ErrorMessage = HttpContext.Session.GetString("message");
+
+                // LEADERS ---> System.Collections.Generic.List`1[movieGame.Models.Player]
+                var Leaders = _context.Players.OrderByDescending(t => t.Points).ToList();
+                Leaders.Intro("leaders");
+
+                ViewBag.Leaders = Leaders;
 
                 Console.WriteLine("---------------'INDEX METHOD' COMPLETED---------------");
 
@@ -62,43 +68,52 @@ namespace movieGame.Controllers
 
                 Console.WriteLine("NAME ENTERED ---> " + NameEntered);
 
-                // EXISTS ---> movieGame.Models.Player
-                Player exists = _context.Players.FirstOrDefault(p => p.PlayerName == NameEntered);
-                //     Console.WriteLine("EXISTS --> ", exists);
-
-                if(exists == null)
+                if(NameEntered == null)
                 {
-                    Console.WriteLine("USER NAME ENTERED DOES NOT EXIST");
-                    HttpContext.Session.SetString("player", NameEntered);
-
-                    Player newPlayer = new Player () {
-                        PlayerName = NameEntered,
-                        Points = 0,
-                        GamesPlayed = 0,
-                    };
-
-                    _context.Add(newPlayer);
-                    _context.SaveChanges();
-
-                    // QUERY PLAYER --> QUERY PLAYER ---> movieGame.Models.Player
-                    Player queryPlayer = _context.Players.FirstOrDefault(p => p.PlayerName == NameEntered);
-                    HttpContext.Session.SetInt32("id", queryPlayer.PlayerId);
+                    Console.WriteLine("NO NAME ENTERED");
+                    ViewBag.ErrorMessage = "Please Enter a Name to Play!";
+                    HttpContext.Session.SetString("message", "Please Enter a Name to Play!");
+                    return RedirectToAction("Index");
                 }
 
-                // if the player is not a new player, go this way
                 else
                 {
-                    Console.WriteLine("USER NAME ALREADY EXISTS");
+                    // EXISTS ---> movieGame.Models.Player
+                    Player exists = _context.Players.FirstOrDefault(p => p.PlayerName == NameEntered);
+                    //     Console.WriteLine("EXISTS --> ", exists);
 
-                    HttpContext.Session.SetString("player", NameEntered);
-                    HttpContext.Session.SetInt32("id", exists.PlayerId);
+                    if(exists == null)
+                    {
+                        Console.WriteLine("USER NAME ENTERED DOES NOT EXIST");
+                        HttpContext.Session.SetString("player", NameEntered);
 
-                    exists.GamesPlayed = exists.GamesPlayed + 1;
+                        Player newPlayer = new Player () {
+                            PlayerName = NameEntered,
+                            Points = 0,
+                            GamesPlayed = 1,
+                        };
 
-                    _context.SaveChanges();
+                        _context.Add(newPlayer);
+                        _context.SaveChanges();
 
+                        // QUERY PLAYER --> QUERY PLAYER ---> movieGame.Models.Player
+                        Player queryPlayer = _context.Players.FirstOrDefault(p => p.PlayerName == NameEntered);
+                        HttpContext.Session.SetInt32("id", queryPlayer.PlayerId);
+                    }
+
+                    // if the player is not a new player, go this way
+                    else
+                    {
+                        Console.WriteLine("USER NAME ALREADY EXISTS");
+
+                        HttpContext.Session.SetString("player", NameEntered);
+                        HttpContext.Session.SetInt32("id", exists.PlayerId);
+
+                        exists.GamesPlayed = exists.GamesPlayed + 1;
+
+                        _context.SaveChanges();
+                    }
                 }
-
                 Console.WriteLine("---------------'ENTER NAME' METHOD COMPLETED---------------");
 
                 return RedirectToAction("initiateGame");
@@ -117,6 +132,7 @@ namespace movieGame.Controllers
 
                 // PLAYERNAME---> retrieves the current players name
                 string PlayerName = ViewBag.PlayerName = HttpContext.Session.GetString("player");
+                PlayerName.Intro("player name");
 
                 if(CheckSession() == 0)
                 {
@@ -160,6 +176,39 @@ namespace movieGame.Controllers
 
                 return View ("PlayGame");
             }
+
+
+            [HttpGet]
+            [Route("/startOver")]
+
+            public IActionResult StartOver ()
+            {
+                Console.WriteLine("----------------'START OVER' METHOD STARTED---------------");
+                // PLAYER ID ---> the PlayerId of the current player (e.g., 8 OR 4 OR 12 etc.)
+                var playerId = HttpContext.Session.GetInt32("id");
+
+                // PLAYER --> the name of the current player
+                var player = HttpContext.Session.GetString("player");
+
+                // RETRIEVED PLAYER ---> movieGame.Models.Player
+                Player RetrievedPlayer = _context.Players.FirstOrDefault(p => p.PlayerId == playerId);
+                RetrievedPlayer.Intro("retrieved player");
+
+                var currGamesPlayed = RetrievedPlayer.GamesPlayed;
+                currGamesPlayed.Intro("curr games played");
+
+                var newGamesPlayed = currGamesPlayed + 1;
+                newGamesPlayed.Intro("new games played");
+
+                RetrievedPlayer.GamesPlayed = newGamesPlayed;
+
+                _context.SaveChanges();
+
+                Console.WriteLine("----------------'START OVER' METHOD COMPLETED---------------");
+
+                return RedirectToAction("InitiateGame");
+            }
+
         #endregion InitiateGame
 
 
@@ -217,7 +266,6 @@ namespace movieGame.Controllers
 
                     movie.Clues.Add(oneClue);
                     CountUp++;
-                    oneClue.CluePoints.Intro("Clue points");
                 }
 
                 // MOVIE CLUES ---> System.Collections.Generic.List`1[movieGame.Models.Clue]
@@ -291,18 +339,47 @@ namespace movieGame.Controllers
                 return Json(MovieGuessItems);
             }
 
+            List<Clue> _clueList = new List<Clue>();
 
 
-            [HttpGet]
+            [HttpPost]
             [Route("/updatePlayerPoints")]
 
-            public IActionResult UpdatePlayerPoints ()
+            public JsonResult UpdatePlayerPoints (Clue clueInfo)
             {
                 Console.WriteLine("---------------'UPDATE PLAYER POINTS' METHOD STARTED---------------");
+
+                // PLAYER ID ---> the PlayerId of the current player (e.g., 8 OR 4 OR 12 etc.)
+                var playerId = HttpContext.Session.GetInt32("id");
+
+                // PLAYER --> the name of the current player
+                var player = HttpContext.Session.GetString("player");
+
+                // MOVIE LIST ---> System.Collections.Generic.List`1[movieGame.Models.Movie]
+                _clueList.Add(clueInfo);
+
+                // RETRIEVED PLAYER ---> movieGame.Models.Player
+                Player RetrievedPlayer = _context.Players.FirstOrDefault(p => p.PlayerId == playerId);
+
+                // CURRENT POINTS --> players current points pulled from the database
+                var currentPoints = RetrievedPlayer.Points;
+
+                // NEW POINTS ---> the value of the clue the movie was correctly guessed on; retrieved from 'UpdatePlayerPoints' javascript function
+                int newPoints = clueInfo.CluePoints;
+
+                // RETRIEVED PLAYER POINT --> adds current points and new points; then saves them to the database
+                RetrievedPlayer.Points = newPoints + currentPoints;
+                _context.SaveChanges();
+
+                // RESPONSE ---> movieGame.Models.Response
+                // var response = new Response(true, "Points Updated Successfully");
+
                 Console.WriteLine("---------------'UPDATE PLAYER POINTS' METHOD COMPLETED---------------");
 
-                return View("Index");
+                return Json(clueInfo);
             }
+
+
 
 
             // clear session
@@ -440,7 +517,7 @@ namespace movieGame.Controllers
             {
                 Console.WriteLine("---------------'TEST METHOD' STARTED---------------");
 
-                GetBackgroundPosters();
+                // GetBackgroundPosters();
 
                 Console.WriteLine("---------------'TEST METHOD' COMPLETED---------------");
                 return View ("test");
