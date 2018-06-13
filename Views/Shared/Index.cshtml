@@ -21,13 +21,12 @@
                 <tr>
                     <td class="HeaderLinks"><a href="allmovies">All Movies </a></td>
                     <td class="HeaderLinks"><a href="/test">Test Page </a></td>
-                    <td class="HeaderLinks"><a href="addMoviePage"> Admin Page</a></td>
                 </tr>
             </table>
 
             <div id="topHeader">
                 <h1 class="MovieGameTitle"><b>The Awesome and/or Amazing Movie Game</b></h1>
-                <p>(for serious players only)</p>
+                <p class="headerTagLine">(for serious players only)</p>
             </div>
 
             <br><br>
@@ -54,7 +53,7 @@
             <div id="LeaderboardSection">
                 <table class="leaderboard">
                     <tr>
-                        <th>Rank</th>
+                        <th class="leaderboardFirstColumn">Rank</th>
                         <th>Player</th>
                         <th>Total Points</th>
                         <th>Games Played</th>
@@ -65,8 +64,8 @@
                         foreach(var Player in ViewBag.Leaders)
                         {
                             <tr>
-                                <td>@(++counter)</td>
-                                <td>@Player.PlayerName</td>
+                                <td class="leaderboardFirstColumn"><b>@(++counter)</b></td>
+                                <td><b>@Player.PlayerName</b></td>
                                 <td>@Player.Points</td>
                                 <td>@Player.GamesPlayed</td>
                                 @if(@Player.GamesPlayed == 0)
