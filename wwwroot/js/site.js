@@ -57,7 +57,7 @@ $(document).ready(function(){
                 $('ul#clueText').append(clue);
             }
         });
-    })
+    });
 
 
     $("#buttonText").on("click", function() {
@@ -69,7 +69,7 @@ $(document).ready(function(){
             el.data("text-original", el.text());
             el.text(el.data("text-swap"));
         }
-    })
+    });
 
 
     // #region  --> GUESS MOVIE
@@ -96,6 +96,7 @@ $(document).ready(function(){
 
             // GUESS COUNT ---> 2, then 1, then 0
             var guessCount = res[1];
+            console.log("GUESS COUNT: ", guessCount);
 
             // USER GUESS TO CAPS ---> 'GOODFELLAS' etc.
             var UserGuessToCaps = UserGuess.toUpperCase();
@@ -120,14 +121,34 @@ $(document).ready(function(){
                     // calls the 'UpdatePlayerPoints' function; this sends the point value of the clue the movie was guessed on back to the controller
                     UpdatePlayerPoints("#guessMovieForm");
 
-                    alert("CORRECT! YOU WIN THE GAME. Points received: " + currentPointsInt);
+                    var dialog = bootbox.dialog({
+                        message: "<p>CORRECT! You win the game! <br> Points received: " + currentPointsInt + "<br> </p>",
+                        buttons: {
+                            cancel: {
+                                label    : "Quit (I'm a loser)",
+                                className: 'btn-danger',
+                                callback : function() {
+                                    console.log("LOSER");
+                                    window.location.href = "/";
+                                }
+                            },
 
+                            playagain: 
+                            {
+                                label    : "Play again (I'm a nerd)",
+                                className: 'btn-info',
+                                callback : function()
+                                {
+                                    console.log("NERD");
+                                    window.location.href = "/initiateGame";
+                                }
+                            }
+                        }
+                    });
                 }
                 // guesses remaining; the player's guess was WRONG
                 else
                 {
-                    console.log("USER GUESS: ", UserGuessToCaps," ", "SESSION MOVIE: " , SessionMovieTitleToCaps);
-
                     $("#remainingGuesses").empty();
                     $("#remainingGuesses").append("Remaining Guesses: ", guessCount);
 
@@ -135,7 +156,6 @@ $(document).ready(function(){
 
                     $("ul#JQresponse").empty();
                     $('ul#JQresponse').append(guessResponseWrong);
-
                 }
             }
 
@@ -156,9 +176,31 @@ $(document).ready(function(){
                     $("#guessButton").prop("disabled", true);
 
                     // calls the 'UpdatePlayerPoints' function; this sends the point value of the clue the movie was guessed on back to the controller
-                    UpdatePlayerPoints("#guessMovieForm");
+                    new UpdatePlayerPoints("#guessMovieForm");
 
-                    alert("CORRECT! YOU WIN THE GAME. Points received: " + currentPointsInt);
+                    var dialog = bootbox.dialog({
+                        message: "<p>CORRECT! You win the game! <br> Points received: " + currentPointsInt + "</p>",
+                        buttons: {
+                            cancel: {
+                                label    : "Quit (I'm a loser)",
+                                className: 'btn-danger',
+                                callback : function() {
+                                    console.log("LOSER");
+                                    window.location.href = "/";
+                                }
+                            },
+                            playagain: 
+                            {
+                                label    : "Play again (I'm a nerd)",
+                                className: 'btn-info',
+                                callback : function()
+                                {
+                                    console.log("NERD");
+                                    window.location.href = "/initiateGame";
+                                }
+                            }
+                        }
+                    });
                 }
 
                 // out of guesses and the player lost
@@ -173,9 +215,30 @@ $(document).ready(function(){
                     $("#movieGuessInput").val('');
 
                     $("#guessButton").prop("disabled", true);
-                    alert("SORRY! YOU LOSE!");
+                    var dialog = bootbox.dialog({
+                        message: "<p>You lost. Please consider whether or not you are a serious enough player for this game </p>",
+                        buttons: {
+                            cancel: {
+                                label    : "Quit (I'm a loser)",
+                                className: 'btn-danger',
+                                callback : function() {
+                                    console.log("LOSER");
+                                    window.location.href = "/";
+                                }
+                            },
+                            playagain: 
+                            {
+                                label    : "Play again (I'm a nerd)",
+                                className: 'btn-info',
+                                callback : function()
+                                {
+                                    console.log("NERD");
+                                    window.location.href = "/initiateGame";
+                                }
+                            }
+                        }
+                    });
                 }
-
             }
         })
 
@@ -286,18 +349,23 @@ function UpdatePlayerPoints (formContainer)
 }
 
 
+// function InitiateGame ()
+// {
+//     console.log();
+//     console.log("-----'INITIATE GAME' JS FUNCTION STARTED-----");
 
+//     $.ajax ({
+//         type   : "POST",
+//         url    : "/startOver",
+//         success: function() {
+//             console.log("SUCCESS!");
+//         },
+//         error: function() {
+//             console.log("ERROR");
+//         }
+//     })
 
-// $(function () {
+//     console.log("-----'INITIATE GAME' JS FUNCTION COMPLETED-----");
+//     console.log();
+// }
 
-//     console.log("-----'SUBMIT BUTTON' FUNCTION STARTED-----");
-
-//     var guessButton    = $("#guessButton");
-//     var guessMovieForm = $("#guessMovieForm");
-
-//     guessButton.click(function () {
-//         UpdatePlayerPoints(guessMovieForm);
-//     });
-
-//     console.log("-----'SUBMIT BUTTON' FUNCTION COMPLETED-----");
-// });

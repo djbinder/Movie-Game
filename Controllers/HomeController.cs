@@ -2,9 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;       // <--- 'List'
 using System.Linq;                      // <--- various db queries (e.g., 'FirstOrDefault', 'OrderBy', etc.)
-// using System.Windows;
-// using System.Windows.Forms;
 
+// using System.Windows.Forms;
 using Microsoft.AspNetCore.Http;        // <--- set session variables (e.g., 'SetString', 'SetInt32', etc.)
 using Microsoft.AspNetCore.Mvc;         // <--- anything related to mvc (e.g., 'Controller', '[HttpGet]', 'HttpContext.Session')
 using Microsoft.EntityFrameworkCore;    // <--- 'include' in db queries
@@ -80,7 +79,6 @@ namespace movieGame.Controllers
                 {
                     // EXISTS ---> movieGame.Models.Player
                     Player exists = _context.Players.FirstOrDefault(p => p.PlayerName == NameEntered);
-                    //     Console.WriteLine("EXISTS --> ", exists);
 
                     if(exists == null)
                     {
@@ -109,9 +107,9 @@ namespace movieGame.Controllers
                         HttpContext.Session.SetString("player", NameEntered);
                         HttpContext.Session.SetInt32("id", exists.PlayerId);
 
-                        exists.GamesPlayed = exists.GamesPlayed + 1;
+                        // exists.GamesPlayed = exists.GamesPlayed + 1;
 
-                        _context.SaveChanges();
+                        // _context.SaveChanges();
                     }
                 }
                 Console.WriteLine("---------------'ENTER NAME' METHOD COMPLETED---------------");
@@ -122,7 +120,7 @@ namespace movieGame.Controllers
 
             // initiate game; select movie that will be guessed
             [HttpGet]
-            [Route ("initiateGame")]
+            [Route ("/initiateGame")]
             public IActionResult InitiateGame ()
             {
                 Console.WriteLine("----------------'INITIATE GAME' METHOD STARTED---------------");
@@ -130,9 +128,29 @@ namespace movieGame.Controllers
                 // PLAYER ID ---> '1' OR '2' etc.
                 int? PlayerId = ViewBag.PlayerId = HttpContext.Session.GetInt32("id");
 
+
+                HttpContext.Session.SetInt32("guesscount", 3);
+                int? guessCount = HttpContext.Session.GetInt32("guesscount");
+                guessCount.Intro("guess count");
+
                 // PLAYERNAME---> retrieves the current players name
                 string PlayerName = ViewBag.PlayerName = HttpContext.Session.GetString("player");
                 PlayerName.Intro("player name");
+
+                Player queryPlayer = _context.Players.FirstOrDefault(p => p.PlayerName == PlayerName);
+                queryPlayer.Intro("query player");
+
+                var gamesPlayed = ViewBag.GamesPlayed = queryPlayer.GamesPlayed;
+                Console.WriteLine("GAMES PLAYED A --> ", gamesPlayed);
+
+                var newGamesPlayed = gamesPlayed + 1;
+                Console.WriteLine("GAMES PLAYED B --> ", newGamesPlayed);
+
+                queryPlayer.GamesPlayed = newGamesPlayed;
+                _context.SaveChanges();
+
+                var totalPoints = ViewBag.TotalPoints = queryPlayer.Points;
+                Console.WriteLine("TOTAL POINTS --> ", totalPoints);
 
                 if(CheckSession() == 0)
                 {
@@ -208,6 +226,7 @@ namespace movieGame.Controllers
 
                 return RedirectToAction("InitiateGame");
             }
+
 
         #endregion InitiateGame
 
@@ -293,36 +312,15 @@ namespace movieGame.Controllers
 
                 // GUESS COUNT ---> if previous guesses, it's guess number; if not, it's blank
                 int? guessCount = HttpContext.Session.GetInt32("guesscount");
-                    // guessCount.Intro("ORIGINAL GUESS COUNT");
+                    guessCount.Intro("ORIGINAL GUESS COUNT");
 
-                    // GUESS COUNT ---> if first attempt, set 'guessCount' to 1; if not, increment 'guessCount' by 1
-                    if(guessCount == null)
-                    {
-                        HttpContext.Session.SetInt32("guesscount", 2);
-                        guessCount = 2;
-                            Console.WriteLine("NULL GUESS COUNT ---> " + guessCount);
+                guessCount = guessCount - 1;
+                    guessCount.Intro("NEW GUESS COUNT");
 
-                    }
-                    else
-                    {
-                        guessCount -= 1;
-
-                        if(guessCount == 0)
-                        {
-                            Console.WriteLine("GUESS COUNT ZERO ---> " + guessCount);
-                            Console.WriteLine("GAME OVER----------------");
-                        }
-
-                        else {
-
-                        HttpContext.Session.SetInt32("guesscount", (int)guessCount);
-                            Console.WriteLine("SUCCESS GUESS COUNT ---> " + guessCount);
-                        }
-                    }
+                HttpContext.Session.SetInt32("guesscount", (int)guessCount);
 
                 // SESSION MOVIE TITLE ---> retrieves the title of current movie being guessed
                 string SessionMovieTitle = HttpContext.Session.GetString("sessionMovieTitle");
-                    // Console.WriteLine("SESSION MOVIE TITLE ---> " + SessionMovieTitle);
 
                 // MOVIEGUESSITEMS ---> System.Collections.ArrayList
                 ArrayList MovieGuessItems = new ArrayList();
@@ -380,15 +378,13 @@ namespace movieGame.Controllers
             }
 
 
-
-
             // clear session
             [HttpGet]
             [Route("/clear")]
             public IActionResult Clear()
             {
                 HttpContext.Session.Clear();
-                return RedirectToAction("InitiateGame");
+                return RedirectToAction("Index");
             }
         #endregion PlayGame
 
@@ -588,190 +584,6 @@ namespace movieGame.Controllers
 
         #endregion ViewMovieInfo
 
-
-
-        #region Add new movie and clues
-            // go to the page to add new movie and clues
-            [HttpGet]
-            [Route("addMoviePage")]
-            public IActionResult AddMoviePage ()
-            {
-                Console.WriteLine("---------------'ADD MOVIE PAGE' METHOD STARTED---------------");
-
-
-                Console.WriteLine("---------------'ADD MOVIE PAGE' METHOD COMPLETED---------------");
-                return View ("Generate");
-            }
-
-
-            // add a new movie
-            [HttpPost]
-            [Route ("addmovie")]
-            public IActionResult AddMovie (Movie movie)
-            {
-                Movie newMovie = new Movie {
-
-                    Title = "Goodfellas",
-
-                    Description = "The story of Henry Hill and his life in the mob, covering his relationship with his wife Karen Hill and his mob partners Jimmy Conway and Tommy DeVito in the Italian-American crime syndicate. ",
-
-                    Director = "Martin Scorsese",
-
-                    Year = 1990,
-                };
-
-                _context.Add(newMovie);
-                _context.SaveChanges();
-
-                return View("Index");
-            }
-
-
-            // add clues to a movie
-            [HttpPost]
-            [Route("addClue")]
-            public IActionResult AddClue()
-            {
-                Console.WriteLine("---------------ADD CLUE METHOD EXECUTED---------------");
-
-                int MovieId = 1;
-
-                String Xclue1 =  "Helicopter";
-                String Xclue2 =  "Trunk";
-                String Xclue3 =  "Shovel";
-                String Xclue4 =  "Toupee";
-                String Xclue5 =  "Garlic";
-                String Xclue6 =  "Coke";
-                String Xclue7 =  "Fur coat";
-                String Xclue8 =  "Shine box";
-                String Xclue9 =  "Lufthansa";
-                String Xclue10 =  "Henry Hill";
-
-                #region 10clues
-                    Clue clue = new Clue
-                    {
-                        MovieId = MovieId,
-                        ClueDifficulty = 10,
-                        CluePoints = 1,
-                        ClueText = Xclue1
-                    };
-
-                    _context.Add(clue);
-                    _context.SaveChanges();
-
-
-                    Clue clue2 = new Clue
-                    {
-                        MovieId = MovieId,
-                        ClueDifficulty = 9,
-                        CluePoints = 2,
-                        ClueText = Xclue2
-
-                    };
-
-                    _context.Add(clue2);
-                    _context.SaveChanges();
-
-
-                    Clue clue3 = new Clue
-                    {
-                        MovieId = MovieId,
-                        ClueDifficulty = 8,
-                        CluePoints = 3,
-                        ClueText = Xclue3
-
-                    };
-
-                    _context.Add(clue3);
-                    _context.SaveChanges();
-
-
-                    Clue clue4 = new Clue
-                    {
-                        MovieId = MovieId,
-                        ClueDifficulty = 7,
-                        CluePoints = 4,
-                        ClueText = Xclue4
-                    };
-
-                    _context.Add(clue4);
-                    _context.SaveChanges();
-
-
-                    Clue clue5 = new Clue
-                    {
-                        MovieId = MovieId,
-                        ClueDifficulty = 6,
-                        CluePoints = 5,
-                        ClueText = Xclue5
-                    };
-
-                    _context.Add(clue5);
-                    _context.SaveChanges();
-
-
-                    Clue clue6 = new Clue
-                    {
-                        MovieId = MovieId,
-                        ClueDifficulty = 5,
-                        CluePoints = 6,
-                        ClueText = Xclue6
-                    };
-
-                    _context.Add(clue6);
-                    _context.SaveChanges();
-
-                    Clue clue7 = new Clue
-                    {
-                        MovieId = MovieId,
-                        ClueDifficulty = 4,
-                        CluePoints = 7,
-                        ClueText = Xclue7
-                    };
-
-                    _context.Add(clue7);
-                    _context.SaveChanges();
-
-
-                    Clue clue8 = new Clue
-                    {
-                        MovieId = MovieId,
-                        ClueDifficulty = 3,
-                        CluePoints = 8,
-                        ClueText = Xclue8
-                    };
-
-                    _context.Add(clue8);
-                    _context.SaveChanges();
-
-
-                    Clue clue9 = new Clue
-                    {
-                        MovieId = MovieId,
-                        ClueDifficulty = 2,
-                        CluePoints = 9,
-                        ClueText = Xclue9
-                    };
-
-                    _context.Add(clue9);
-                    _context.SaveChanges();
-
-
-                    Clue clue10 = new Clue
-                    {
-                        MovieId = MovieId,
-                        ClueDifficulty = 1,
-                        CluePoints = 10,
-                        ClueText = Xclue10
-                    };
-
-                    _context.Add(clue10);
-                    _context.SaveChanges();
-                #endregion
-
-                return View ("Index");
-            }
-        #endregion Add new movie and clues
 
 
 

@@ -9,20 +9,47 @@
 <div class="container" id="playGameContainer">
 
     <br>
-    <h6 id="instructionsButton" role="button" data-toggle="collapse" aria-expanded="true" href="#collapseExample">
-        <span id="buttonText" data-text-swap="Click to View Instructions">Click to Hide Instructions</span>
-    </h6>
-    <div class="collapse show" id="collapseExample">
-        <ol id="instructionsList" class="card card-body">
-            <li>Click the 'Get Next Clue' Button to get a new clue. There are 10 clues total.</li>
-            <li>To guess the movie, enter the movie title and click the 'Click to Guess' Button</li>
-            <li>Rinse and repeat...</li>
-        </ol>
+    <div class="row">
+        <div id="instructionsContent" class="col-md-10">
+            <h6 id="instructionsButton" role="button" data-toggle="collapse" aria-expanded="true" href="#collapseExample">
+                <span id="buttonText" data-text-swap="Click to View Overview">Click to Hide Overview</span>
+            </h6>
+            <div class="collapse show" id="collapseExample">
+                <h4 id="OverViewHeader"><b>The Awesome and/or Amazing Movie Game Overview</b></h4>
+                <hr class="linebreak3">
+                <p id="GoalWord"><b>Goal</b><br>To guess the name of movie based on 10 one-word clues</p>
+                <p><b>Game Play </b><br>Clues are presented one at a time and you can guess the movie after any given clue. You have three total guesses. The earlier you correctly guess the movie, the higher the points you receive. </p>
+                <p id="instructionsWord"><b>Instructions</b></p>
+                <ol id="instructionsList" class="card card-body">
+                    <li>To start the game, click the <span class="BlueWords">Begin Game </span>button in the <b>List of Clues </b> section. The first <span class="RedWords">Clue </span>will appear.</li>
+
+                    <li>To get the next <span class="RedWords">Clue </span>, click the <span class="BlueWords">Get Next Clue </span>button. Repeat this any time you want another <span class="RedWords">Clue. </span></li>
+
+                    <li>To guess the <span class="OrangeWords">Movie</span>, type the <span class="OrangeWords">Movie's </span> title in the <b>Guess Movie </b> section. As you type, a drop-down list of movie titles will appear. Select the appropriate <span class="OrangeWords">Movie</span> from the list.</li>
+
+                    <li>Click the <span class="BlueWords">Click to Guess </span> button to submit your guess.</li>
+
+                    <li>You will be alerted if your guess was right or wrong.</li>
+
+                    <li>The game ends if you correctly guess the movie OR if you run out of clues.</li>
+                </ol>
+            </div>
+        </div>
+        <div id="homeLink" class="col-md-2">
+            <a href="/clear">Home / Leaderboard</a>
+        </div>
     </div>
 
     <hr class="linebreak3">
-    <div class="row" id="allContent">
+    <div id="playerProfile" class="row">
+        <div class="col-md-2"><b>Player Name: </b> @ViewBag.PlayerName</div>
+        <div class="col-md-2"><b>Games Played: </b> @ViewBag.GamesPlayed</div>
+        <div class="col-md-2"><b>Total Points: </b> @ViewBag.TotalPoints</div>
+    </div>
 
+    <br>
+
+    <div class="row" id="allContent">
         <div id="clueSection" class="col-md-8">
             <h4><b>List of Clues</b></h4>
             <div class="row">
@@ -41,7 +68,7 @@
         <div id="guessSection" class="col-md-4">
             <div class="row">
                 <div class="col-md-9"><h4><b>Guess Movie</b></h4></div>
-                <div id="startOver" class="col-md-3"><a href="/startOver">Start Over</a></div>
+                <div id="startOver" class="col-md-3"><a href="/initiateGame">Start Over</a></div>
             </div>
 
             <div id="remainingGuesses">Remaining Guesses: 3</div>
@@ -69,6 +96,7 @@
                 </form>
             </fieldset>
         </div>
+
 
 
     </div>

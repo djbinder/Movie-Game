@@ -31,6 +31,25 @@
 
 .linebreak3 {
     border: .5px solid lightgray;}
+
+.testborder {
+    border: 1px solid #ffd700;
+
+}
+
+
+
+.BlueWords {
+    color: #6492ed;
+}
+
+.RedWords {
+    color: #ed647d;
+}
+
+.OrangeWords {
+    color: #ed9d64;
+}
 /* #endregion */
 
 
@@ -54,13 +73,25 @@
     z-index : 2;}
 
 #topHeader {
-    color     : white;
-    width     : 800px;
-    padding   : 5px;
+    color: white;
+    width: 800px;
+    /* padding       : 5px; */
     text-align: center;
     box-shadow: 0px 2px 2px 0px gray;
     background: #222;
-    margin    : 0 auto;}
+    margin    : 0 auto;
+    /* padding-bottom: 15px; */
+    height        : 90px;}
+    /* padding-bottom: 30px;} */
+
+.MovieGameTitle {
+    padding-top: 10px;
+}
+
+/* .headerTagLine {
+    border: 1px solid green;
+} */
+
 
 #adminLinks {
     margin-left: 100px;}
@@ -84,6 +115,11 @@
 .enterNameForm td {
     width: 200px;}
 
+.enterNameForm button {
+    background-color: #6492ed;
+    border          : #6492ed;
+}
+
 #NameError {
     color: red;}
 
@@ -101,59 +137,19 @@
     border    : 1px solid #222;}
 
 .leaderboard td {
-    height          : 40px;
+    height: 40px;}
+    /* background-color: white;} */
+
+
+.leaderboard tr {
     background-color: white;}
 
-    /* .bounce-in-top {
-            animation: bounce-in-top 1.1s both;
-        }
+.leaderboard tr:nth-child(even) {
+    background-color: lightgrey; }
 
-        @keyframes bounce-in-top {
-            0% {
-            transform                : translateY(-500px);
-            animation-timing-function: ease-in;
-            opacity                  : 0;
-            }
-            38% {
-            transform                : translateY(0);
-            animation-timing-function: ease-out;
-            opacity                  : 1;
-            }
-            55% {
-            transform                : translateY(-65px);
-            animation-timing-function: ease-in;
-            }
-            72% {
-            transform                : translateY(0);
-            animation-timing-function: ease-out;
-            }
-            81% {
-            transform                        : translateY(-28px);
-            -webkit-animation-timing-function: ease-in;
-            }
-            90% {
-            transform                : translateY(0);
-            animation-timing-function: ease-out;
-            }
-            95% {
-            transform                : translateY(-8px);
-            animation-timing-function: ease-in;
-            }
-            100% {
-            transform                : translateY(0);
-            animation-timing-function: ease-out;
-            }
-        } */
-/* #endregion */
-
-
-
-/* #region ADD MOVIE AND CLUES */
-#addMovieButton {
-    font-size: 20px;}
-
-#addClueButton {
-    font-size: 20px;}
+.leaderboardFirstColumn {
+    background-color: #6492ed;
+    color           : white; }
 /* #endregion */
 
 
@@ -166,17 +162,29 @@
 
 
 /* #region CLUES */
+#OverViewHeader {
+    margin-bottom: -10px;
+}
+
 #instructionsList {
     margin-left: 25px;
-    border     : 0px;
-    }
+    border     : 0px;}
 
 #instructionsButton {
     color: blue;}
 
-#collapseInstructions {
-    border: 0px;
+.collapseInstructions {
+    border          : 0px;}
+
+#instructionsWord {
+    margin-bottom: -4px;}
+
+#GoalWord {
+    margin-top: -10px;
 }
+
+#homeLink {
+    padding-left: 55px;}
 
 #clueSection {
     border: 1px solid slategray;
@@ -216,7 +224,7 @@ ul.clueText2 li {
     padding-top: 7px;}
 
 #movieGuessInput {
-    border        : .5px solid #6492ed;
+    border        : 1px solid #ed9d64;
     width         : 220px;
     height        : 30px;
     padding-left  : 5px;
@@ -263,12 +271,6 @@ ul.clueText2 li {
 #adminStuff {
     color: white;
 }
-
-/* .alert {
-    padding         : 20px;
-    background-color: #f44336;
-    color           : white;
-} */
 /* #endregion GUESS MOVIE */
 
 
