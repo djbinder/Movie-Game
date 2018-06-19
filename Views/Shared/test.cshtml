@@ -1,17 +1,106 @@
 
+    <h3>Positioning</h3>
 
-<html>
+        <div style="position: static; border: 1px solid blue; width: 300px; height: 100px;" id="parent1" class="parent1" >Parent1: position: static.
+            <div style="border: 1px solid red; position: absolute; right: 15px; top: 70px" id="child1">Child1: position: absolute, right: 15px, top: 70px</div>
+        </div>
 
-<head></head>
+        <div id="parent2" style="    position: relative;
+        border: 1px solid blue;
+        width: 300px;
+        height: 100px;">Parent2: position: relative.
+            <div id="child2" style="    position: absolute;
+            border: 1px solid red;
+            top: 70px;
+            right: 15px;">Child2: position: absolute, right: 15px, top: 70px</div>
+        </div>
 
-<body>
+        <div id="parent3" style="    position: absolute;
+        border: 1px solid blue;
+        width: 300px;
+        height: 100px;
+        top: 750px;
+        right: 15px;">Parent3: position: absolute, top: 750px, right: 15px.
+            <div id="child3" style="    position: absolute;
+            border: 1px solid red;
+            top: 70px;
+            right: 15px;">Child3: position: absolute, right: 15px, top: 70px</div>
+        </div>
 
-    <div>
-<p>TEST</p>
+        <div id="parent4" style="    position: fixed;
+        border: 1px solid blue;
+        background-color: rgba(255,200,200,0.5);
+        width: 300px;
+        height: 100px;
+        bottom: 0;
+        left: 0;
+        right: 0;">Parent4: position: fixed, bottom: 0, left: 0, right: 0.
+            <div id="child4" style="    position: absolute;
+            border: 1px solid red;
+            top: 70px;
+            right: 15px;">Child4: position: absolute, right: 15px, top: 70px</div>
+        </div>
+
+
+
+        <br>
+    <div class="container">
+
+
+
+
+
+        <h3>Bootstrap</h3>
+        <div class="testborder">
+
+            <p>test</p>
+        </div>
+
+        <div>
+            <div class="row">
+                <div class="testborder col"><h1>ABABABABA1 BABABABAB 2CABABABABDABAB3 ABABEABA4 BABFABABAB</h1></div>
+            </div>
+        </div>
+
+
+
+        <div class="row">
+
+            <div class="testborder col"><h1>MD1</h1></div>
+            <div class="testborder col">MD 2</div>
+            <div class="testborder col">MD 3</div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="testborder col-md-2 col-sm-2">DIV 1 A</div>
+            <div class="testborder col-md-2 col-sm-2">DIV 2</div>
+            <div class="testborder col-md-2 col-sm-2">DIV 3</div>
+            <div class="testborder col-md-2 col-sm-2">DIV 4</div>
+            <div class="testborder col-md-2 col-sm-2">DIV 5</div>
+            <div class="testborder col-md-2 col-sm-2">DIV 6</div>
+        </div>
+
     </div>
 
 
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
 
-</body>
 
-</html>
+    <p>Test</p>
+
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <p>Test 2</p>

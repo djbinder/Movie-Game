@@ -1,10 +1,10 @@
 using System;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;            // <--- 'MethodBase'
+using System.Diagnostics;
 using Newtonsoft.Json;              // <--- 'JsonConvert' and 'Formatting.Indented'
-
-
 
 namespace movieGame {
 
@@ -79,26 +79,59 @@ namespace movieGame {
             //              valueX = valueX.Intro(Object);
         public static Object Intro(this object Object, string String)
         {
+            Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.DarkRed;
-            Console.WriteLine("'-----INTRO extension METHOD' STARTED");
-            Console.ResetColor();
 
             string UpperString = String.ToUpper();
 
+            StackFrame frame = new StackFrame(1, true);
+            var lineNumber = frame.GetFileLineNumber();
+
             // Console.WriteLine(UpperString + " ---> " + Object);
-            Console.WriteLine("{0} ---> {1}", UpperString, Object);
+            Console.WriteLine("{0} ---> {1} @ Line#: {2}", UpperString, Object, lineNumber - 1);
 
             using (var writer = File.AppendText("debug.log"))
             {
                 writer.WriteLine("{0} ---> {1}", UpperString, Object);
             }
 
-            Console.ForegroundColor = ConsoleColor.DarkRed;
-            Console.WriteLine("'-----INTRO extension METHOD' COMPLETED");
             Console.ResetColor();
             Console.WriteLine();
 
             return UpperString;
+        }
+
+
+        public static String MarkMethod(this string String)
+        {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine();
+
+            StackTrace stackTrace = new StackTrace();
+
+            var methodName = stackTrace.GetFrame(1).GetMethod().Name;
+            var methodNameUp = methodName.ToUpper();
+
+            StackFrame frame = new StackFrame(1, true);
+            var method = frame.GetMethod();
+            var fileName = frame.GetFileName();
+            var lineNumber = frame.GetFileLineNumber();
+
+            Console.WriteLine("---------------'{0}' METHOD {1} @ Line#: {2}---------------", methodNameUp, String, lineNumber);
+
+            Console.ResetColor();
+            Console.WriteLine();
+
+            using (var writer = File.AppendText("debug.log"))
+            {
+                writer.WriteLine();
+                writer.WriteLine("---------------'{0}' METHOD {1} @ Line#: {2}---------------", methodNameUp, String, lineNumber);
+                writer.WriteLine();
+            }
+
+            var dummyString = "dummyString";
+
+            return dummyString;
         }
 
 
@@ -122,10 +155,7 @@ namespace movieGame {
                 return sequence;
         }
 
-
-
-
-
-
     }
+
+
 }

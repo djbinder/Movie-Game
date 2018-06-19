@@ -51,10 +51,6 @@ namespace movieGame.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<string>("Description");
-
-                    b.Property<string>("Director");
-
                     b.Property<int?>("PlayerId");
 
                     b.Property<string>("Title");
@@ -89,7 +85,7 @@ namespace movieGame.Migrations
 
                     b.HasIndex("PlayerId");
 
-                    b.ToTable("MoviePlayers");
+                    b.ToTable("MoviePlayerJoin");
                 });
 
             modelBuilder.Entity("movieGame.Models.Player", b =>
@@ -122,20 +118,20 @@ namespace movieGame.Migrations
 
             modelBuilder.Entity("movieGame.Models.Movie", b =>
                 {
-                    b.HasOne("movieGame.Models.Player", "Player")
-                        .WithMany()
+                    b.HasOne("movieGame.Models.Player")
+                        .WithMany("Movies")
                         .HasForeignKey("PlayerId");
                 });
 
             modelBuilder.Entity("movieGame.Models.MoviePlayerJoin", b =>
                 {
-                    b.HasOne("movieGame.Models.Movie", "Movie")
-                        .WithMany("Players")
+                    b.HasOne("movieGame.Models.Movie", "Movies")
+                        .WithMany("MoviePlayerJoin")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("movieGame.Models.Player", "Player")
-                        .WithMany("MoviesGuessed")
+                    b.HasOne("movieGame.Models.Player", "Players")
+                        .WithMany("MoviePlayerJoin")
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
