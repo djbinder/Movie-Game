@@ -9,7 +9,7 @@ namespace movieGame.Models
         public DbSet<Movie> Movies {get;set;}
         public DbSet<Clue> Clues {get;set;}
         public DbSet<Player> Players { get; set; }
-        public DbSet<MoviePlayerJoin> MoviePlayers { get; set; }
+        public DbSet<MoviePlayerJoin> MoviePlayerJoin { get; set; }
 
 
     }

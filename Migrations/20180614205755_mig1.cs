@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace movieGame.Migrations
 {
-    public partial class mig1718 : Migration
+    public partial class mig1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -33,8 +33,6 @@ namespace movieGame.Migrations
                     MovieId = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    Description = table.Column<string>(nullable: true),
-                    Director = table.Column<string>(nullable: true),
                     PlayerId = table.Column<int>(nullable: true),
                     Title = table.Column<string>(nullable: true),
                     UpdatedAt = table.Column<DateTime>(nullable: false),
@@ -76,7 +74,7 @@ namespace movieGame.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MoviePlayers",
+                name: "MoviePlayerJoin",
                 columns: table => new
                 {
                     MoviePlayerJoinId = table.Column<int>(nullable: false)
@@ -88,15 +86,15 @@ namespace movieGame.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MoviePlayers", x => x.MoviePlayerJoinId);
+                    table.PrimaryKey("PK_MoviePlayerJoin", x => x.MoviePlayerJoinId);
                     table.ForeignKey(
-                        name: "FK_MoviePlayers_Movies_MovieId",
+                        name: "FK_MoviePlayerJoin_Movies_MovieId",
                         column: x => x.MovieId,
                         principalTable: "Movies",
                         principalColumn: "MovieId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_MoviePlayers_Players_PlayerId",
+                        name: "FK_MoviePlayerJoin_Players_PlayerId",
                         column: x => x.PlayerId,
                         principalTable: "Players",
                         principalColumn: "PlayerId",
@@ -109,13 +107,13 @@ namespace movieGame.Migrations
                 column: "MovieId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MoviePlayers_MovieId",
-                table: "MoviePlayers",
+                name: "IX_MoviePlayerJoin_MovieId",
+                table: "MoviePlayerJoin",
                 column: "MovieId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MoviePlayers_PlayerId",
-                table: "MoviePlayers",
+                name: "IX_MoviePlayerJoin_PlayerId",
+                table: "MoviePlayerJoin",
                 column: "PlayerId");
 
             migrationBuilder.CreateIndex(
@@ -130,7 +128,7 @@ namespace movieGame.Migrations
                 name: "Clues");
 
             migrationBuilder.DropTable(
-                name: "MoviePlayers");
+                name: "MoviePlayerJoin");
 
             migrationBuilder.DropTable(
                 name: "Movies");

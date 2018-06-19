@@ -133,7 +133,7 @@ $(document).ready(function(){
                                 }
                             },
 
-                            playagain: 
+                            playagain:
                             {
                                 label    : "Play again (I'm a nerd)",
                                 className: 'btn-info',
@@ -189,7 +189,7 @@ $(document).ready(function(){
                                     window.location.href = "/";
                                 }
                             },
-                            playagain: 
+                            playagain:
                             {
                                 label    : "Play again (I'm a nerd)",
                                 className: 'btn-info',
@@ -226,7 +226,7 @@ $(document).ready(function(){
                                     window.location.href = "/";
                                 }
                             },
-                            playagain: 
+                            playagain:
                             {
                                 label    : "Play again (I'm a nerd)",
                                 className: 'btn-info',
@@ -246,7 +246,7 @@ $(document).ready(function(){
 
         event.preventDefault();
 
-    })
+    });
 
 
 

@@ -1,8 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;       // <--- 'List'
+using System.Diagnostics;
 using System.Linq;                      // <--- various db queries (e.g., 'FirstOrDefault', 'OrderBy', etc.)
-
+using System.Net.Http;
+using System.Reflection;
+using System.Reflection.Metadata;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 // using System.Windows.Forms;
 using Microsoft.AspNetCore.Http;        // <--- set session variables (e.g., 'SetString', 'SetInt32', etc.)
 using Microsoft.AspNetCore.Mvc;         // <--- anything related to mvc (e.g., 'Controller', '[HttpGet]', 'HttpContext.Session')
@@ -20,7 +26,6 @@ namespace movieGame.Controllers
 
         public HomeController (MovieContext context) {
             _context = context;
-
         }
 
         public int CheckSession()
@@ -34,13 +39,18 @@ namespace movieGame.Controllers
         }
 
 
+        String Open = "STARTED";
+        String Close = "COMPLETED";
+
+
+
         #region InitiateGame
             // view landing page
             [HttpGet]
             [Route ("")]
             public IActionResult Index ()
             {
-                Console.WriteLine("---------------'INDEX METHOD' STARTED---------------");
+                Open.MarkMethod();
 
                 GetBackgroundPosters();
 
@@ -52,7 +62,7 @@ namespace movieGame.Controllers
 
                 ViewBag.Leaders = Leaders;
 
-                Console.WriteLine("---------------'INDEX METHOD' COMPLETED---------------");
+                Close.MarkMethod();
 
                 return View ();
             }
@@ -88,7 +98,9 @@ namespace movieGame.Controllers
                         Player newPlayer = new Player () {
                             PlayerName = NameEntered,
                             Points = 0,
-                            GamesPlayed = 1,
+                            GamesPlayed = 0,
+                            Movies = new List<Movie>(),
+                            MoviePlayerJoin = new List<MoviePlayerJoin>(),
                         };
 
                         _context.Add(newPlayer);
@@ -127,7 +139,6 @@ namespace movieGame.Controllers
 
                 // PLAYER ID ---> '1' OR '2' etc.
                 int? PlayerId = ViewBag.PlayerId = HttpContext.Session.GetInt32("id");
-
 
                 HttpContext.Session.SetInt32("guesscount", 3);
                 int? guessCount = HttpContext.Session.GetInt32("guesscount");
@@ -251,8 +262,6 @@ namespace movieGame.Controllers
                 Movie movie = new Movie ()
                 {
                     Title = oneMovie.Title,
-                    Description = oneMovie.Description,
-                    Director = oneMovie.Director,
                     Year = oneMovie.Year,
                     Clues = new List<Clue>()
                 };
@@ -353,11 +362,18 @@ namespace movieGame.Controllers
                 // PLAYER --> the name of the current player
                 var player = HttpContext.Session.GetString("player");
 
+                // SESSION MOVIE --> title of current movie user was guessing
+                var sessionMovie = HttpContext.Session.GetString("sessionMovieTitle");
+
+                // SESSION MOVIE ID --> id of current movie user was guessing
+                var sessionMovieId = HttpContext.Session.GetInt32("sessionMovieId");
+
                 // MOVIE LIST ---> System.Collections.Generic.List`1[movieGame.Models.Movie]
                 _clueList.Add(clueInfo);
 
                 // RETRIEVED PLAYER ---> movieGame.Models.Player
                 Player RetrievedPlayer = _context.Players.FirstOrDefault(p => p.PlayerId == playerId);
+                RetrievedPlayer.Dig();
 
                 // CURRENT POINTS --> players current points pulled from the database
                 var currentPoints = RetrievedPlayer.Points;
@@ -367,10 +383,22 @@ namespace movieGame.Controllers
 
                 // RETRIEVED PLAYER POINT --> adds current points and new points; then saves them to the database
                 RetrievedPlayer.Points = newPoints + currentPoints;
-                _context.SaveChanges();
 
-                // RESPONSE ---> movieGame.Models.Response
-                // var response = new Response(true, "Points Updated Successfully");
+                var ExistingJoins = RetrievedPlayer.MoviePlayerJoin;
+                ExistingJoins.DigDeep();
+
+                // MPJ --> create new many-to-many of player and movie
+                MoviePlayerJoin MPJ = new MoviePlayerJoin
+                {
+                    PlayerId = (int)playerId,
+                    MovieId = (int)sessionMovieId,
+                };
+
+                _clueList.LogQuery("clue list");
+
+                _context.Add(MPJ);
+
+                _context.SaveChanges();
 
                 Console.WriteLine("---------------'UPDATE PLAYER POINTS' METHOD COMPLETED---------------");
 
@@ -518,6 +546,15 @@ namespace movieGame.Controllers
                 Console.WriteLine("---------------'TEST METHOD' COMPLETED---------------");
                 return View ("test");
             }
+
+
+            // [HttpGet]
+            // private async Task<JObject> GetBackgroundAsync()
+            // {
+            //     var posters = await GetBackgroundPosters();
+
+            //     return Ok(posters);
+            // }
 
 
             [HttpGet]
