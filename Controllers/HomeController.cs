@@ -1,22 +1,17 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;       // <--- 'List'
-using System.Diagnostics;
+using System.Diagnostics;               // <-- 'StackFrame'
 using System.Linq;                      // <--- various db queries (e.g., 'FirstOrDefault', 'OrderBy', etc.)
-using System.Net.Http;
-using System.Reflection;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-// using System.Windows.Forms;
 using Microsoft.AspNetCore.Http;        // <--- set session variables (e.g., 'SetString', 'SetInt32', etc.)
 using Microsoft.AspNetCore.Mvc;         // <--- anything related to mvc (e.g., 'Controller', '[HttpGet]', 'HttpContext.Session')
 using Microsoft.EntityFrameworkCore;    // <--- 'include' in db queries
 using Newtonsoft.Json;                  // <--- 'JsonConvert'
 using Newtonsoft.Json.Linq;             // <--- 'JObject'
+using MarkdownLog;
 using RestSharp;                        // <--- REST related things: 'RestClient', 'RestRequest', 'IRestResponse'
 using movieGame.Models;
+
 
 namespace movieGame.Controllers
 {
@@ -28,20 +23,23 @@ namespace movieGame.Controllers
             _context = context;
         }
 
+        #region 'SPOTLIGHT' and 'THISMETHOD' EXTENSION METHODS VARIABLES
+            String Start = "STARTED";
+            String Complete = "COMPLETED";
+        #endregion
+
         public int CheckSession()
         {
             int? id = HttpContext.Session.GetInt32("id");
             if(id == null)
             {
+                Extensions.Spotlight("this is a new session");
                 return 0;
             }
+            Extensions.Spotlight("continuation of existing session");
+
             return (int)id;
         }
-
-
-        String Open = "STARTED";
-        String Close = "COMPLETED";
-
 
 
         #region InitiateGame
@@ -50,20 +48,17 @@ namespace movieGame.Controllers
             [Route ("")]
             public IActionResult Index ()
             {
-                Open.MarkMethod();
-
+                Start.ThisMethod();
+                CheckSession();
                 GetBackgroundPosters();
 
                 ViewBag.ErrorMessage = HttpContext.Session.GetString("message");
 
                 // LEADERS ---> System.Collections.Generic.List`1[movieGame.Models.Player]
                 var Leaders = _context.Players.OrderByDescending(t => t.Points).ToList();
-                Leaders.Intro("leaders");
-
                 ViewBag.Leaders = Leaders;
 
-                Close.MarkMethod();
-
+                Complete.ThisMethod();
                 return View ();
             }
 
@@ -73,13 +68,13 @@ namespace movieGame.Controllers
             [Route ("enterName")]
             public IActionResult EnterName (string NameEntered)
             {
-                Console.WriteLine("---------------'ENTER NAME' METHOD STARTED---------------");
+                Start.ThisMethod();
 
-                Console.WriteLine("NAME ENTERED ---> " + NameEntered);
 
                 if(NameEntered == null)
                 {
-                    Console.WriteLine("NO NAME ENTERED");
+                    NameEntered.Intro("no name was entered");
+                    Extensions.Spotlight("no name entered");
                     ViewBag.ErrorMessage = "Please Enter a Name to Play!";
                     HttpContext.Session.SetString("message", "Please Enter a Name to Play!");
                     return RedirectToAction("Index");
@@ -87,12 +82,13 @@ namespace movieGame.Controllers
 
                 else
                 {
+                    NameEntered.Intro("name entered");
                     // EXISTS ---> movieGame.Models.Player
                     Player exists = _context.Players.FirstOrDefault(p => p.PlayerName == NameEntered);
 
                     if(exists == null)
                     {
-                        Console.WriteLine("USER NAME ENTERED DOES NOT EXIST");
+                        Extensions.Spotlight("USER NAME ENTERED DOES NOT EXIST");
                         HttpContext.Session.SetString("player", NameEntered);
 
                         Player newPlayer = new Player () {
@@ -102,6 +98,8 @@ namespace movieGame.Controllers
                             Movies = new List<Movie>(),
                             MoviePlayerJoin = new List<MoviePlayerJoin>(),
                         };
+
+                        Extensions.TableIt(newPlayer.PlayerName, newPlayer.Points, newPlayer.GamesPlayed);
 
                         _context.Add(newPlayer);
                         _context.SaveChanges();
@@ -114,18 +112,24 @@ namespace movieGame.Controllers
                     // if the player is not a new player, go this way
                     else
                     {
-                        Console.WriteLine("USER NAME ALREADY EXISTS");
+                        Player currentPlayer = new Player () {
+                            PlayerName = exists.PlayerName,
+                            Points = exists.Points,
+                            GamesPlayed = exists.GamesPlayed,
+                            Movies = exists.Movies,
+                            MoviePlayerJoin = exists.MoviePlayerJoin,
+                        };
+
+                        Extensions.Spotlight("USER NAME ALREADY EXISTS");
+
+                        Extensions.TableIt(currentPlayer.PlayerName, currentPlayer.Points, currentPlayer.GamesPlayed, currentPlayer.Movies);
 
                         HttpContext.Session.SetString("player", NameEntered);
                         HttpContext.Session.SetInt32("id", exists.PlayerId);
-
-                        // exists.GamesPlayed = exists.GamesPlayed + 1;
-
-                        // _context.SaveChanges();
                     }
                 }
-                Console.WriteLine("---------------'ENTER NAME' METHOD COMPLETED---------------");
 
+                Complete.ThisMethod();
                 return RedirectToAction("initiateGame");
             }
 
@@ -135,74 +139,64 @@ namespace movieGame.Controllers
             [Route ("/initiateGame")]
             public IActionResult InitiateGame ()
             {
-                Console.WriteLine("----------------'INITIATE GAME' METHOD STARTED---------------");
+                Start.ThisMethod();
+                CheckSession();
 
-                // PLAYER ID ---> '1' OR '2' etc.
-                int? PlayerId = ViewBag.PlayerId = HttpContext.Session.GetInt32("id");
+                #region set player info
+                    // PLAYER ID ---> '1' OR '2' etc.
+                    int? PlayerId = ViewBag.PlayerId = HttpContext.Session.GetInt32("id");
 
-                HttpContext.Session.SetInt32("guesscount", 3);
-                int? guessCount = HttpContext.Session.GetInt32("guesscount");
-                guessCount.Intro("guess count");
+                    // PLAYERNAME---> retrieves the current players name
+                    string PlayerName = ViewBag.PlayerName = HttpContext.Session.GetString("player");
+                    PlayerName.Intro("player name");
 
-                // PLAYERNAME---> retrieves the current players name
-                string PlayerName = ViewBag.PlayerName = HttpContext.Session.GetString("player");
-                PlayerName.Intro("player name");
+                    // QUERY PLAYER ---> movieGame.Models.Player
+                    Player queryPlayer = _context.Players.FirstOrDefault(p => p.PlayerName == PlayerName);
 
-                Player queryPlayer = _context.Players.FirstOrDefault(p => p.PlayerName == PlayerName);
-                queryPlayer.Intro("query player");
+                    var gamesPlayed = ViewBag.GamesPlayed = queryPlayer.GamesPlayed;
 
-                var gamesPlayed = ViewBag.GamesPlayed = queryPlayer.GamesPlayed;
-                Console.WriteLine("GAMES PLAYED A --> ", gamesPlayed);
+                    var newGamesPlayed = gamesPlayed + 1;
 
-                var newGamesPlayed = gamesPlayed + 1;
-                Console.WriteLine("GAMES PLAYED B --> ", newGamesPlayed);
+                    queryPlayer.GamesPlayed = newGamesPlayed;
+                    _context.SaveChanges();
 
-                queryPlayer.GamesPlayed = newGamesPlayed;
-                _context.SaveChanges();
+                    var totalPoints = ViewBag.TotalPoints = queryPlayer.Points;
+                #endregion
 
-                var totalPoints = ViewBag.TotalPoints = queryPlayer.Points;
-                Console.WriteLine("TOTAL POINTS --> ", totalPoints);
 
-                if(CheckSession() == 0)
-                {
-                    Console.WriteLine("THIS IS THE START OF A NEW SESSION --> " + User);
-                }
+                #region set movie info
+                    // MOVIES IN DATABASE ---> '2' OR '3' etc.
+                    var moviesInDatabase = _context.Movies.Count();
 
-                else
-                {
-                    // CHECK SESSION YES ---> System.Security.Claims.ClaimsPrincipal
-                    Console.WriteLine("THIS IS A CONTINUATION OF EXISTING SESSION ---> " + User);
-                }
+                    // RANDOM R ---> generates a 'System.Random' variable
+                    Random r = new Random();
 
-                // MOVIES IN DATABASE ---> '2' OR '3' etc.
-                var moviesInDatabase = _context.Movies.Count();
+                    // SET MOVIE ID ---> uses 'r' to pick random movie id inclusive of the first value, exclusive of the second value
+                    var SetMovieId = r.Next(1,moviesInDatabase + 1);
 
-                // RANDOM R ---> generates a 'System.Random' variable
-                Random r = new Random();
+                    // ONE MOVIE ---> movieGame.Models.Movie
+                    var SetMovieObject = _context.Movies.Include(w => w.Clues).SingleOrDefault(x => x.MovieId == SetMovieId);
+                    SetMovieObject.Title.Intro("this games movie");
 
-                // SET MOVIE ID ---> uses 'r' to pick random movie id inclusive of the first value, exclusive of the second value
-                var SetMovieId = r.Next(1,moviesInDatabase + 1);
+                    // SESSION MOVIE ID & NAME ---> sets the name and id for the movie that was selected
+                    HttpContext.Session.SetString("sessionMovieObject", SetMovieObject.ToString());
+                    HttpContext.Session.SetString("sessionMovieTitle", SetMovieObject.Title);
+                    HttpContext.Session.SetInt32("sessionMovieId", SetMovieId);
+                #endregion
 
-                // ONE MOVIE ---> movieGame.Models.Movie
-                var SetMovieObject = _context.Movies.Include(w => w.Clues).SingleOrDefault(x => x.MovieId == SetMovieId);
 
-                SetMovieObject.Title.Intro("this games movie");
-
-                // SESSION MOVIE ID & NAME ---> sets the name and id for the movie that was selected
-                HttpContext.Session.SetString("sessionMovieObject", SetMovieObject.ToString());
-                HttpContext.Session.SetString("sessionMovieTitle", SetMovieObject.Title);
-                HttpContext.Session.SetInt32("sessionMovieId", SetMovieId);
+                #region set guess count
+                    HttpContext.Session.SetInt32("guesscount", 3);
+                    int? guessCount = HttpContext.Session.GetInt32("guesscount");
+                    guessCount.Intro("guess count");
+                #endregion
 
                 // NOTE: these are only included for testing purposes
                 ViewBag.SessionMovieObject_testing = HttpContext.Session.GetString("sessionMovieObject");
                 ViewBag.SessionMovieTitle_testing = HttpContext.Session.GetString("sessionMovieTitle");
                 ViewBag.SessionMovieId_testing = HttpContext.Session.GetInt32("sessionMovieId");
 
-                // ViewBag.Movies = _context.Movies.OrderBy(d => d.MovieId).ToList();
-
-                Console.WriteLine("----------------'INITIATE GAME' METHOD COMPLETED---------------");
-                Console.WriteLine("----------------'PLAY GAME' PAGE LOADED---------------");
-
+                Complete.ThisMethod();
                 return View ("PlayGame");
             }
 
@@ -212,18 +206,19 @@ namespace movieGame.Controllers
 
             public IActionResult StartOver ()
             {
-                Console.WriteLine("----------------'START OVER' METHOD STARTED---------------");
+                Start.ThisMethod();
+
                 // PLAYER ID ---> the PlayerId of the current player (e.g., 8 OR 4 OR 12 etc.)
                 var playerId = HttpContext.Session.GetInt32("id");
 
                 // PLAYER --> the name of the current player
-                var player = HttpContext.Session.GetString("player");
+                var player = @ViewBag.PlayerName = HttpContext.Session.GetString("player");
 
                 // RETRIEVED PLAYER ---> movieGame.Models.Player
                 Player RetrievedPlayer = _context.Players.FirstOrDefault(p => p.PlayerId == playerId);
                 RetrievedPlayer.Intro("retrieved player");
 
-                var currGamesPlayed = RetrievedPlayer.GamesPlayed;
+                var currGamesPlayed = ViewBag.GamesPlayed = RetrievedPlayer.GamesPlayed;
                 currGamesPlayed.Intro("curr games played");
 
                 var newGamesPlayed = currGamesPlayed + 1;
@@ -231,13 +226,14 @@ namespace movieGame.Controllers
 
                 RetrievedPlayer.GamesPlayed = newGamesPlayed;
 
+                var totalPoints = ViewBag.TotalPoints = RetrievedPlayer.Points;
+                totalPoints.Intro("total points");
+
                 _context.SaveChanges();
 
-                Console.WriteLine("----------------'START OVER' METHOD COMPLETED---------------");
-
+                Complete.ThisMethod();
                 return RedirectToAction("InitiateGame");
             }
-
 
         #endregion InitiateGame
 
@@ -249,58 +245,57 @@ namespace movieGame.Controllers
             [Route("/getClue")]
             public JsonResult GetClue()
             {
-                Console.WriteLine("---------------'GET CLUE' METHOD STARTED---------------");
+                Start.ThisMethod();
 
-                // SESSION MOVIE ID ---> retrieved to be used set JSON info below
-                int? SessionMovieId = HttpContext.Session.GetInt32("sessionMovieId");
+                #region get current movie info
+                    // SESSION MOVIE ID ---> retrieved to be used set JSON info below
+                    int? SessionMovieId = HttpContext.Session.GetInt32("sessionMovieId");
 
-                // ONE MOVIE ---> movieGame.Models.Movie
-                var oneMovie = _context.Movies.Include(w => w.Clues).SingleOrDefault(x => x.MovieId == SessionMovieId);
+                    // ONE MOVIE ---> movieGame.Models.Movie
+                    var oneMovie = _context.Movies.Include(w => w.Clues).SingleOrDefault(x => x.MovieId == SessionMovieId);
 
-                // MOVIE ---> returns array of all movies objects
-                    // Clues comes back as 'System.Collections.Generic.List`1[movieGame.Models.Clue]'
-                Movie movie = new Movie ()
-                {
-                    Title = oneMovie.Title,
-                    Year = oneMovie.Year,
-                    Clues = new List<Clue>()
-                };
-
-                // CLUES ---> System.Collections.Generic.List`1[movieGame.Models.Clue]
-                var Clues = oneMovie.Clues;
-                int CountUp = 0;
-
-                foreach(var item in Clues)
-                {
-                    // ONE CLUE ---> movieGame.Models.Clue
-                    Clue oneClue = new Clue
+                    // MOVIE ---> returns array of all movies objects
+                        // Clues comes back as 'System.Collections.Generic.List`1[movieGame.Models.Clue]'
+                    Movie movie = new Movie ()
                     {
-
-                        // CLUE DIFFICULTY --> actual #; 1 is highest difficulty
-                        ClueDifficulty = Clues[CountUp].ClueDifficulty,
-
-                        // CLUE POINTS --> from 10 to 1
-                        CluePoints = Clues[CountUp].CluePoints,
-
-                        // CLUE TEXT ---> actual clue text
-                        ClueText = Clues[CountUp].ClueText,
-
-                        // MOVIE ID ---> number of movie clue is associated with
-                        MovieId = Clues[CountUp].MovieId,
-
-                        // CLUE ID ---> actual clueId number
-                        ClueId = Clues[CountUp].ClueId
+                        Title = oneMovie.Title,
+                        Year = oneMovie.Year,
+                        Clues = new List<Clue>()
                     };
+                #endregion
 
-                    movie.Clues.Add(oneClue);
-                    CountUp++;
-                }
+                #region get clues
+                    // CLUES ---> System.Collections.Generic.List`1[movieGame.Models.Clue]
+                    var Clues = oneMovie.Clues;
+                    int CountUp = 0;
 
-                // MOVIE CLUES ---> System.Collections.Generic.List`1[movieGame.Models.Clue]
-                    // Console.WriteLine("MOVIE CLUES ---> " + movie.Clues);
+                    foreach(var item in Clues)
+                    {
+                        // ONE CLUE ---> movieGame.Models.Clue
+                        Clue oneClue = new Clue
+                        {
+                            // CLUE DIFFICULTY --> actual #; 1 is highest difficulty
+                            ClueDifficulty = Clues[CountUp].ClueDifficulty,
 
-                Console.WriteLine("---------------'GET CLUE' METHOD COMPLETED---------------");
+                            // CLUE POINTS --> from 10 to 1
+                            CluePoints = Clues[CountUp].CluePoints,
 
+                            // CLUE TEXT ---> actual clue text
+                            ClueText = Clues[CountUp].ClueText,
+
+                            // MOVIE ID ---> number of movie clue is associated with
+                            MovieId = Clues[CountUp].MovieId,
+
+                            // CLUE ID ---> actual clueId number
+                            ClueId = Clues[CountUp].ClueId
+                        };
+
+                        movie.Clues.Add(oneClue);
+                        CountUp++;
+                    }
+                #endregion
+
+                Complete.ThisMethod();
                 return Json(movie);
             }
 
@@ -310,23 +305,20 @@ namespace movieGame.Controllers
             [Route("/guessMovie")]
             public JsonResult GuessMovie ()
             {
-                Console.WriteLine("---------------'GUESS MOVIE' METHOD STARTED---------------");
+                Start.ThisMethod();
 
                 // NOTE: these are only included for testing purposes
-                // ViewBag.SessionMovieObject_testing = HttpContext.Session.GetString("sessionMovieObject");
                 ViewBag.SessionMovieTitle_testing = HttpContext.Session.GetString("sessionMovieTitle");
                 ViewBag.SessionMovieId_testing = HttpContext.Session.GetInt32("sessionMovieId");
                 ViewBag.PlayerName = HttpContext.Session.GetString("player");
 
-
                 // GUESS COUNT ---> if previous guesses, it's guess number; if not, it's blank
                 int? guessCount = HttpContext.Session.GetInt32("guesscount");
-                    guessCount.Intro("ORIGINAL GUESS COUNT");
 
                 guessCount = guessCount - 1;
-                    guessCount.Intro("NEW GUESS COUNT");
-
                 HttpContext.Session.SetInt32("guesscount", (int)guessCount);
+
+                guessCount.Intro("new guess count");
 
                 // SESSION MOVIE TITLE ---> retrieves the title of current movie being guessed
                 string SessionMovieTitle = HttpContext.Session.GetString("sessionMovieTitle");
@@ -336,72 +328,77 @@ namespace movieGame.Controllers
                 MovieGuessItems.Add(SessionMovieTitle);
                 MovieGuessItems.Add(guessCount);
 
-
-                // MOVIEGUESSITEMS ---> System.Collections.ArrayList
-                    // MovieGuessItems.Intro("MovieGuessItems");
-
-                Console.WriteLine("---------------'GUESS MOVIE' METHOD COMPLETED---------------");
-
-
+                Complete.ThisMethod();
                 return Json(MovieGuessItems);
             }
 
             List<Clue> _clueList = new List<Clue>();
 
+            [HttpGet]
+            [Route("/getClueFromJavaScript")]
+            public JsonResult GetClueFromJavaScript (Clue clueInfo)
+            {
+                // Start.ThisMethod();
+                string CurrentClue = clueInfo.ClueText;
+                CurrentClue.Intro("current clue");
+                // Complete.ThisMethod();
+                return Json(clueInfo);
+            }
+
 
             [HttpPost]
             [Route("/updatePlayerPoints")]
-
             public JsonResult UpdatePlayerPoints (Clue clueInfo)
             {
-                Console.WriteLine("---------------'UPDATE PLAYER POINTS' METHOD STARTED---------------");
+                Start.ThisMethod();
 
-                // PLAYER ID ---> the PlayerId of the current player (e.g., 8 OR 4 OR 12 etc.)
-                var playerId = HttpContext.Session.GetInt32("id");
+                #region retrieve player and movie info
+                    // PLAYER ID ---> the PlayerId of the current player (e.g., 8 OR 4 OR 12 etc.)
+                    var playerId = HttpContext.Session.GetInt32("id");
 
-                // PLAYER --> the name of the current player
-                var player = HttpContext.Session.GetString("player");
+                    // PLAYER --> the name of the current player
+                    var player = HttpContext.Session.GetString("player");
 
-                // SESSION MOVIE --> title of current movie user was guessing
-                var sessionMovie = HttpContext.Session.GetString("sessionMovieTitle");
+                    // SESSION MOVIE --> title of current movie user was guessing
+                    var sessionMovie = HttpContext.Session.GetString("sessionMovieTitle");
 
-                // SESSION MOVIE ID --> id of current movie user was guessing
-                var sessionMovieId = HttpContext.Session.GetInt32("sessionMovieId");
+                    // SESSION MOVIE ID --> id of current movie user was guessing
+                    var sessionMovieId = HttpContext.Session.GetInt32("sessionMovieId");
+                #endregion
 
-                // MOVIE LIST ---> System.Collections.Generic.List`1[movieGame.Models.Movie]
-                _clueList.Add(clueInfo);
+                #region set everything needed to update player's points
+                    // MOVIE LIST ---> System.Collections.Generic.List`1[movieGame.Models.Movie]
+                    _clueList.Add(clueInfo);
 
-                // RETRIEVED PLAYER ---> movieGame.Models.Player
-                Player RetrievedPlayer = _context.Players.FirstOrDefault(p => p.PlayerId == playerId);
-                RetrievedPlayer.Dig();
+                    // RETRIEVED PLAYER ---> movieGame.Models.Player
+                    Player RetrievedPlayer = _context.Players.FirstOrDefault(p => p.PlayerId == playerId);
 
-                // CURRENT POINTS --> players current points pulled from the database
-                var currentPoints = RetrievedPlayer.Points;
+                    // CURRENT POINTS --> players current points pulled from the database
+                    var currentPoints = RetrievedPlayer.Points;
 
-                // NEW POINTS ---> the value of the clue the movie was correctly guessed on; retrieved from 'UpdatePlayerPoints' javascript function
-                int newPoints = clueInfo.CluePoints;
+                    // NEW POINTS ---> the value of the clue the movie was correctly guessed on; retrieved from 'UpdatePlayerPoints' javascript function
+                    int newPoints = clueInfo.CluePoints;
+                    newPoints.Intro("new points");
 
-                // RETRIEVED PLAYER POINT --> adds current points and new points; then saves them to the database
-                RetrievedPlayer.Points = newPoints + currentPoints;
+                    // RETRIEVED PLAYER POINT --> adds current points and new points; then saves them to the database
+                    RetrievedPlayer.Points = newPoints + currentPoints;
+                #endregion
 
-                var ExistingJoins = RetrievedPlayer.MoviePlayerJoin;
-                ExistingJoins.DigDeep();
+                #region create and save many-to-many relationship
+                    var ExistingJoins = RetrievedPlayer.MoviePlayerJoin;
 
-                // MPJ --> create new many-to-many of player and movie
-                MoviePlayerJoin MPJ = new MoviePlayerJoin
-                {
-                    PlayerId = (int)playerId,
-                    MovieId = (int)sessionMovieId,
-                };
+                    // MPJ --> create new many-to-many of player and movie
+                    MoviePlayerJoin MPJ = new MoviePlayerJoin
+                    {
+                        PlayerId = (int)playerId,
+                        MovieId = (int)sessionMovieId,
+                    };
 
-                _clueList.LogQuery("clue list");
+                    _context.Add(MPJ);
+                    _context.SaveChanges();
+                #endregion
 
-                _context.Add(MPJ);
-
-                _context.SaveChanges();
-
-                Console.WriteLine("---------------'UPDATE PLAYER POINTS' METHOD COMPLETED---------------");
-
+                Complete.ThisMethod();
                 return Json(clueInfo);
             }
 
@@ -424,11 +421,11 @@ namespace movieGame.Controllers
             [Route ("allMovies")]
             public IActionResult AllMovies ()
             {
-                Console.WriteLine("---------------'ALL MOVIES' METHOD STARTED---------------");
+                Start.ThisMethod();
 
                 ViewBag.Movies = _context.Movies.Include(w => w.Clues).OrderBy(d => d.MovieId).ToList();
 
-                Console.WriteLine("---------------'ALL MOVIES' METHOD COMPLETED---------------");
+                Complete.ThisMethod();
                 return View ();
             }
 
@@ -438,14 +435,12 @@ namespace movieGame.Controllers
             [Route("/getMovieJSON")]
             public JsonResult GetMovieJSON(string movieName, int movieYear)
             {
-                Console.WriteLine("---------------'GET MOVIE JSON' METHOD STARTED---------------");
-
-                // var exampleURL = "https://www.omdbapi.com/?t=Guardians+of+the+Galaxy+Vol.+2&y=2017&apikey=4514dc2d";
+                Start.ThisMethod();
 
                 // var APIqueryTitleYear = "https://www.omdbapi.com/?t=" + "Guardians of the Galaxy Vol. 2" + "&y=" + 2017 + "&apikey=4514dc2d";
                 var APIqueryTitleYear = "https://www.omdbapi.com/?t=" + movieName + "&y=" + movieYear + "&apikey=4514dc2d";
 
-                // #region POSTMAN VARIABLES
+                #region POSTMAN VARIABLES
                     // CLIENT ---> 'RestSharp.RestClient'
                     var client = new RestClient(APIqueryTitleYear);
 
@@ -457,14 +452,13 @@ namespace movieGame.Controllers
 
                     // RESPONSE ---> 'RestSharp.RestResponse'
                     IRestResponse response = client.Execute(request);
-                // #endregion POSTMAN VARIABLES
+                #endregion POSTMAN VARIABLES
 
                 // MESSY JSON ---> all movie JSON all garbled up (i.e., not parsed)
                 var responseJSON = response.Content;
 
-                // CLEAN JSON ---> all movie JSON presented more cleanly (i.e., it has been parsed)
+                // MOVIE JSON ---> all movie JSON presented more cleanly (i.e., it has been parsed)
                 JObject movieJSON= JObject.Parse(responseJSON);
-                    Console.WriteLine("CLEAN JSON ---> " + movieJSON);
 
                 // MOVIE TITLE ---> the title of the movie
                 string MovieTitle = (string)movieJSON["Title"];
@@ -472,8 +466,7 @@ namespace movieGame.Controllers
                 // IMDB ID ---> imdb id number (.e.g, tt3896198)
                 string imdbID = (string)movieJSON["imdbID"];
 
-                Console.WriteLine("---------------'GET MOVIE JSON' METHOD COMPLETED---------------");
-
+                Complete.ThisMethod();
                 return Json(movieJSON);
             }
 
@@ -483,9 +476,9 @@ namespace movieGame.Controllers
             [Route("getMovie/{id}")]
             public IActionResult ShowMovie(int id)
             {
-                Console.WriteLine("---------------'SHOW MOVIE' METHOD STARTED--------------------");
+                Start.ThisMethod();
 
-                // #region DATABASE QUERIES
+                #region DATABASE QUERIES
                     ViewBag.Movies = _context.Movies.Include(w => w.Clues).SingleOrDefault(x => x.MovieId == id);
 
                     // CURRENT MOVIE ---> movieGame.Models.Movie
@@ -497,10 +490,9 @@ namespace movieGame.Controllers
 
                     // CURRENT MOVIE YEAR ---> the release year of the movie pulled from the database
                     var currentMovieYear = currentMovie.Year;
-                // #endregion DATABASE QUERIES
+                #endregion DATABASE QUERIES
 
-
-                // #region API QUERIES
+                #region API QUERIES
                     // API QUERY ---> 'Microsoft.AspNetCore.Mvc.JsonResult'
                     var APIquery = GetMovieJSON(currentMovieTitle, currentMovieYear);
 
@@ -512,57 +504,94 @@ namespace movieGame.Controllers
 
                     // MOVIE JSON ---> JSON STRING but cleaner/parsed
                     JObject movieJSON = JObject.Parse(jsonString);
-                    Console.WriteLine(movieJSON);
-                // #endregion API QUERIES
+                #endregion API QUERIES
 
-
-                // #region API MOVIE INFO
-                    string MovieActors = ViewBag.Actors = (string)movieJSON["Value"]["Actors"];
-                    string MovieWriter = (string)movieJSON["Value"]["Writer"];
-                    ViewBag.MovieWriter = (string)movieJSON["Value"]["Writer"];
-
+                #region API MOVIE INFO
                     string MovieTitle = (string)movieJSON["Value"]["Title"];
-                    string MovieDirector = (string)movieJSON["Value"]["Director"];
                     string MovieRating = (string)movieJSON["Value"]["Rated"];
                     string MovieYear = (string)movieJSON["Value"]["Year"];
+
+                    string MovieActors = ViewBag.Actors = (string)movieJSON["Value"]["Actors"];
+                    string MovieWriter = ViewBag.MovieWriter = (string)movieJSON["Value"]["Writer"];
+                    string MovieDirector = ViewBag.MovieDirector = (string)movieJSON["Value"]["Director"];
+                    string MovieGenre = ViewBag.MovieGenre = (string)movieJSON["Value"]["Genre"];
                     string MoviePoster = ViewBag.MoviePoster = (string)movieJSON["Value"]["Poster"];
-                // #endregion API MOVIE INFO
+                #endregion API MOVIE INFO
 
-                MovieTitle.Intro("movie title");
-
-
-                Console.WriteLine("---------------'SHOW MOVIE' METHOD COMPLETED--------------------");
+                Complete.ThisMethod();
                 return View("Movie");
+            }
+
+            [HttpGet]
+            [Route("/getActorImage")]
+            public JsonResult GetActorImage(string actorName)
+            {
+                Start.ThisMethod();
+
+                #region API REQUEST INFO
+                    // var APIkey = "4cbdf8913d9628d339184a127d136d68";
+                    var PersonsName = actorName;
+                    var client = new RestClient("https://api.themoviedb.org/3/search/person?api_key=1a1ef1aa4b51f19d38e4a7cb134a5699&language=en-US&query=" + PersonsName + "&page=1&include_adult=false");
+                    var request = new RestRequest(Method.GET);
+                    request.AddHeader("Postman-Token", "dbfd1014-ebcb-4c79-80eb-1b0eac81a888");
+                    request.AddHeader("Cache-Control", "no-cache");
+                    IRestResponse response = client.Execute(request);
+
+                    client.Intro("client");
+                    Extensions.TableIt(request, response);
+                #endregion
+
+                #region JSON
+                    var responseJSON = response.Content;
+                    JObject actorJSON = JObject.Parse(responseJSON);
+                #endregion
+
+                #region QUERIES
+                    string ActorName = ViewBag.ActorName = (string)actorJSON["results"][0]["name"];
+                    int ActorId = ViewBag.ActorId = (int)actorJSON["results"][0]["id"];
+                    ActorName.Intro("actor name");
+                    ActorId.Intro("actor id");
+
+                    string PictureBaseURL = "https://image.tmdb.org/t/p/w";
+
+                    // these are picture sizes
+                    int PictureSizeLarge = 400;
+                    int PictureSizeMedium = 300;
+                    int PictureSizeSmall = 200;
+                    int PictureSizeSmallest = 92;
+
+                    string ActorPictureURL = (string)actorJSON["results"][0]["profile_path"];
+
+                    string ActorPicLarge = ViewBag.ActorPicLarge = PictureBaseURL + PictureSizeLarge + ActorPictureURL;
+                    string ActorPicMedium = ViewBag.ActorPicMedium = PictureBaseURL + PictureSizeMedium + ActorPictureURL;
+                    string ActorPicSmall = ViewBag.ActorPicSmall = PictureBaseURL + PictureSizeSmall + ActorPictureURL;
+                    string ActorPicSmallest = ViewBag.ActorPicSmallest = PictureBaseURL + PictureSizeSmallest + ActorPictureURL;
+
+                    ActorPicSmallest.Intro("smallest");
+                #endregion
+
+                Complete.ThisMethod();
+                return Json (actorJSON);
             }
 
             [HttpGet]
             [Route("test")]
             public IActionResult Test ()
             {
-                Console.WriteLine("---------------'TEST METHOD' STARTED---------------");
+                Start.ThisMethod();
 
-                // GetBackgroundPosters();
+                GetActorImage("Tom Cruise");
 
-                Console.WriteLine("---------------'TEST METHOD' COMPLETED---------------");
+                Complete.ThisMethod();
                 return View ("test");
             }
 
 
-            // [HttpGet]
-            // private async Task<JObject> GetBackgroundAsync()
-            // {
-            //     var posters = await GetBackgroundPosters();
-
-            //     return Ok(posters);
-            // }
-
-
             [HttpGet]
             [Route("getBackgroundPosters")]
-
             public JsonResult GetBackgroundPosters()
             {
-                Console.WriteLine("---------------'GET BACKGROUND POSTERS' METHOD STARTED---------------");
+                Start.ThisMethod();
 
                 // MOVIE DB PAGES --> set the number of api pages you want to query; 20 posters per page
                 int movieDBpages = 2;
@@ -574,7 +603,6 @@ namespace movieGame.Controllers
 
                 for(var x = 1; x <= movieDBpages; x++)
                 {
-
                     var client = new RestClient("https://api.themoviedb.org/3/movie/popular?api_key=1a1ef1aa4b51f19d38e4a7cb134a5699&language=en-US&page=" + x + "&region=us");
 
                     var request = new RestRequest(Method.GET);
@@ -584,8 +612,6 @@ namespace movieGame.Controllers
 
                     // RESPONSE ---> 'RestSharp.RestResponse'
                     IRestResponse response = client.Execute(request);
-
-                    // MESSY JSON ---> all movie JSON all garbled up (i.e., not parsed)
 
                     var responseJSON = response.Content;
 
@@ -613,17 +639,9 @@ namespace movieGame.Controllers
                     ViewBag.TopMoviePosters = TopMoviePosters;
 
                 }
-                Console.WriteLine("---------------'GET BACKGROUND POSTERS' METHOD COMPLETED---------------");
-
+                Complete.ThisMethod();
                 return Json(TopMoviePosters);
             }
-
-
         #endregion ViewMovieInfo
-
-
-
-
-
     }
 }
