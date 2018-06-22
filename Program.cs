@@ -1,29 +1,29 @@
 using System;
 using Microsoft.AspNetCore;             // <--- 'WebHost'
 using Microsoft.AspNetCore.Hosting;     // <--- 'IWebHost' and '.UseStartup<Startup>'
-// using System.IO;
-// using System.Threading.Tasks;
-// using movieGame.Models;
+using Microsoft.Extensions.Logging;                 // <--- 'ILoggerFactory'
+
+
 
 
 namespace movieGame {
+
     public class Program {
+
+        static string Start = "STARTED";
+        static string Complete = "COMPLETED";
+
         public static void Main (string[] args) {
-
-            Console.WriteLine();
-            Console.WriteLine("---------------'MAIN METHOD' STARTED---------------");
-
+            Start.ThisMethod();
             BuildWebHost (args).Run ();
-
-            Console.WriteLine("---------------'MAIN METHOD' COMPLETED---------------");
-            Console.WriteLine();
+            Complete.ThisMethod();
         }
 
         public static IWebHost BuildWebHost (string[] args) =>
             WebHost.CreateDefaultBuilder (args)
             .UseStartup<Startup> ()
-            // .UseUrls(urls: "http://localhost:10003")
             .Build ();
+            // .UseUrls(urls: "http://localhost:10003")
 
     }
 }

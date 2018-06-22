@@ -6,26 +6,26 @@ $(document).ready(function(){
             $("#clueButtonText").empty();
             $("#clueButtonText").append("Get Next Clue");
 
-            // ALL MOVIE INFO ---> gives you all info about the movie
-            var allMovieInfo = res;
-                // console.log("ALL MOVIE INFO : ", allMovieInfo);
-                // console.log("ALL MOVIE INFO TABLE: ");
-                // console.table(allMovieInfo);
-
             // ALL MOVIE CLUES ---> returns array of 10 [object object] of clues
             var allMovieClues = res.clues;
-
-            // ALL MOVIE CLUES LENGTH ---> 10
-            var allMovieCluesLength = Object.keys(allMovieClues).length;
 
             // CONTENT LENGTH ---> content length starts at -1 and keeps counting up; errors out after final clue
             var contentLength = $('ul#clueText > li').length - 1 ;
 
             // CLUE ID ---> '1', then '2', OR '11', then '12', etc.
             var ClueId = res.clues[contentLength+1].clueId;
+            if (ClueId == 1)
+            {
+                console.table(allMovieClues);
+            }
 
             // CLUE POINTS --> '10', then '9', then '8' etc.
             var CluePoints = res.clues[contentLength+1].cluePoints;
+
+            var currentClue = allMovieClues[contentLength+1].clueText;
+            console.log(ClueId + ": " + currentClue);
+
+            new SendClueToController(currentClue);
 
             // CLUE ---> lists off each clue  after each click; e.g., '<li>School bus</li>' etc.
             var clue = "<li>" + allMovieClues[contentLength+1].clueText + "</li>";
@@ -83,13 +83,9 @@ $(document).ready(function(){
         $.get("guessMovie", function(res) {
 
             var currentPointsInt = $("#justPoints").html();
-            // console.log("JUST POINTS INT | GUESS MOVIE: ", currentPointsInt);
-
-            // MOVIE GUESS ITEMS ---> array of session movie title and session guess count
-                // var MovieGuessItems = res;
 
             // SESSION MOVIE TITLE ---> 'Goodfellas' etc.
-                var SessionMovieTitle = res[0];
+            var SessionMovieTitle = res[0];
 
             // SESSION MOVIE TITLE TO CAPS --> e.g., 'goodfellas' TO 'GOODFELLAS'
             var SessionMovieTitleToCaps = SessionMovieTitle.toUpperCase();
@@ -128,18 +124,18 @@ $(document).ready(function(){
                                 label    : "Quit (I'm a loser)",
                                 className: 'btn-danger',
                                 callback : function() {
-                                    console.log("LOSER");
+                                    console.log("QUIT GAME");
                                     window.location.href = "/";
                                 }
                             },
 
-                            playagain:
+                            playagain: 
                             {
                                 label    : "Play again (I'm a nerd)",
                                 className: 'btn-info',
                                 callback : function()
                                 {
-                                    console.log("NERD");
+                                    console.log("PLAY AGAIN");
                                     window.location.href = "/initiateGame";
                                 }
                             }
@@ -185,17 +181,17 @@ $(document).ready(function(){
                                 label    : "Quit (I'm a loser)",
                                 className: 'btn-danger',
                                 callback : function() {
-                                    console.log("LOSER");
+                                    console.log("QUIT GAME");
                                     window.location.href = "/";
                                 }
                             },
-                            playagain:
+                            playagain: 
                             {
                                 label    : "Play again (I'm a nerd)",
                                 className: 'btn-info',
                                 callback : function()
                                 {
-                                    console.log("NERD");
+                                    console.log("PLAY AGAIN");
                                     window.location.href = "/initiateGame";
                                 }
                             }
@@ -222,17 +218,17 @@ $(document).ready(function(){
                                 label    : "Quit (I'm a loser)",
                                 className: 'btn-danger',
                                 callback : function() {
-                                    console.log("LOSER");
+                                    console.log("QUIT GAME");
                                     window.location.href = "/";
                                 }
                             },
-                            playagain:
+                            playagain: 
                             {
                                 label    : "Play again (I'm a nerd)",
                                 className: 'btn-info',
                                 callback : function()
                                 {
-                                    console.log("NERD");
+                                    console.log("PLAY AGAIN");
                                     window.location.href = "/initiateGame";
                                 }
                             }
@@ -240,14 +236,11 @@ $(document).ready(function(){
                     });
                 }
             }
-        })
+        });
 
         console.log("-----'GUESS MOVIE' FUNCTION COMPLETED-----");
-
         event.preventDefault();
-
     });
-
 
 
 
@@ -298,8 +291,6 @@ $(document).ready(function(){
 // #region SET TEXT
 function setText(element) {
 
-    console.log("-----'SET TEXT' FUNCTION STARTED-----");
-
     // SEARCH QUERY --> 'godfa' OR 'godfathe' OR 'godfather' etc.
     var SearchQuery = $('#movieGuessInput').val();
 
@@ -315,23 +306,18 @@ function setText(element) {
         // url    : "https://www.omdbapi.com/?s=" + SearchQuery + "&apikey=4514dc2d",
         method : 'GET',
         success: function (serverResponse) {
-
             // REAL RES --> returns an array of movie objects (including 'title', 'release year' , etc.) that meet search criteria
             var realres = serverResponse["Search"];
-
         }
     })
-
-    console.log("-----'SET TEXT' FUNCTION COMPLETED-----");
 }
 
 
 // #region UPDATE PLAYER POINTS
 function UpdatePlayerPoints (formContainer)
 {
-    console.log();
-    console.log("-----'UPDATE USER POINTS' JS FUNCTION STARTED-----");
-
+    // console.log();
+    // console.log("-----'UPDATE USER POINTS' JS FUNCTION STARTED-----");
     $.ajax ({
         type: "POST",
         url : "/updatePlayerPoints",
@@ -339,33 +325,31 @@ function UpdatePlayerPoints (formContainer)
             CluePoints: $("#justPoints").html(),
         },
         success: function(data) {
-            console.log("SUCCESSSSS!!!!");
+            console.log("PLAYER POINTS SUCCESSFULLY UPDATED");
         },
         error: function(jqXHR, textStatus, errorThrown) {
         },
     })
-    console.log("-----'UPDATE USER POINTS' JS FUNCTION COMPLETED-----");
-    console.log();
+    // console.log("-----'UPDATE USER POINTS' JS FUNCTION COMPLETED-----");
+    // console.log();
 }
 
+// var contentLength = $('ul#clueText > li').length - 1 ;
 
-// function InitiateGame ()
-// {
-//     console.log();
-//     console.log("-----'INITIATE GAME' JS FUNCTION STARTED-----");
-
-//     $.ajax ({
-//         type   : "POST",
-//         url    : "/startOver",
-//         success: function() {
-//             console.log("SUCCESS!");
-//         },
-//         error: function() {
-//             console.log("ERROR");
-//         }
-//     })
-
-//     console.log("-----'INITIATE GAME' JS FUNCTION COMPLETED-----");
-//     console.log();
-// }
-
+// #region UPDATE PLAYER POINTS
+function SendClueToController (element)
+{
+    $.ajax ({
+        type: "GET",
+        url : "/getClueFromJavaScript",
+        data: {
+            ClueText: element,
+        },
+        success: function(data) {
+            console.log("TO CONTROLLER: " + element);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log("ERROR: CLUE NOT SENT TO CONTROLLER");
+        },
+    })
+}
