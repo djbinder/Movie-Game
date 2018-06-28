@@ -6,6 +6,8 @@ $(document).ready(function(){
             $("#clueButtonText").empty();
             $("#clueButtonText").append("Get Next Clue");
 
+            $("ul#JQresponse").empty();
+
             // ALL MOVIE CLUES ---> returns array of 10 [object object] of clues
             var allMovieClues = res.clues;
 
@@ -28,7 +30,7 @@ $(document).ready(function(){
             new SendClueToController(currentClue);
 
             // CLUE ---> lists off each clue  after each click; e.g., '<li>School bus</li>' etc.
-            var clue = "<li>" + allMovieClues[contentLength+1].clueText + "</li>";
+            var clue = "<li class='bg-primary border border-danger'>" + allMovieClues[contentLength+1].clueText + "</li>";
 
             // if you reach the 10th clue, disable the 'getClueButton'
             if (contentLength == 8)
@@ -91,14 +93,15 @@ $(document).ready(function(){
             var SessionMovieTitleToCaps = SessionMovieTitle.toUpperCase();
 
             // GUESS COUNT ---> 2, then 1, then 0
-            var guessCount = res[1];
+            var guessCount     = res[1];
+            var guessCountSpan = "<span class='guessCount'>" + guessCount + "</span>";
             console.log("GUESS COUNT: ", guessCount);
 
             // USER GUESS TO CAPS ---> 'GOODFELLAS' etc.
             var UserGuessToCaps = UserGuess.toUpperCase();
 
             // GUESS RESPONSE WRONG --> concatenated response to wrong answer
-            var guessResponseWrong = "Your Answer: " + "<b>" + UserGuessToCaps + "</b>" + " is WRONG.";
+            var guessResponseWrong = "<b>" + UserGuessToCaps + "</b>" + " is WRONG.";
 
             if(guessCount > 0)
             {
@@ -118,11 +121,11 @@ $(document).ready(function(){
                     UpdatePlayerPoints("#guessMovieForm");
 
                     var dialog = bootbox.dialog({
-                        message: "<p>CORRECT! You win the game! <br> Points received: " + currentPointsInt + "<br> </p>",
+                        message: '<p class="endGameMessage"><b class="endWin">Correct. You win.</b> <br> Points received: ' + currentPointsInt + '<br> </p>',
                         buttons: {
                             cancel: {
                                 label    : "Quit (I'm a loser)",
-                                className: 'btn-danger',
+                                className: 'btn-danger endButton',
                                 callback : function() {
                                     console.log("QUIT GAME");
                                     window.location.href = "/";
@@ -132,7 +135,7 @@ $(document).ready(function(){
                             playagain: 
                             {
                                 label    : "Play again (I'm a nerd)",
-                                className: 'btn-info',
+                                className: 'btn-success endButton',
                                 callback : function()
                                 {
                                     console.log("PLAY AGAIN");
@@ -146,7 +149,7 @@ $(document).ready(function(){
                 else
                 {
                     $("#remainingGuesses").empty();
-                    $("#remainingGuesses").append("Remaining Guesses: ", guessCount);
+                    $("#remainingGuesses").append("Remaining Guesses: ", guessCountSpan);
 
                     $("#movieGuessInput").val('');
 
@@ -164,7 +167,7 @@ $(document).ready(function(){
                     console.log("USER GUESS: ", UserGuessToCaps," ", "SESSION MOVIE: " , SessionMovieTitleToCaps);
 
                     $("#remainingGuesses").empty();
-                    $('#remainingGuesses').append("THE GAME IS OVER. Click 'Start Over' to begin a new game");
+                    $('#remainingGuesses').append("Remaining Guesses: 0");
 
                     $("ul#JQresponse").empty();
                     $("#movieGuessInput").val('');
@@ -175,11 +178,11 @@ $(document).ready(function(){
                     new UpdatePlayerPoints("#guessMovieForm");
 
                     var dialog = bootbox.dialog({
-                        message: "<p>CORRECT! You win the game! <br> Points received: " + currentPointsInt + "</p>",
+                        message: '<p class="endGameMessage"><b class="endWin">Correct. You win.</b> <br> Points received: ' + currentPointsInt + '<br> </p>',
                         buttons: {
                             cancel: {
                                 label    : "Quit (I'm a loser)",
-                                className: 'btn-danger',
+                                className: 'btn-danger endButton',
                                 callback : function() {
                                     console.log("QUIT GAME");
                                     window.location.href = "/";
@@ -188,7 +191,7 @@ $(document).ready(function(){
                             playagain: 
                             {
                                 label    : "Play again (I'm a nerd)",
-                                className: 'btn-info',
+                                className: 'btn-success endButton',
                                 callback : function()
                                 {
                                     console.log("PLAY AGAIN");
@@ -205,18 +208,17 @@ $(document).ready(function(){
                     console.log("USER GUESS: ", UserGuessToCaps," ", "SESSION MOVIE: " , SessionMovieTitleToCaps);
 
                     $("#remainingGuesses").empty();
-                    $('#remainingGuesses').append("THE GAME IS OVER. Click 'Start Over' to begin a new game");
 
                     $("ul#JQresponse").empty();
                     $("#movieGuessInput").val('');
 
                     $("#guessButton").prop("disabled", true);
                     var dialog = bootbox.dialog({
-                        message: "<p>You lost. Please consider whether or not you are a serious enough player for this game </p>",
+                        message: '<p class="endGameMessage"><b class="endLoss">You lost</b> <br> Please take some time to reflect on your failure. </p>',
                         buttons: {
                             cancel: {
                                 label    : "Quit (I'm a loser)",
-                                className: 'btn-danger',
+                                className: 'btn-danger endButton',
                                 callback : function() {
                                     console.log("QUIT GAME");
                                     window.location.href = "/";
@@ -225,7 +227,7 @@ $(document).ready(function(){
                             playagain: 
                             {
                                 label    : "Play again (I'm a nerd)",
-                                className: 'btn-info',
+                                className: 'btn-success endButton',
                                 callback : function()
                                 {
                                     console.log("PLAY AGAIN");
@@ -272,7 +274,7 @@ $(document).ready(function(){
                     for(var h = 0; h<realreslength; h++) {
                         // ONE RESULT --> returns any movies with search term in it (e.g., 'good' leads to 'good will hunting' AND 'a few good men' etc. )
                         var oneResult = realres[h]["Title"];
-                        $("#searchResult").append("<li>" + oneResult + "</li>")
+                        $("#searchResult").append('<li class="text-danger bg-light">' + oneResult + '</li>')
                     }
 
                     // when you click the movie title in the dropdown list, it populates the text box

@@ -48,17 +48,15 @@ namespace movieGame.Controllers
             [Route ("")]
             public IActionResult Index ()
             {
-                Start.ThisMethod();
                 CheckSession();
-                GetBackgroundPosters();
 
                 ViewBag.ErrorMessage = HttpContext.Session.GetString("message");
 
                 // LEADERS ---> System.Collections.Generic.List`1[movieGame.Models.Player]
-                var Leaders = _context.Players.OrderByDescending(t => t.Points).ToList();
+                var Leaders = _context.Players.OrderByDescending(t => t.Points).Take(10);
+                // var Leaders = _context.Players.OrderByDescending(t => t.Points).ToList();
                 ViewBag.Leaders = Leaders;
 
-                Complete.ThisMethod();
                 return View ();
             }
 
@@ -75,7 +73,7 @@ namespace movieGame.Controllers
                 {
                     NameEntered.Intro("no name was entered");
                     Extensions.Spotlight("no name entered");
-                    ViewBag.ErrorMessage = "Please Enter a Name to Play!";
+                    ViewBag.ErrorMessage = "Please enter a valid name, you idiot!";
                     HttpContext.Session.SetString("message", "Please Enter a Name to Play!");
                     return RedirectToAction("Index");
                 }
@@ -151,37 +149,73 @@ namespace movieGame.Controllers
                     PlayerName.Intro("player name");
 
                     // QUERY PLAYER ---> movieGame.Models.Player
-                    Player queryPlayer = _context.Players.FirstOrDefault(p => p.PlayerName == PlayerName);
-
+                    Player queryPlayer = _context.Players.Include(m => m.MoviePlayerJoin).SingleOrDefault(p => p.PlayerId == PlayerId);
                     var gamesPlayed = ViewBag.GamesPlayed = queryPlayer.GamesPlayed;
-
-                    var newGamesPlayed = gamesPlayed + 1;
-
-                    queryPlayer.GamesPlayed = newGamesPlayed;
-                    _context.SaveChanges();
-
                     var totalPoints = ViewBag.TotalPoints = queryPlayer.Points;
+                #endregion
+
+                #region check what movies the player has already played
+                    // PLAYER MOVIES ---> System.Collections.Generic.List`1[movieGame.Models.MoviePlayerJoin]
+                    var PlayerMovies = queryPlayer.MoviePlayerJoin.ToList();
+
+                    var MovieIds = new List<int>();
+
+                    foreach(var item in PlayerMovies)
+                    {
+                        MovieIds.Add(item.MovieId);
+                    }
+
+                    // MOVIE ID COUNT --> counts the number of movie ids for the movies the player has played
+                    var MovieIdCount = MovieIds.Count();
+                    MovieIdCount.Intro("movie id count");
                 #endregion
 
 
                 #region set movie info
-                    // MOVIES IN DATABASE ---> '2' OR '3' etc.
-                    var moviesInDatabase = _context.Movies.Count();
+                    if(MovieIdCount == 0)
+                    {
+                        Extensions.Spotlight("no movie ids exist for player");
+                        var SetMovieId = 1;
 
-                    // RANDOM R ---> generates a 'System.Random' variable
-                    Random r = new Random();
+                        // ONE MOVIE ---> movieGame.Models.Movie
+                        var SetMovieObject = _context.Movies.Include(w => w.Clues).SingleOrDefault(x => x.MovieId == SetMovieId);
+                        SetMovieObject.Title.Intro("this games movie");
 
-                    // SET MOVIE ID ---> uses 'r' to pick random movie id inclusive of the first value, exclusive of the second value
-                    var SetMovieId = r.Next(1,moviesInDatabase + 1);
+                        // SESSION MOVIE ID & NAME ---> sets the name and id for the movie that was selected
+                        HttpContext.Session.SetString("sessionMovieObject", SetMovieObject.ToString());
+                        HttpContext.Session.SetString("sessionMovieTitle", SetMovieObject.Title);
+                        HttpContext.Session.SetInt32("sessionMovieId", SetMovieId);
+                    }
 
-                    // ONE MOVIE ---> movieGame.Models.Movie
-                    var SetMovieObject = _context.Movies.Include(w => w.Clues).SingleOrDefault(x => x.MovieId == SetMovieId);
-                    SetMovieObject.Title.Intro("this games movie");
+                    else
+                    {
+                        Extensions.Spotlight("movie ids do exist for player");
+                        var MovieIdMax = MovieIds.Max();
+                        MovieIdMax.Intro("movie id max");
+                        var SetMovieId = MovieIdMax + 1;
+                        SetMovieId.Intro("set movie id");
 
-                    // SESSION MOVIE ID & NAME ---> sets the name and id for the movie that was selected
-                    HttpContext.Session.SetString("sessionMovieObject", SetMovieObject.ToString());
-                    HttpContext.Session.SetString("sessionMovieTitle", SetMovieObject.Title);
-                    HttpContext.Session.SetInt32("sessionMovieId", SetMovieId);
+                        // MOVIES IN DATABASE ---> '2' OR '3' etc.
+                        var moviesInDatabase = _context.Movies.Count();
+                        moviesInDatabase.Intro("movies in database");
+
+                        if(SetMovieId > moviesInDatabase)
+                        {
+                            Extensions.Spotlight("you are all caught up! there are no new movies for you to guess");
+                            return View("NoGame");
+                        }
+
+                        else {
+                            // ONE MOVIE ---> movieGame.Models.Movie
+                            var SetMovieObject = _context.Movies.Include(w => w.Clues).SingleOrDefault(x => x.MovieId == SetMovieId);
+                            SetMovieObject.Title.Intro("this games movie");
+
+                            // SESSION MOVIE ID & NAME ---> sets the name and id for the movie that was selected
+                            HttpContext.Session.SetString("sessionMovieObject", SetMovieObject.ToString());
+                            HttpContext.Session.SetString("sessionMovieTitle", SetMovieObject.Title);
+                            HttpContext.Session.SetInt32("sessionMovieId", SetMovieId);
+                        }
+                    }
                 #endregion
 
 
@@ -190,11 +224,6 @@ namespace movieGame.Controllers
                     int? guessCount = HttpContext.Session.GetInt32("guesscount");
                     guessCount.Intro("guess count");
                 #endregion
-
-                // NOTE: these are only included for testing purposes
-                ViewBag.SessionMovieObject_testing = HttpContext.Session.GetString("sessionMovieObject");
-                ViewBag.SessionMovieTitle_testing = HttpContext.Session.GetString("sessionMovieTitle");
-                ViewBag.SessionMovieId_testing = HttpContext.Session.GetInt32("sessionMovieId");
 
                 Complete.ThisMethod();
                 return View ("PlayGame");
@@ -240,6 +269,19 @@ namespace movieGame.Controllers
 
 
         #region PlayGame
+            [HttpGet]
+            [Route("viewInstructions")]
+
+            public IActionResult ViewInstructions ()
+            {
+                Start.ThisMethod();
+
+                Complete.ThisMethod();
+
+                return View("instructions");
+            }
+
+
             // get another clue during game; 10 clues per movie
             [HttpGet]
             [Route("/getClue")]

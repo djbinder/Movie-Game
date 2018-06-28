@@ -1,123 +1,126 @@
+@model movieGame.Models.Movie
+
+@{
+    Layout = "_Layout";
+}
 
 
-<p>test section</p>
-<!-- <div class="container">
+
+<div class="container" id="playGameContainer">
+
+    <br>
+    <nav class="navbar navbar-dark bg-dark">
+
+            <div class="col-10" id="PlayGamePageTitle"><h3><b>The Awesome and/or Amazing Movie Game</b></h3> </div>
+            <div class="col-1"><a class="nav-link" href="/clear">Home</a> </div>
+            <div class="col-1"><a href="/initiateGame">Start Over</a></div>
+    </nav>
+
     <div class="row">
-        <div class="col">Actor ID: @ViewBag.ActorId</div>
-        <div class="col">Actor Name: @ViewBag.ActorName</div>
+        <div class="col-2 testborder3">
+            <a href="#">
+                <button class="btn btn-primary">
+                    <span id="clueButtonText">Begin Game</span>
+                </button>
+            </a>
+        </div>
+
+        <div id="cluePoints" class="col-2 testborder2">PLACEHOLDER TEXT</div>
+
+        <div class="col-2 testborder3" ><span id="justPoints"></span></div>
+
+        <div class="col-2 PlayerProfile testborder4"><b> Player: </b>Dan </div>
+        <div class="col-2 PlayerProfile testborder4"><b>Games Played: </b> 60</div>
+        <div class="col-2 PlayerProfile testborder4"><b>Total Points: </b> 100</div>
     </div>
-    <div class="row">
-        <div class="col">Large<img src="@ViewBag.ActorPicLarge" alt="image should be here"></div>
-        <div class="col">Medium<img src="@ViewBag.ActorPicMedium" alt="image should be here"></div>
-        <div class="col">Small<img src="@ViewBag.ActorPicSmall" alt="image should be here"></div>
-        <div class="col">Smallest<img src="@ViewBag.ActorPicSmallest" alt="image should be here"></div>
+
+    <br>
+
+    <div id="clueSection" class="row">
+        <div class="col-2">
+            <h4 class="text-center"><b>List of Clues</b></h4>
+            <img id="QuestionMark" src="https://mmpkorea.files.wordpress.com/2016/05/big-question-mark.png">
+        </div>
+        <div class="col-10">
+            <div id="clueList" class="testborder1">
+                <div>
+                    <ul id="clueText" class="clueText"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="guessSection">
+
+        <div class="col-2 text-center">
+            <h4><b>Guess Movie</b></h4>
+            <div id="remainingGuesses">Remaining Guesses: 3</div>
+        </div>
+
+
+        <div class="col-10">
+
+            <ul id="JQresponse"></ul>
+            <fieldset id="guessMovieForm">
+                <form action="guessMovie" method="GET" id="guessMovie">
+
+                    <div class="row">
+                        <input type="text" asp-for="Title" id="movieGuessInput" name="movieGuessInput" placeholder="Enter Your Guess Here..."/>
+                        <a href="#"><button class="btn btn-primary">Click to Guess</button></a>
+                    </div>
+
+                    <div class="searchResContainer">
+                        <div id="div_content">
+                            <ul id="searchResult"></ul>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                </form>
+            </fieldset>
+
+        </div>
+
+    </div>
+</div>
+
+<hr>
+
+<!-- <div class="row">
+    <div id="instructionsContent" class="col-md-10">
+        <h6 id="instructionsButton" role="button" data-toggle="collapse" aria-expanded="true" href="#collapseExample">
+            <span id="buttonText" data-text-swap="Click to View Overview">Click to Hide Overview</span>
+        </h6>
+        <div class="collapse show" id="collapseExample">
+            <h4 id="OverViewHeader"><b>The Awesome and/or Amazing Movie Game Overview</b></h4>
+            <hr class="linebreak3">
+            <p id="GoalWord"><b>Goal</b><br>To guess the name of movie based on 10 one-word clues</p>
+            <p><b>Game Play </b><br>Clues are presented one at a time and you can guess the movie after any given clue. You have three total guesses. The earlier you correctly guess the movie, the higher the points you receive. </p>
+            <p id="instructionsWord"><b>Instructions</b></p>
+            <ol id="instructionsList" class="card card-body">
+                <li>To start the game, click the <span class="BlueWords">Begin Game </span>button in the <b>List of Clues </b> section. The first <span class="RedWords">Clue </span>will appear.</li>
+
+                <li>To get the next <span class="RedWords">Clue </span>, click the <span class="BlueWords">Get Next Clue </span>button. Repeat this any time you want another <span class="RedWords">Clue. </span></li>
+
+                <li>To guess the <span class="OrangeWords">Movie</span>, type the <span class="OrangeWords">Movie's </span> title in the <b>Guess Movie </b> section. As you type, a drop-down list of movie titles will appear. Select the appropriate <span class="OrangeWords">Movie</span> from the list.</li>
+
+                <li>Click the <span class="BlueWords">Click to Guess </span> button to submit your guess.</li>
+
+                <li>You will be alerted if your guess was right or wrong.</li>
+
+                <li>The game ends if you correctly guess the movie OR if you run out of clues.</li>
+            </ol>
+        </div>
     </div>
 </div> -->
 
 
-
-    <!-- <h3>Positioning</h3>
-
-        <div style="position: static; border: 1px solid blue; width: 300px; height: 100px;" id="parent1" class="parent1" >Parent1: position: static.
-            <div style="border: 1px solid red; position: absolute; right: 15px; top: 70px" id="child1">Child1: position: absolute, right: 15px, top: 70px</div>
-        </div>
-
-        <div id="parent2" style="    position: relative;
-        border: 1px solid blue;
-        width: 300px;
-        height: 100px;">Parent2: position: relative.
-            <div id="child2" style="    position: absolute;
-            border: 1px solid red;
-            top: 70px;
-            right: 15px;">Child2: position: absolute, right: 15px, top: 70px</div>
-        </div>
-
-        <div id="parent3" style="    position: absolute;
-        border: 1px solid blue;
-        width: 300px;
-        height: 100px;
-        top: 750px;
-        right: 15px;">Parent3: position: absolute, top: 750px, right: 15px.
-            <div id="child3" style="    position: absolute;
-            border: 1px solid red;
-            top: 70px;
-            right: 15px;">Child3: position: absolute, right: 15px, top: 70px</div>
-        </div>
-
-        <div id="parent4" style="    position: fixed;
-        border: 1px solid blue;
-        background-color: rgba(255,200,200,0.5);
-        width: 300px;
-        height: 100px;
-        bottom: 0;
-        left: 0;
-        right: 0;">Parent4: position: fixed, bottom: 0, left: 0, right: 0.
-            <div id="child4" style="    position: absolute;
-            border: 1px solid red;
-            top: 70px;
-            right: 15px;">Child4: position: absolute, right: 15px, top: 70px</div>
-        </div>
+<div id="adminStuff">
+    <h6>Admin Stuff</h6>
+    <p>
+        <b>Movied ID: </b> @ViewBag.SessionMovieId_testing   |
+        <b>Movie Title: </b> @ViewBag.SessionMovieTitle_testing |
+        <b>Current Player Name: </b> @ViewBag.PlayerName
+    </p>
+</div>
 
 
-
-        <br>
-    <div class="container">
-
-
-
-
-
-        <h3>Bootstrap</h3>
-        <div class="testborder">
-
-            <p>test</p>
-        </div>
-
-        <div>
-            <div class="row">
-                <div class="testborder col"><h1>ABABABABA1 BABABABAB 2CABABABABDABAB3 ABABEABA4 BABFABABAB</h1></div>
-            </div>
-        </div>
-
-
-
-        <div class="row">
-
-            <div class="testborder col"><h1>MD1</h1></div>
-            <div class="testborder col">MD 2</div>
-            <div class="testborder col">MD 3</div>
-
-        </div>
-
-        <div class="row">
-
-            <div class="testborder col-md-2 col-sm-2">DIV 1 A</div>
-            <div class="testborder col-md-2 col-sm-2">DIV 2</div>
-            <div class="testborder col-md-2 col-sm-2">DIV 3</div>
-            <div class="testborder col-md-2 col-sm-2">DIV 4</div>
-            <div class="testborder col-md-2 col-sm-2">DIV 5</div>
-            <div class="testborder col-md-2 col-sm-2">DIV 6</div>
-        </div>
-
-    </div>
-
-
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-
-
-    <p>Test</p>
-
-
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-
-    <p>Test 2</p> -->

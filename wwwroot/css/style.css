@@ -3,21 +3,6 @@
         font-family: 'Roboto Condensed', serif;
         margin     : 0px 0px 0px 0px;
         padding    : 0px 0px 0px 0px;}
-    /* .bg-pan-right {
-        animation: bg-pan-right 8s both;
-    }
-
-    @keyframes bg-pan-right {
-        0% {
-            background-position: 0% 50%;
-            background         : white;
-        }
-        100% {
-            background-position: 100% 50%;
-            background         : black;
-            border             : 3px solid green;
-        }
-    } */
 /* #endregion */
 
 
@@ -25,61 +10,60 @@
 /* #region OTHER GLOBAL FORMATTING */
 .linebreak1 {
     border: 1.5px solid black;}
-
 .linebreak2 {
     border: 1px solid slateblue;}
-
 .linebreak3 {
     border: .5px solid lightgray;}
-
-.testborder {
+.TByellow {
     border: 1px solid #ffd700;}
-.testborder2 {
+.TBblue {
     border: 1px solid blue;}
-.testborder3 {
+.TBred {
     border: 1px solid red;}
-.testborder4 {
-    border: 3px solid purple;}
-
+.TBpurple {
+    border: 1px solid purple;}
+.TBgreen {
+    border: 1px solid green;}
+.TBbrown {
+    border: 1px solid brown;}
+.TB3blue {
+    border: 3px solid blue;}
 .BlueWords {
     color: #6492ed;}
-
 .RedWords {
     color: #ed647d;}
-
 .OrangeWords {
     color: #ed9d64;}
+.WhiteWords {
+    color: white;}
+.zeroMarginPadding {
+    margin     : auto;
+    padding-top: 10px;
+}
+.padding10 {
+    padding-left : 10px;
+    padding-right: 10px;
+}
+.padding10all {
+    padding-left  : 10px;
+    padding-right : 10px;
+    padding-top   : 10px;
+    padding-bottom: 10px;
+}
+.marginZero {
+    margin: 0;
+}
+.marginFive {
+    margin: 5px;
+}
 /* #endregion */
 
 
 
 /* #region INDEX */
-/* #background {
-    position        : static;
-    top             : 0;
-    left            : 0;
-    right           : 0;
-    bottom          : 0;
-    z-index         : 0;
-    background-color: purple;
-    border          : 1px solid brown;} */
 
-.cont_adjust {
-    /* border      : 3px solid green; */
-    margin      : 0 auto;
-    width       : 100%;
-    padding-left: 50px;
-    position    : relative;
-}
-
-.col_adjust {
-    /* border : 3px solid purple; */
-    margin : 0;
-    padding: 0;
-}
-
-#posters {
-    /* border          : 3px solid red; */
+/* #posters {
+    border          : 3px solid red;
     margin          : 0 auto;
     padding-left    : 15px;
     width           : 100%;
@@ -88,106 +72,166 @@
 
 .smoke {
     opacity: .5;
-    /* border : 1px solid green; */
+    border : 1px solid green;
     margin : 0 auto;
     padding: 0;
     width  : 100%;}
 
 #indexcontent {
-    /* border  : 3px solid blue; */
+    border      : 3px solid blue;
     margin      : 0 auto;
     padding-left: 20px;
     width       : 90%;
     position    : absolute;
     top         : 0;
-    z-index     : 1;}
+    z-index     : 1;} */
+
 
 #topHeader {
-    /* border    : 2px solid aqua; */
-    margin    : 0 auto;
-    width     : 80%;
     color     : white;
     text-align: center;
-    background: #222;
+    padding   : -20px;
 }
 
-.HeaderLinks {
-    width     : 20%;
-    text-align: center;}
-
-.HeaderLinks a {
-    color: white;}
-
-
 .enterNameForm {
-    margin          : 0 auto;
-    width           : 40%;
-    background-color: whitesmoke;
-    padding         : 20px;
+    margin        : 0 auto;
+    margin-bottom : 35px;
+    padding-left  : 20px;
+    padding-right : 20px;
+    padding-top   : 15px;
+    padding-bottom: 15px;
 }
 
 .enterNameForm td {
-    width: 200px;}
-
-.enterNameForm button {
-    background-color: #6492ed;
-    border          : #6492ed;}
+    width: 300px;}
 
 #NameError {
     color: red;}
 
-/* .leaderboardSection {
-    border: 4px solid green;
-    margin: 0 auto;
-    width : 80%;
-} */
 
 .leaderboard {
-    /* border    : 1px solid blue; */
-    margin    : 0 auto;
-    width     : 80%;
     text-align: center;
+    width     : 100%;
 }
 
-.leadercol {
-    /* border : 1px solid red; */
-    margin : 0;
-    width  : 100%;
-    padding: 0;
-}
-
-.leaderboard th {
-    text-align: center;
-    background: #222;
-    color     : white;}
-
-.leaderboard td {
-    height: 40px;}
-
-.leaderboard tr {
-    background-color: white;}
-
-.leaderboard tr:nth-child(even) {
-    background-color: lightgrey; }
-
-.leaderboardFirstColumn {
-    background-color: #6492ed;
-    color           : white; }
 /* #endregion */
 
 
 
-/* #region ALL MOVIES */
-.allMovieTableHeader {
-    text-align: center;}
-/* #endregion */
+
+
+
 
 
 
 /* #region CLUES */
-#OverViewHeader {
-    margin-bottom: -10px;
+
+.PlayerProfile {
+    text-align: left;
+    color     : white;}
+
+#justPoints {
+    font-size: 25px;
 }
+
+.guessCountSpan {
+    /* font-size  : 25px; */
+    margin-left: 10px;
+}
+
+#JQresponse {
+    color    : red;
+    font-size: 25px;
+}
+
+.clueText {
+    display  : flex;
+    flex-wrap: wrap;
+    margin   : 0;
+    padding  : 0; }
+
+ul.clueText li {
+    height        : 40px;
+    vertical-align: middle;
+    color         : white;
+    /* background-color: #ed647d; */
+    text-align   : center;
+    padding-top  : 10px;
+    margin-left  : 5px;
+    margin-bottom: 8px;
+    display      : inline;
+    font-size    : 15px;
+    flex-basis   : 47%;}
+
+.clueText li:nth-child(3n) {
+    flex-basis: 47%;}
+/* #endregion */
+
+
+
+
+/* #region GUESS MOVIE */
+
+
+#movieGuessInput {
+    width         : 100%;
+    height        : 30px;
+    padding-left  : 5px;
+    letter-spacing: 1px;}
+
+.searchResContainer {
+    border-radius: 3px;
+    /* width         : 250px; */
+    letter-spacing: 1px;}
+
+#div_content {
+    height: auto;}
+
+#searchResult {
+    list-style: none;
+    /* width     : 250px; */
+}
+
+#searchResult li{
+    padding      : 5px;
+    margin-bottom: 1px;}
+
+/* #searchResult li:nth-child(even){
+    background: #222;
+    color     : white;} */
+
+#searchResult li:hover{
+    cursor: pointer;}
+
+.clear {
+    clear     : both;
+    margin-top: 20px;}
+
+.endGameMessage {
+    margin-top: 15%;
+    /* padding   : 5%; */
+    text-align: center;
+    border    : 1px solid black;
+}
+
+.endWin {
+    color    : green;
+    font-size: 15px;
+}
+
+.endLoss {
+    color    : red;
+    font-size: 25px;
+}
+
+.endButton {
+    width: 50%;
+}
+
+
+/* #endregion GUESS MOVIE */
+
+
 
 #instructionsList {
     margin-left: 25px;
@@ -206,95 +250,26 @@
     margin-top: -10px;
 }
 
-/* #homeLink {
-    padding-left: 55px;} */
 
-#clueSection {
-    border: 1px solid slategray;
-    height: 350px;}
-
-#clueList2 {
-    height: 84px;}
-
-.clueText2 {
-    display  : flex;
-    flex-wrap: wrap;}
-
-ul.clueText2 li {
-    height          : 100px;
-    color           : white;
-    background-color: #ed647d;
-    text-align      : center;
-    margin-left     : 10px;
-    margin-bottom   : 20px;
+/* #region NO MORE GAMES */
+#NoGameHeader {
+    position        : absolute;
+    z-index         : 2;
     padding         : 10px;
-    font-size       : 25px;
-    display         : inline;
-    box-shadow      : 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
-    flex-basis      : 17%;}
-
-.clueText2 li:nth-child(6n) {
-    flex-basis: 17%;}
-/* #endregion */
-
-
-
-/* #region GUESS MOVIE */
-#guessSection {
-    border: 1px solid slategray;}
-
-#startOver {
-    padding-top: 7px;}
-
-#movieGuessInput {
-    border        : 1px solid #ed9d64;
-    width         : 220px;
-    height        : 30px;
-    padding-left  : 5px;
-    letter-spacing: 1px;}
-
-#getClueButton {
-    background-color: #6492ed;
-    border          : #6492ed;
-    box-shadow      : 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.1);}
-
-#guessButton {
-    background-color: #6492ed;
-    border          : #6492ed;
-    box-shadow      : 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.1);}
-
-.searchResContainer {
-    border-radius : 3px;
-    width         : 300px;
-    letter-spacing: 1px;}
-
-#div_content {
-    height: auto;}
-
-#searchResult {
-    list-style: none;
-    width     : 250px;}
-
-#searchResult li{
-    background   : lavender;
-    padding      : 2px;
-    margin-bottom: 1px;}
-
-#searchResult li:nth-child(even){
-    background: #222;
-    color     : white;}
-
-#searchResult li:hover{
-    cursor: pointer;}
-
-.clear {
-    clear     : both;
-    margin-top: 20px;}
-
-#adminStuff {
-    color: white;
+    background-color: #ffffff;
+    opacity         : .6;
+    font-size       : xx-large;
 }
-/* #endregion GUESS MOVIE */
+
+
+#Deuce {
+    position: relative;
+    z-index : 1;
+}
+
+
+
+
 
 
 
@@ -310,69 +285,9 @@ ul.clueText2 li {
     border     : .5px solid slateblue;}
 /* #endregion ONEE MOVIE DETAILS */
 
+/* #region ALL MOVIES */
+.allMovieTableHeader {
+    text-align: center;}
+/* #endregion */
 
 
-
-
-/* #region TEST */
-.parent1 {
-    position: static;
-    border  : 1px solid blue;
-    width   : 300px;
-    height  : 100px;
-}
-
-#child1 {
-    position: absolute;
-    border  : 1px solid red;
-    top     : 70px;
-    right   : 15px;
-}
-
-#parent2 {
-    position: relative;
-    border  : 1px solid blue;
-    width   : 300px;
-    height  : 100px;
-}
-
-#child2 {
-    position: absolute;
-    border  : 1px solid red;
-    top     : 70px;
-    right   : 15px;
-}
-
-#parent3 {
-    position: absolute;
-    border  : 1px solid blue;
-    width   : 300px;
-    height  : 100px;
-    top     : 750px;
-    right   : 15px;
-}
-
-#child3 {
-    position: absolute;
-    border  : 1px solid red;
-    top     : 70px;
-    right   : 15px;
-}
-
-#parent4 {
-    position        : fixed;
-    border          : 1px solid blue;
-    background-color: rgba(255,200,200,0.5);
-    width           : 300px;
-    height          : 100px;
-    bottom          : 0;
-    left            : 0;
-    right           : 0;
-}
-
-#child4 {
-    position: absolute;
-    border  : 1px solid red;
-    top     : 70px;
-    right   : 15px;
-}

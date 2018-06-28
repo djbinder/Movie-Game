@@ -1,95 +1,52 @@
-@{
-    Layout = "_Layout";
-}
 
 
-<body>
-<div class="container cont_adjust">
-
-    <div id="posters">
-        <div class="smoke">
-
-            @foreach(var poster in @ViewBag.TopMoviePosters)
-            {
-                <img src="https://image.tmdb.org/t/p/w200/@poster" alt="MOVIE POSTER" />
-            }
-        </div>
+<div class="row bg-primary border border-primary rounded-0" id="topHeader">
+    <div class="col">
+        <h3 class="marginFive"><b>The Awesome and/or Amazing Movie Game</b></h3>
+        <p>(for serious players only)</p>
     </div>
-
-        <div id="indexcontent">
-
-            <div class="row">
-                <table id="adminLinks">
-                    <tr>
-                        <td class="HeaderLinks"><a href="allmovies">All Movies </a></td>
-                        <td class="HeaderLinks"><a href="/test">Test Page </a></td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="row" id="topHeader">
-                <div class="col col_adjust">
-                    <h3 class="MovieGameTitle"><b>The Awesome and/or Amazing Movie Game</b></h3>
-                    <p class="headerTagLine">(for serious players only)</p>
-                </div>
-            </div>
-
-            <br><br>
-
-            <div class="row" id="EnterNameBox">
-                <form action="EnterName" method="POST" class="enterNameForm">
-                    <table>
-                        <tr>
-                            <td><b>Enter Your Name</b></td>
-                            <td><input class="form-control" name="NameEntered" type="text"></td>
-                        </tr>
-                    </table>
-                    <br><p id="NameError">@ViewBag.ErrorMessage</p><br>
-                    <button class="btn btn-primary">Click to Start Game</button>
-                </form>
-            </div>
-
-            <br><br><br>
-
-            <div class="row">
-                <div class="col leadercol">
-                    <table class="leaderboard">
-                        <tr>
-                            <th class="leaderboardFirstColumn">Rank</th>
-                            <th>Player</th>
-                            <th>Total Points</th>
-                            <th>Games Played</th>
-                            <th>Pts. Per Game</th>
-                        </tr>
-                        @{
-                            var counter = 0;
-                            foreach(var Player in ViewBag.Leaders)
-                            {
-                                <tr>
-                                    <td class="leaderboardFirstColumn"><b>@(++counter)</b></td>
-                                    <td><b>@Player.PlayerName</b></td>
-                                    <td>@Player.Points</td>
-                                    <td>@Player.GamesPlayed</td>
-                                    @if(@Player.GamesPlayed == 0)
-                                    {
-                                        <td>NA</td>
-                                    }
-                                    else if(@Player.Points == 0)
-                                    {
-
-                                        <td>NA</td>
-                                    }
-                                    else {
-                                        <td>@(@Player.Points/@Player.GamesPlayed)</td>
-                                    }
-                                </tr>
-                            }
-                        }
-                    </table>
-                </div>
-            </div>
-
-        </div>
-
 </div>
-</body>
+
+<br>
+
+<div class="row" id="EnterNameBox">
+    <form action="EnterName" method="POST" class="enterNameForm bg-dark">
+        <table>
+            <tr>
+                <td><input class="form-control" name="NameEntered" placeholder="Enter Your Name to Play" type="text"></td>
+            </tr>
+        </table>
+        <br><p id="NameError">@ViewBag.ErrorMessage</p>
+        <button class="btn btn-success">Click to Start Game</button>
+    </form>
+</div>
+
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6 col-sm-12">
+        <table class="table table-sm leaderboard">
+            <tr class="bg-primary">
+                <td colspan="4">Top 10 Players</td>
+            </tr>
+            <tr>
+                <th class="text-center">Rank</th>
+                <th class="text-center">Player</th>
+                <th class="text-center">Total Points</th>
+                <th class="text-center">Games Played</th>
+            </tr>
+            @{
+                var counter = 0;
+                foreach(var Player in ViewBag.Leaders)
+                {
+                    <tr>
+                        <td class="text-center">@(++counter)</td>
+                        <td class="text-left text-primary">@Player.PlayerName</td>
+                        <td class="text-center">@Player.Points</td>
+                        <td class="text-center">@Player.GamesPlayed</td>
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+    <div class="col-md-3"></div>
+</div>
