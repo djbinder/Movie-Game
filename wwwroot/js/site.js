@@ -1,12 +1,53 @@
 $(document).ready(function(){
 
+    console.log("DOCUMENT IS READY");
+    $("#remainingGuesses").append("3");
+
     $("#getClueButton").click(function() {
         $.get("getClue", function(res){
 
             $("#clueButtonText").empty();
             $("#clueButtonText").append("Get Next Clue");
 
-            $("ul#JQresponse").empty();
+            $("ul#guessResponse").empty();
+
+            // var currentGuessesD = document.getElementById('remainingGuesses');
+            // console.log("CURRENT GUESSES D", currentGuessesD);
+            // var currentGuessesD_ = $('#remainingGuesses').get(0).innerHTML;
+            // console.log("D NUMBER: ", currentGuessesD_);
+            // var currentGuessesD__ = Number(currentGuessesD_);
+            // console.log("D______", currentGuessesD__);
+
+            new ResetForm();
+
+            // var currentGuessesE = document.getElementById("testDiv");
+            // console.log("E: ", currentGuessesE);
+            // var currentGuessesE_ = $(".testDiv").get(0).innerHTML;
+            // console.log("EEEEEEEE: ", currentGuessesE_);
+            // var currentGuessesEEEEEEE = Number(currentGuessesE_);
+            // console.log("asldfjasdl;fkjads;fj: ", currentGuessesEEEEEEE);
+
+            // if(currentGuessesEEEEEEE > 0)
+            // {
+            //     $("#remainingGuesses").empty();
+            //     $("#remainingGuesses").append(currentGuessesE_);
+            // }
+
+            // var sevens = 7777;
+            // var testGet = $(".testDiv").val(sevens);
+            // console.log("TEST GET: ", testGet);
+            // var sevensString = sevens.toString();
+            // $(".testDiv").append(sevensString);
+            // var testGetter = $(".testDiv").get(0).value;
+            // console.log("TEST GETTER: ", testGetter);
+
+            // var setValx = Number(testGetter);
+            // console.log("SET VAL X: ", setValx);
+
+            // if(testGet == 2)
+            // {
+            //     $("#remainingGuesses").append(testGet);
+            // }
 
             // ALL MOVIE CLUES ---> returns array of 10 [object object] of clues
             var allMovieClues = res.clues;
@@ -14,23 +55,39 @@ $(document).ready(function(){
             // CONTENT LENGTH ---> content length starts at -1 and keeps counting up; errors out after final clue
             var contentLength = $('ul#clueText > li').length - 1 ;
 
-            // CLUE ID ---> '1', then '2', OR '11', then '12', etc.
-            var ClueId = res.clues[contentLength+1].clueId;
-            if (ClueId == 1)
-            {
-                console.table(allMovieClues);
-            }
+            var ClueDifficulty = res.clues[contentLength+1].clueDifficulty;
+
+            // if (ClueDifficulty == 1)
+            // {
+            //     console.table(allMovieClues);
+            // }
 
             // CLUE POINTS --> '10', then '9', then '8' etc.
             var CluePoints = res.clues[contentLength+1].cluePoints;
 
             var currentClue = allMovieClues[contentLength+1].clueText;
-            console.log(ClueId + ": " + currentClue);
 
             new SendClueToController(currentClue);
 
+            var valUp     = 1;
+            var percentUp = 10;
+
+            var NewProgress = '<div class="progress-bar progBarOrange" role="progressbar" style="width: ' + percentUp + '%" aria-valuenow=' + valUp + ' aria-valuemin="0" aria-valuemax="10"><span id="cluesLeft"></span></div>';
+
+            $("#progressBar").append(NewProgress);
+            // $("#cluesLeft").empty();
+
+            if(CluePoints == 1)
+            {
+                $("#progressBar").empty();
+
+                var FullBar = '<div class="progress-bar progBarOrange" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"><a href="/viewInstructions">You are out clues. Click Here for Help</a></div>';
+                $("#progressBar").append(FullBar);
+
+            }
+
             // CLUE ---> lists off each clue  after each click; e.g., '<li>School bus</li>' etc.
-            var clue = "<li class='bg-primary border border-danger'>" + allMovieClues[contentLength+1].clueText + "</li>";
+            var clue = "<li class='bg-light swing-in-top-fwd'>" + allMovieClues[contentLength+1].clueText + "</li>";
 
             // if you reach the 10th clue, disable the 'getClueButton'
             if (contentLength == 8)
@@ -43,6 +100,7 @@ $(document).ready(function(){
 
                 $('#justPoints').empty();
                 $('#justPoints').append(CluePoints);
+
 
                 $("#getClueButton").prop("disabled", true);
             }
@@ -74,6 +132,9 @@ $(document).ready(function(){
     });
 
 
+
+
+
     // #region  --> GUESS MOVIE
     $("#guessMovie").submit(function(event) {
 
@@ -94,14 +155,14 @@ $(document).ready(function(){
 
             // GUESS COUNT ---> 2, then 1, then 0
             var guessCount     = res[1];
-            var guessCountSpan = "<span class='guessCount'>" + guessCount + "</span>";
+            // var guessCountSpan = "<span class='guessCount'>" + guessCount + "</span>";
             console.log("GUESS COUNT: ", guessCount);
 
             // USER GUESS TO CAPS ---> 'GOODFELLAS' etc.
             var UserGuessToCaps = UserGuess.toUpperCase();
 
             // GUESS RESPONSE WRONG --> concatenated response to wrong answer
-            var guessResponseWrong = "<b>" + UserGuessToCaps + "</b>" + " is WRONG.";
+            var guessResponseWrong = '<b>' + UserGuessToCaps + "</b>" + " is WRONG.";
 
             if(guessCount > 0)
             {
@@ -121,7 +182,7 @@ $(document).ready(function(){
                     UpdatePlayerPoints("#guessMovieForm");
 
                     var dialog = bootbox.dialog({
-                        message: '<p class="endGameMessage"><b class="endWin">Correct. You win.</b> <br> Points received: ' + currentPointsInt + '<br> </p>',
+                        message: '<br><div class="endGameMessage row border border-dark"><div class="col"><span class="align-middle"><b class="endWin align-middle">Correct. You win.</b> <br> Points received: ' + currentPointsInt + '</span></div><br><div class="col"><img class="align-middle" src="https://image.tmdb.org/t/p/w92/gKDNaAFzT21cSVeKQop7d1uhoSp.jpg" alt="ASP.NET" class="img-responsive"></div></div>',
                         buttons: {
                             cancel: {
                                 label    : "Quit (I'm a loser)",
@@ -132,7 +193,7 @@ $(document).ready(function(){
                                 }
                             },
 
-                            playagain: 
+                            playagain:
                             {
                                 label    : "Play again (I'm a nerd)",
                                 className: 'btn-success endButton',
@@ -149,12 +210,17 @@ $(document).ready(function(){
                 else
                 {
                     $("#remainingGuesses").empty();
-                    $("#remainingGuesses").append("Remaining Guesses: ", guessCountSpan);
+                    $("#remainingGuesses").append(guessCount);
+                    $(".testDiv").empty();
+                    $(".testDiv").append(guessCount);
+
+                    var currentGuessesC = document.getElementById('remainingGuesses');
+                    console.log("CURRENT GUESSES C", currentGuessesC);
 
                     $("#movieGuessInput").val('');
 
-                    $("ul#JQresponse").empty();
-                    $('ul#JQresponse').append(guessResponseWrong);
+                    $("ul#guessResponse").empty();
+                    $('ul#guessResponse').append(guessResponseWrong);
                 }
             }
 
@@ -167,9 +233,9 @@ $(document).ready(function(){
                     console.log("USER GUESS: ", UserGuessToCaps," ", "SESSION MOVIE: " , SessionMovieTitleToCaps);
 
                     $("#remainingGuesses").empty();
-                    $('#remainingGuesses').append("Remaining Guesses: 0");
+                    $('#remainingGuesses').append("0");
 
-                    $("ul#JQresponse").empty();
+                    $("ul#guessResponse").empty();
                     $("#movieGuessInput").val('');
 
                     $("#guessButton").prop("disabled", true);
@@ -188,7 +254,7 @@ $(document).ready(function(){
                                     window.location.href = "/";
                                 }
                             },
-                            playagain: 
+                            playagain:
                             {
                                 label    : "Play again (I'm a nerd)",
                                 className: 'btn-success endButton',
@@ -209,7 +275,7 @@ $(document).ready(function(){
 
                     $("#remainingGuesses").empty();
 
-                    $("ul#JQresponse").empty();
+                    $("ul#guessResponse").empty();
                     $("#movieGuessInput").val('');
 
                     $("#guessButton").prop("disabled", true);
@@ -224,7 +290,7 @@ $(document).ready(function(){
                                     window.location.href = "/";
                                 }
                             },
-                            playagain: 
+                            playagain:
                             {
                                 label    : "Play again (I'm a nerd)",
                                 className: 'btn-success endButton',
@@ -287,6 +353,55 @@ $(document).ready(function(){
             }
         })
     })
+
+    function ResetForm()
+    {
+        $("#getClueButton").click(function() {
+            $("#formContainer").empty();
+            $("#formContainer").replaceWith(divClone.clone(true));
+
+            var currentGuesses = document.getElementById("hiddenDiv");
+            console.log("E: ", currentGuesses);
+            var currentGuessesString = $(".hiddenDiv").get(0).innerHTML;
+            console.log("CURRENT GUESSES STRING: ", currentGuessesString);
+            var currentGuessesNumber = Number(currentGuessesString);
+            console.log("CURRENT GUESSES NUMBER: ", currentGuessesNumber);
+
+            if(currentGuessesNumber > 0)
+            {
+                $("#remainingGuesses").empty();
+                $("#remainingGuesses").append(currentGuessesString);
+            }
+        })
+
+        console.log("FORM WAS RESET");
+        var toggle = document.getElementById('toggle');
+        var wrapper = document.querySelectorAll('.subscribe');
+        var submit = document.getElementById('submit');
+        var success = document.querySelectorAll('.subscribe__success');
+        var content = document.querySelectorAll('.subscribe__wrapper');
+        // console.log(toggle);
+        // console.log(wrapper);
+        // console.log(submit);
+        // console.log(success);
+        // console.log(content);
+
+        toggle.addEventListener('click', function() {
+        this.className += ' subscribe__toggle__hidden';
+        wrapper[0].className += ' subscribe-1__active';
+        });
+
+        submit.addEventListener('click', function() {
+        success[0].className += ' subscribe__success--active';
+        wrapper[0].className += ' subscribe-1__success';
+        content[0].style.display = 'none';
+        });
+    };
+
+
+    var divClone = $("#formContainer").clone(true);
+    // console.log("DIV CLONE", divClone);
+
 });
 
 
@@ -336,7 +451,6 @@ function UpdatePlayerPoints (formContainer)
     // console.log();
 }
 
-// var contentLength = $('ul#clueText > li').length - 1 ;
 
 // #region UPDATE PLAYER POINTS
 function SendClueToController (element)
@@ -355,3 +469,27 @@ function SendClueToController (element)
         },
     })
 }
+
+
+function ShowProgress ()
+{
+    $("#getClueButton").on("click", function() {
+
+        var valUp     = 1;
+        var percentUp = 10;
+
+        var Replace = '<div class="progress-bar" role="progressbar" style="width: ' + percentUp + '%" aria-valuenow=' + valUp + ' aria-valuemin="0" aria-valuemax="10"></div>';
+
+        console.log(Replace);
+        $("#progressTest").append(Replace);
+    });
+}
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,55 @@
+<div class="sticky-top">
+
+    <div class="row rounded-0 RedDarken-1 mb-1">
+        <a class="col text-center text-white nav-link" href="/">Home</a>
+        <a class="col text-center text-white nav-link" href="/initiateGame">Start New Game</a>
+    </div>
+</div>
+    <div class="row navbar navbar-dark text-white p-0 rounded-0">
+
+        <div class="col pl-4 pr-0 pt-0 pb-0">
+            <span>
+                <b>Player: </b>@ViewBag.PlayerName</span>
+            <br>
+            <span>
+                <b>Won: </b>@ViewBag.GamesWon</span>
+        </div>
+
+        <div class="col pl-1 pr-0 pt-0 pb-0">
+            <span>
+                <b>Played: </b>@ViewBag.GamesPlayed</span>
+            <br>
+            <span>
+                <b>Points: </b>@ViewBag.PlayerPoints</span>
+        </div>
+
+    </div>
+
+
+    <div class="row">
+        <div class="col text-center text-white pt-0 mb-3"><h3 class="mt-0">@ViewBag.PlayerName has correctly guessed @ViewBag.GamesWon/@ViewBag.MovieCount movies.</h3> </div>
+    </div>
+
+    <div class="row">
+        @{
+            var counter = -1;
+            @foreach (var Movie in ViewBag.PlayerMovies)
+            {
+                <div class="col-sm-12 col-md-2">
+                    <div class="card border-dark mb-3 mx-auto" style="max-width: 18rem;">
+
+                        <div class="card-header bg-dark border border-dark rounded-0 p-0 align-middle"><h5 class="text-center text-white card-title">@Movie.Title</h5></div>
+
+                        <div class="card-body text-success">
+                            <img class="card-img-top" src="@ViewBag.Posters[++counter]" alt="Card image cap">
+                        </div>
+
+                        <div class="card-footer bg-transparent border-dark align-middle"><a href="/Movie/@Movie.MovieId" class="text-center">View Movie Details</a></div>
+
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+

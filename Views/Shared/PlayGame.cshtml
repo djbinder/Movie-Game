@@ -1,70 +1,102 @@
 @model movieGame.Models.Movie
 
 
-<nav class="row navbar navbar-dark bg-primary border border-primary rounded-0">
-    <div class="col-9">
-        <div class="row">
-            <span class="col-sm text-left PlayerProfile"><b>Player: </b> @ViewBag.PlayerName</span>
-            <span class="col-sm text-left PlayerProfile"><b>Games Played: </b> @ViewBag.GamesPlayed</span>
-            <span class="col-sm text-left PlayerProfile"><b>Total Points: </b> @ViewBag.TotalPoints</span>
-            <span class="col-sm"></span>
-            <span class="col-sm"></span>
-        </div>
-    </div>
-    <div class="col-3">
-        <div class="row">
-            <span class="col-sm text-right"><a class="WhiteWords" href="/clear">Home</a></span>
-            <span class="col-sm text-center"><a class="WhiteWords" href="/initiateGame">Start Over</a></span>
-        </div>
-    </div>
-</nav>
 
+<div class="row rounded-0 RedDarken-1 mb-4 sticky-top">
+    <a class="col text-center text-white nav-link" href="/">Home</a>
+    <a class="col text-center text-white nav-link" href="/Instructions">Instructions</a>
+    <a class="col text-center text-white nav-link" href="/initiateGame">Start Over</a>
+</div>
+
+
+
+<div class="setRelative">
+    <div class="border border-dark rounded-0 mb-3">
+        <div class="row mb-2 ml-1 mr-1 mt-2 pt-2 pb-2">
+
+            <div class="col-sm-12 col-md d-flex justify-content-center justify-content-md-start mb-4">
+                <a href="#"><button class="BoxShadow raise" type="button" id="getClueButton">
+                    <span id="clueButtonText">Begin Game</span>
+                </button></a>
+            </div>
+
+            <div class="col-sm-12 col-md d-flex justify-content-center">
+                <span class="col-6 text-left text-white m-auto pl-0" id="cluePoints">Current Clue Point Value:</span>
+                <span class="col-1 text-center text-white m-auto gameNumbers" id="justPoints"></span>
+            </div>
+
+        </div>
+
+        <div class="progress ml-5 mr-5" id="progressBar">
+            <div class="progress-bar progBarOrange" role="progressbar" style="width: 0%" aria-valuenow="1" aria-valuemin="0" aria-valuemax="10">
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="formContainer">
+        <div class="subscribe subscribe-1" id="guessMovieForm">
+            <form action="guessMovie" method="GET" id="guessMovie">
+                <a href="#" class="subscribe__toggle" id="toggle">
+                    Click to Guess |
+                    <span class="testText">Remaining Guesses: <span id="remainingGuesses" type=""  ></span></span>
+                </a>
+                <span class="subscribe__success">
+                    <ul id="guessResponse" class="ml-0 pl-0"></ul>
+                </span>
+                <div class="subscribe__wrapper">
+                    <input class="SuccessInput" id="movieGuessInput" name="movieGuessInput" type="text" />
+                    <button id="submit">Guess</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div hidden class="hiddenDiv" id="hiddenDiv"></div>
+
+
+
+
+    <!-- <div class="subscribe subscribe-1 subscribe-1__active subscribe-1__success" id="guessMovieForm">
+            <form action="guessMovie" method="GET" id="guessMovie">
+                <a href="#" class="subscribe__toggle subscribe__toggle__hidden" id="toggle">
+                    Click to Guess |
+                    <span class="testText" id="justGuesses">Remaining Guesses: 3</span>
+                </a>
+                <span class="subscribe__success subscribe__success--active">
+                    <ul id="guessResponse" class="ml-0 pl-0"><b>HOME ALONE</b> is WRONG.</ul>
+                </span>
+                <div class="subscribe__wrapper" style="display: none;">
+                    <input class="SuccessInput" id="movieGuessInput" name="movieGuessInput" type="text">
+                    <button id="submit">Guess</button>
+                </div>
+            </form>
+        </div> -->
+
+
+
+
+
+</div>
+
+
+<br>
+<br>
+<br>
+
+<div class="row searchResContainer">
+    <div class="col-sm-6" id="div_content">
+        <ul id="searchResult"></ul>
+        <div class="clear"></div>
+    </div>
+    <div class="col-1 ml-2"></div>
+</div>
+
+
+<br>
+<br>
 
 <div class="row">
-    <div class="col-sm-4">
-        <table class="table table-sm">
-            <tr>
-                <td colspan="3"><span class="align-middle text-right zeroMarginPadding"><a href="/viewInstructions">View Rules</a></span></td>
-            </tr>
-            <tr class="bg-dark">
-                <td><a href="#"><button type="button" class="btn btn-danger" id="getClueButton"><span id="clueButtonText">Begin Game</span></button></a></td>
-                <td><span class="align-middle zeroMarginPadding text-right WhiteWords" id="cluePoints">Current Clue Point Value:</span> </td>
-                <td><span class="align-middle zeroMarginPadding text-left WhiteWords" id="justPoints"></span></td>
-            </tr>
-            <tr>
-                <td colspan="3"></td>
-            </tr>
-        </table>
-    </div>
-
-    <form action="guessMovie" method="GET" id="guessMovie" class="col-sm-8">
-        <table id="guessMovieForm" class="table table-sm">
-            <tr>
-                <td> <span id="remainingGuesses" class="align-middle text-right zeroMarginPadding">Remaining Guesses: 3</span></td>
-                <td></td>
-            </tr>
-            <tr class="bg-dark">
-                <td><input type="text" asp-for="Title" id="movieGuessInput" name="movieGuessInput" placeholder="Enter Your Guess Here..."/></td>
-                <td><a href="#"><button class="btn btn-danger">Click to Guess</button></a></td>
-            </tr>
-            <tr>
-                <td colspan="2" class="searchResContainer">
-                    <div id="div_content">
-                        <ul id="searchResult"></ul>
-                        <div class="clear"></div>
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </form>
-</div>
-<hr class="linebreak3">
-
-
-<ul class="text-center" id="JQresponse"></ul>
-
-<div id="clueSection" class="row">
-    <div class="col" id="clueList">
-        <ul id="clueText" class="clueText"></ul>
+    <div class="col">
+        <ul id="clueText" class="clueText pl-0 ml-0"></ul>
     </div>
 </div>

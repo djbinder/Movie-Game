@@ -1,13 +1,13 @@
-namespace movieGame.Models
-{
-    public class Response {
-        public bool IsSuccess { get; set; }
-        public string Message { get; set; }
+// namespace movieGame.Models
+// {
+//     public class Response {
+//         public bool IsSuccess { get; set; }
+//         public string Message { get; set; }
 
-        public Response(bool isSuccess, string message) {
-            IsSuccess = isSuccess;
-            Message = message;
-        }
-    }
+//         public Response(bool isSuccess, string message) {
+//             IsSuccess = isSuccess;
+//             Message = message;
+//         }
+//     }
 
-}
+// }

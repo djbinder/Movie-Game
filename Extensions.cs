@@ -143,6 +143,7 @@ namespace movieGame {
 
         public static void TableIt(params object[] Object)
         {
+            // Object.Intro("object intro");
             int countCheck = Object.Count();
 
             if(countCheck == 1)
@@ -232,6 +233,15 @@ namespace movieGame {
                 Console.ResetColor();
 
                 return sequence;
+        }
+
+        public static void TestTypes (Type type)
+        {
+            Console.WriteLine("IsArray: {0}", type.IsArray);
+            Console.WriteLine("Name: {0}", type.Name);
+            Console.WriteLine("IsSealed: {0}", type.IsSealed);
+            Console.WriteLine("BaseType.Name: {0}", type.BaseType.Name);
+            Console.WriteLine();
         }
 
 

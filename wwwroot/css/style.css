@@ -1,109 +1,76 @@
 /* #region * HTML, BODY, WRAPPER */
-    * {
-        font-family: 'Roboto Condensed', serif;
-        margin     : 0px 0px 0px 0px;
-        padding    : 0px 0px 0px 0px;}
+* {
+    font-family: 'Roboto Condensed', serif;
+    box-sizing: inherit;
+    /* margin     : 0px 0px 0px 0px;
+    padding    : 0px 0px 0px 0px; */
+}
+
+
 /* #endregion */
 
 
 
 /* #region OTHER GLOBAL FORMATTING */
 .linebreak1 {
-    border: 1.5px solid black;}
+    border: 1.5px solid black;
+}
 .linebreak2 {
-    border: 1px solid slateblue;}
+    border: 1px solid slateblue;
+}
 .linebreak3 {
-    border: .5px solid lightgray;}
+    border: .5px solid lightgray;
+}
 .TByellow {
-    border: 1px solid #ffd700;}
+    border: 1px solid #ffd700;
+}
 .TBblue {
-    border: 1px solid blue;}
+    border: 1px solid blue;
+}
 .TBred {
-    border: 1px solid red;}
+    border: 1px solid red;
+}
 .TBpurple {
-    border: 1px solid purple;}
+    border: 1px solid purple;
+}
 .TBgreen {
-    border: 1px solid green;}
+    border: 1px solid green;
+}
 .TBbrown {
-    border: 1px solid brown;}
+    border: 1px solid brown;
+}
 .TB3blue {
-    border: 3px solid blue;}
+    border: 3px solid blue;
+}
 .BlueWords {
-    color: #6492ed;}
+    color: #6492ed;
+}
 .RedWords {
-    color: #ed647d;}
+    color: #ed647d;
+}
 .OrangeWords {
-    color: #ed9d64;}
+    color: #ed9d64;
+}
 .WhiteWords {
-    color: white;}
-.zeroMarginPadding {
-    margin     : auto;
-    padding-top: 10px;
+    color: white;
 }
-.padding10 {
-    padding-left : 10px;
-    padding-right: 10px;
+
+.RedDarken-1 {
+    background-color: #e53935;
 }
-.padding10all {
-    padding-left  : 10px;
-    padding-right : 10px;
-    padding-top   : 10px;
-    padding-bottom: 10px;
-}
-.marginZero {
-    margin: 0;
-}
-.marginFive {
-    margin: 5px;
-}
+
+
 /* #endregion */
 
 
 
 /* #region INDEX */
 
-/* #posters {
-    border          : 3px solid red;
-    margin          : 0 auto;
-    padding-left    : 15px;
-    width           : 100%;
-    z-index         : 0;
-    background-color: pink;}
-
-.smoke {
-    opacity: .5;
-    border : 1px solid green;
-    margin : 0 auto;
-    padding: 0;
-    width  : 100%;}
-
-#indexcontent {
-    border      : 3px solid blue;
-    margin      : 0 auto;
-    padding-left: 20px;
-    width       : 90%;
-    position    : absolute;
-    top         : 0;
-    z-index     : 1;} */
-
-
 #topHeader {
     color     : white;
     text-align: center;
     padding   : -20px;
 }
-
-.enterNameForm {
-    margin        : 0 auto;
-    margin-bottom : 35px;
-    padding-left  : 20px;
-    padding-right : 20px;
-    padding-top   : 15px;
-    padding-bottom: 15px;
-}
-
-.enterNameForm td {
-    width: 300px;}
 
 #NameError {
     color: red;}
@@ -126,42 +93,43 @@
 
 /* #region CLUES */
 
-.PlayerProfile {
-    text-align: left;
-    color     : white;}
 
-#justPoints {
-    font-size: 25px;
+.progBarOrange {
+    background-color: #ffa260;
 }
 
-.guessCountSpan {
-    /* font-size  : 25px; */
-    margin-left: 10px;
+.setRelative {
+    position: relative;
 }
 
-#JQresponse {
+
+.gameNumbers {
+    font-size: 15px;
+}
+
+#guessResponse {
     color    : red;
-    font-size: 25px;
 }
 
 .clueText {
     display  : flex;
     flex-wrap: wrap;
-    margin   : 0;
-    padding  : 0; }
+    opacity  : .6;
+}
 
 ul.clueText li {
     height        : 40px;
     vertical-align: middle;
-    color         : white;
-    /* background-color: #ed647d; */
+    color         :#304ffe;
     text-align   : center;
     padding-top  : 10px;
-    margin-left  : 5px;
+    margin-left  : 8px;
     margin-bottom: 8px;
     display      : inline;
     font-size    : 15px;
-    flex-basis   : 47%;}
+    flex-basis   : 47%;
+    /* opacity       : .5; */
+}
 
 .clueText li:nth-child(3n) {
     flex-basis: 47%;}
@@ -172,24 +140,17 @@ ul.clueText li {
 
 /* #region GUESS MOVIE */
 
-
-#movieGuessInput {
-    width         : 100%;
-    height        : 30px;
-    padding-left  : 5px;
-    letter-spacing: 1px;}
-
 .searchResContainer {
-    border-radius: 3px;
-    /* width         : 250px; */
-    letter-spacing: 1px;}
+    border-radius : 3px;
+    letter-spacing: 1px;
+}
 
 #div_content {
-    height: auto;}
+    height: auto;
+}
 
 #searchResult {
     list-style: none;
-    /* width     : 250px; */
 }
 
 #searchResult li{
@@ -208,11 +169,14 @@ ul.clueText li {
     margin-top: 20px;}
 
 .endGameMessage {
-    margin-top: 15%;
-    /* padding   : 5%; */
-    text-align: center;
-    border    : 1px solid black;
+    margin-top    : 15%;
+    margin-right  : 5%;
+    margin-left   : 5%;
+    padding-top   : 2%;
+    padding-bottom: 2%;
+    text-align    : center;
 }
+
 
 .endWin {
     color    : green;
@@ -233,26 +197,9 @@ ul.clueText li {
 
 
 
-#instructionsList {
-    margin-left: 25px;
-    border     : 0px;}
-
-#instructionsButton {
-    color: blue;}
-
-.collapseInstructions {
-    border          : 0px;}
-
-#instructionsWord {
-    margin-bottom: -4px;}
-
-#GoalWord {
-    margin-top: -10px;
-}
-
 
 /* #region NO MORE GAMES */
-#NoGameHeader {
+#noGameHeader {
     position        : absolute;
     z-index         : 2;
     padding         : 10px;
@@ -261,33 +208,98 @@ ul.clueText li {
     font-size       : xx-large;
 }
 
+#noGameHeader span {
+    font-size: medium;
+    color    : black;
+}
 
-#Deuce {
+#deuce {
     position: relative;
     z-index : 1;
+}
+
+#pi {
+    position: fixed;
+    bottom  : 0;
+    left    : 0;
+}
+
+.theNet {
+    background: transparent url("https://image.tmdb.org/t/p/w92/gKDNaAFzT21cSVeKQop7d1uhoSp.jpg") repeat 0% 0%;
+    width     : 100%;
+    height    : 100%;
+    position  : absolute;
 }
 
 
 
 
 
+/*-- Sign Styles --*/
+
+.bricks {
+    background-image   : url("https://www.dropbox.com/s/2ct0i6kc61vp0bh/wall.jpg?raw=1");
+    background-size    : cover;
+    background-position: center;
+    background-repeat  : no-repeat;
+    background-color   : #141414;
+}
+
+.glow {
+    font-family: "Vibur", cursive;
+    text-align : center;
+    line-height: 1;
+    color      : #c6e2ff;
+    animation  : neon .08s ease-in-out infinite alternate;
+}
+
+.big4 {
+    font-size: 4.0rem;
+}
 
 
-/* #region ONE MOVIE DETAILS */
-.oneMovieTable tr {
-    height       : 50px;
-    border-bottom: .5px solid lightgrey;}
-
-.oneMovieTable tr td ul li {
-    margin-left: 10px;
-    padding    : 5px;
-    display    : inline;
-    border     : .5px solid slateblue;}
-/* #endregion ONEE MOVIE DETAILS */
-
-/* #region ALL MOVIES */
-.allMovieTableHeader {
-    text-align: center;}
-/* #endregion */
 
 
+
+@keyframes neon {
+  from {
+    text-shadow:
+    0 0 6px rgba(202,228,225,0.92),
+    0 0 30px rgba(202,228,225,0.34),
+    0 0 12px rgba(30,132,242,0.52),
+    0 0 21px rgba(30,132,242,0.92),
+    0 0 34px rgba(30,132,242,0.78),
+    0 0 54px rgba(30,132,242,0.92);
+  }
+  to {
+    text-shadow:
+    0 0 6px rgba(202,228,225,0.98),
+    0 0 30px rgba(202,228,225,0.42),
+    0 0 12px rgba(30,132,242,0.58),
+    0 0 22px rgba(30,132,242,0.84),
+    0 0 38px rgba(30,132,242,0.88),
+    0 0 60px rgba(30,132,242,1);
+  }
+}
+
+
+
+.bgBlue {
+    background-color: lightblue;
+}
+.swing-in-top-fwd {
+	animation: swing-in-top-fwd 0.5s cubic-bezier(0.175, 0.885, 0.320, 1.275) both;
+}
+
+ @keyframes swing-in-top-fwd {
+    0% {
+      transform       : rotateX(-100deg);
+      transform-origin: top;
+      opacity         : 0;
+    }
+    100% {
+      transform       : rotateX(0deg);
+      transform-origin: top;
+      opacity         : 1;
+    }
+  }
