@@ -1,19 +1,14 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Diagnostics;
-using System.Reflection;            // <--- 'MethodBase'
-using System.Text;
-using System.Text.RegularExpressions;
-using ConsoleTables;
 using MarkdownLog;
-using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;              // <--- 'JsonConvert' and 'Formatting.Indented'
 
 
-namespace movieGame {
+namespace movieGame
+{
 
     public static class Extensions
     {
@@ -143,6 +138,7 @@ namespace movieGame {
 
         public static void TableIt(params object[] Object)
         {
+            // Object.Intro("object intro");
             int countCheck = Object.Count();
 
             if(countCheck == 1)
@@ -232,6 +228,15 @@ namespace movieGame {
                 Console.ResetColor();
 
                 return sequence;
+        }
+
+        public static void TestTypes (Type type)
+        {
+            Console.WriteLine("IsArray: {0}", type.IsArray);
+            Console.WriteLine("Name: {0}", type.Name);
+            Console.WriteLine("IsSealed: {0}", type.IsSealed);
+            Console.WriteLine("BaseType.Name: {0}", type.BaseType.Name);
+            Console.WriteLine();
         }
 
 

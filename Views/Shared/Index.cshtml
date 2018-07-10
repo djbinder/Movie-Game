@@ -1,95 +1,68 @@
-@{
-    Layout = "_Layout";
-}
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+  </head>
 
 
 <body>
-<div class="container cont_adjust">
 
-    <div id="posters">
-        <div class="smoke">
+<div class="row pt-0 mt-4 mb-4">
+    <div class="col mt-0 pt-0">
+        <h3 class="glow big4 mt-0 pt-0"><b>The Awesome and/or Amazing Movie Game</b></h3>
+        <p class="glow">(for serious players only)</p>
+    </div>
+</div>
 
-            @foreach(var poster in @ViewBag.TopMoviePosters)
-            {
-                <img src="https://image.tmdb.org/t/p/w200/@poster" alt="MOVIE POSTER" />
-            }
-        </div>
+
+
+<div class="row mt-5" id="EnterNameBox">
+    <div class="col px-4">
+        <form action="EnterName" method="POST" class="enterNameForm">
+
+            <input class="input-field text-white"name="NameEntered" placeholder="Enter Your Name to Play" type="text" aria-describedby="basic-addon2">
+
+            <br><p id="NameError">@ViewBag.ErrorMessage</p>
+            <div class="buttons">
+                    <button class="BoxShadow up">Start Game</button>
+            </div>
+        </form>
     </div>
 
-        <div id="indexcontent">
-
-            <div class="row">
-                <table id="adminLinks">
-                    <tr>
-                        <td class="HeaderLinks"><a href="allmovies">All Movies </a></td>
-                        <td class="HeaderLinks"><a href="/test">Test Page </a></td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="row" id="topHeader">
-                <div class="col col_adjust">
-                    <h3 class="MovieGameTitle"><b>The Awesome and/or Amazing Movie Game</b></h3>
-                    <p class="headerTagLine">(for serious players only)</p>
-                </div>
-            </div>
-
-            <br><br>
-
-            <div class="row" id="EnterNameBox">
-                <form action="EnterName" method="POST" class="enterNameForm">
-                    <table>
-                        <tr>
-                            <td><b>Enter Your Name</b></td>
-                            <td><input class="form-control" name="NameEntered" type="text"></td>
-                        </tr>
-                    </table>
-                    <br><p id="NameError">@ViewBag.ErrorMessage</p><br>
-                    <button class="btn btn-primary">Click to Start Game</button>
-                </form>
-            </div>
-
-            <br><br><br>
-
-            <div class="row">
-                <div class="col leadercol">
-                    <table class="leaderboard">
-                        <tr>
-                            <th class="leaderboardFirstColumn">Rank</th>
-                            <th>Player</th>
-                            <th>Total Points</th>
-                            <th>Games Played</th>
-                            <th>Pts. Per Game</th>
-                        </tr>
-                        @{
-                            var counter = 0;
-                            foreach(var Player in ViewBag.Leaders)
-                            {
-                                <tr>
-                                    <td class="leaderboardFirstColumn"><b>@(++counter)</b></td>
-                                    <td><b>@Player.PlayerName</b></td>
-                                    <td>@Player.Points</td>
-                                    <td>@Player.GamesPlayed</td>
-                                    @if(@Player.GamesPlayed == 0)
-                                    {
-                                        <td>NA</td>
-                                    }
-                                    else if(@Player.Points == 0)
-                                    {
-
-                                        <td>NA</td>
-                                    }
-                                    else {
-                                        <td>@(@Player.Points/@Player.GamesPlayed)</td>
-                                    }
-                                </tr>
-                            }
-                        }
-                    </table>
-                </div>
-            </div>
-
-        </div>
-
 </div>
+
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6 col-sm-12">
+        <table class="table table-sm leaderboard">
+            <tr class="glow">
+                <td colspan="4" class="center-align">Top 10 Players</td>
+            </tr>
+            <tr class="text-white">
+                <th class="text-center">Rank</th>
+                <th class="text-left">Player</th>
+                <th class="text-center">Total Points</th>
+                <th class="text-center">Games Won</th>
+            </tr>
+            @{
+                var counter = 0;
+                foreach(var Player in ViewBag.Leaders)
+                {
+                    <tr>
+                        <td class="text-center text-white">@(++counter)</td>
+                        <td class="text-left text-primary"><a href="/PlayerProfile/@Player.PlayerId">@Player.PlayerName</a></td>
+                        <td class="text-center text-white">@Player.Points</td>
+                        <td class="text-center text-white">@Player.GamesWon</td>
+                    </tr>
+                }
+            }
+
+            <tr>
+                <td colspan="4"><a href="/viewLeaderboard">View Full Leaderboard</a></td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-md-3"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
 </body>

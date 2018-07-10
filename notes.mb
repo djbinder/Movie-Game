@@ -1,0 +1,180 @@
+@model movieGame.Models.Movie
+
+
+<nav class="row navbar navbar-dark bg-primary border border-primary rounded-0">
+    <div class="col-8">
+        <div class="row">
+            <span class="col-sm text-left PlayerProfile"><b>Player: </b> @ViewBag.PlayerName</span>
+            <span class="col-sm text-left PlayerProfile"><b>Games Won: </b> @ViewBag.GamesWon</span>
+            <span class="col-sm text-left PlayerProfile"><b>Total Points: </b> @ViewBag.TotalPoints</span>
+            <span class="col-sm"></span>
+            <span class="col-sm"></span>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="row">
+            <span class="col-sm text-right"><a class="text-white" href="/clear">Home</a></span>
+            <span class="col-sm text-right"><a class="text-white" href="/Instructions">Instructions</a></span>
+            <span class="col-sm text-right"><a class="text-white" href="/initiateGame">Start Over</a></span>
+        </div>
+    </div>
+</nav>
+
+
+<div class="row">
+    <div class="col-sm-4">
+        <table class="table table-sm">
+            <tr>
+                <td colspan="3"><span class="align-middle text-right zeroMarginPadding text-white">-</a></span></td>
+            </tr>
+            <tr class="bg-dark">
+                <td><a href="#"><button type="button" class="btn btn-danger" id="getClueButton"><span id="clueButtonText">Begin Game</span></button></a></td>
+                <td><span class="align-middle zeroMarginPadding text-right WhiteWords" id="cluePoints">Current Clue Point Value:</span> </td>
+                <td><span class="align-middle zeroMarginPadding text-left WhiteWords" id="justPoints"></span></td>
+            </tr>
+            <tr>
+                <td colspan="3"></td>
+            </tr>
+        </table>
+    </div>
+
+    <form action="guessMovie" method="GET" id="guessMovie" class="col-sm-8">
+        <table id="guessMovieForm" class="table table-sm">
+            <tr>
+                <td> <span id="remainingGuesses" class="align-middle text-right zeroMarginPadding">Remaining Guesses: 3</span></td>
+                <td></td>
+            </tr>
+            <tr class="bg-dark">
+                <td><input type="text" asp-for="Title" id="movieGuessInput" name="movieGuessInput" placeholder="Enter Your Guess Here..."/></td>
+                <td><a href="#"><button class="btn btn-danger">Click to Guess</button></a></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="searchResContainer">
+                    <div id="div_content">
+                        <ul id="searchResult"></ul>
+                        <div class="clear"></div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<hr class="linebreak3">
+<div class="progress" id="progressBar" >
+    <div class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuenow="1" aria-valuemin="0" aria-valuemax="10"><span id="cluesLeft"></span></div>
+</div>
+
+
+<ul class="text-center" id="JQresponse"></ul>
+
+<div id="clueSection" class="row">
+    <div class="col" id="clueList">
+        <ul id="clueText" class="clueText"></ul>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="posters">
+    <div class="smoke">
+
+        @foreach(var poster in @ViewBag.TopMoviePosters)
+        {
+            <img src="https://image.tmdb.org/t/p/w200/@poster" alt="MOVIE POSTER" />
+        }
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<div class="col-sm-12 col-md d-flex justify-content-center mb-2">
+    <span class="col-9 text-left text-white m-auto" id="cluesRemaining">Clues Remaining: </span>
+    <span class="col-3 text-center text-white m-auto gameNumbers" id="justClues"></span>
+</div>
+
+<!-- <form action="guessMovie" method="GET" id="guessMovie">
+    <div class="form-row d-flex" id="guessMovieForm">
+        <div class="col-sm-6">
+            <input type="text" class="form-control mb-2" id="movieGuessInput" name="movieGuessInput" placeholder="Enter Your Guess Here..."/>
+        </div>
+        <div class="col-auto">
+            <a href="#"><button class="btn btn-danger mb-2">Click to Guess</button></a>
+        </div>
+    </div>
+</form> -->
+
+<div class="col-sm-12 col-md d-flex justify-content-center mb-2">
+        <span class="col-9 text-left text-white m-auto">Remaining Guesses: </span>
+        <span class="col-3 text-center text-white m-auto gameNumbers" id="justGuesses">3</span>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                // var sevens = 7777;
+            // var testGet = $(".testDiv").val(sevens);
+            // console.log("TEST GET: ", testGet);
+            // var sevensString = sevens.toString();
+            // $(".testDiv").append(sevensString);
+            // var testGetter = $(".testDiv").get(0).value;
+            // console.log("TEST GETTER: ", testGetter);
+
+            // var setValx = Number(testGetter);
+            // console.log("SET VAL X: ", setValx);
+
+            // if(testGet == 2)
+            // {
+            //     $("#remainingGuesses").append(testGet);
+            // }
+
+
+
+                        // var currentGuessesD = document.getElementById('remainingGuesses');
+            // console.log("D OBJECT", currentGuessesD);
+            // var currentGuessesD_ = $('#remainingGuesses').get(0).innerHTML;
+            // console.log("D STRING: ", currentGuessesD_);
+            // var currentGuessesD__ = Number(currentGuessesD_);
+            // console.log("D NUMBER", currentGuessesD__);
+
+
+
+
+
+
+            var currentGuesses = document.getElementById("remainingGuesses");
+            console.log("CG OBJECT: ", currentGuesses);
+            var currentGuessesString = $("#remainingGuesses").get(0).innerHTML;
+            console.log("CG STRING: ", currentGuessesString);
+            var currentGuessesNumber = Number(currentGuessesString);
+            console.log("CG NUMBER: ", currentGuessesNumber);
+
+            if(currentGuessesNumber > 0)
+            {
+                $("#remainingGuesses").empty();
+                $("#remainingGuesses").append(currentGuessesString);
+            }

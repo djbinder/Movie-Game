@@ -1,121 +1,176 @@
 @model movieGame.Models.Movie
 
-@{
-    Layout = "_Layout";
-}
 
 
 
-<div class="container" id="playGameContainer">
-
-    <br>
-    <div class="row">
-        <div id="homeLink" class="col-md-2">
-            <a href="/clear">Home / Leaderboard</a>
-        </div>
-    </div>
-
-    <hr class="linebreak3">
-    <br>
-    <div id="playerProfile" class="row">
-        <div class="col-md-2"><b>Player Name: </b> @ViewBag.PlayerName</div>
-        <div class="col-md-2"><b>Games Played: </b> @ViewBag.GamesPlayed</div>
-        <div class="col-md-2"><b>Total Points: </b> @ViewBag.TotalPoints</div>
-    </div>
-
-    <br>
-
-    <div class="row" id="allContent">
-        <div id="clueSection" class="col-md-8">
-            <h4><b>List of Clues</b></h4>
-            <div class="row">
-                <div class="col-md-8"><a href="#"><button class="btn btn-danger" id="getClueButton"><span id="clueButtonText">Begin Game</span> </button></a></div>
-                <div id="cluePoints" class="col-md-2.5"></div>
-                <div class="col-md-1" ><span id="justPoints"></span></div>
-            </div>
-                <br><br>
-                <div id="clueList2">
-                    <div id="clueTable2">
-                        <ul id="clueText" class="clueText2"></ul>
-                    </div>
-                </div>
-        </div>
-
-        <div id="guessSection" class="col-md-4">
-            <div class="row">
-                <div class="col-md-9"><h4><b>Guess Movie</b></h4></div>
-                <div id="startOver" class="col-md-3"><a href="/initiateGame">Start Over</a></div>
-            </div>
-
-            <div id="remainingGuesses">Remaining Guesses: 3</div>
-            <hr class="linebreak3">
-            <br>
-
-            <ul id="JQresponse"></ul>
-
-            <fieldset id="guessMovieForm">
-                <form action="guessMovie" method="GET" id="guessMovie">
-                    <div class="row" id="inputAndButton">
-                        <div class="col-sm-8">
-                            <input type="text" asp-for="Title" id="movieGuessInput" name="movieGuessInput" placeholder="Enter Your Guess Here..."/>
-                        </div>
-                        <div class="col-sm-4">
-                            <a href="#"><button class="btn btn-info" id="guessButton">Click to Guess</button></a>
-                        </div>
-                    </div>
-                    <div class="searchResContainer">
-                        <div id="div_content">
-                            <ul id="searchResult"></ul>
-                            <div class="clear"></div>
-                        </div>
-                    </div>
-                </form>
-            </fieldset>
-        </div>
-
-
-
-    </div>
+<div class="row rounded-0 RedDarken-1 mb-4 sticky-top">
+    <a class="col text-center text-white nav-link" href="/">Home</a>
+    <a class="col text-center text-white nav-link" href="/Instructions">Instructions</a>
+    <a class="col text-center text-white nav-link" href="/initiateGame">Start Over</a>
 </div>
 
-<hr>
+
+
+<div class="setRelative">
+    <div class="border border-dark rounded-0 mb-2">
+        <div class="row mb-2 ml-1 mr-1 mt-2 pt-2 pb-2">
+
+            <div class="col-sm-12 col-md d-flex justify-content-center justify-content-md-start mb-4">
+                <a href="#"><button class="BoxShadow raise" type="button" id="getClueButton">
+                    <span id="clueButtonText">Begin Game</span>
+                </button></a>
+            </div>
+
+            <div class="col-sm-12 col-md d-flex justify-content-center">
+                <span class="col-6 text-left text-white m-auto pl-0" id="cluePoints">Current Clue Point Value:</span>
+                <span class="col-1 text-center text-white m-auto gameNumbers" id="justPoints"></span>
+            </div>
+
+        </div>
+
+        <div class="progress ml-5 mr-5" id="progressBar">
+            <div class="progress-bar progBarOrange" role="progressbar" style="width: 0%" aria-valuenow="1" aria-valuemin="0" aria-valuemax="10">
+            </div>
+        </div>
+    </div>
+
+
+    <div id="MovieHints" class="row d-flex justify-content-center">
+
+        <div id="GetMovieDecade" class="col-4 d-flex justify-content-center">
+            <button id="GetMovieDecadeButton" style="background: none; border: none">
+                <span style="font-size: 14px; color: Dodgerblue;">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Decade</span>
+                </span>
+            </button>
+        </div>
+
+        <div id="GetMovieGenre" class="col-4 d-flex justify-content-center">
+            <button style="background: none; border: none" data-toggle="tooltip" data-placement="bottom" title="Click for Movie's Genre">
+                <span style="font-size: 14px; color: Dodgerblue;">
+                    <i class="fas fa-tasks"></i>
+                    <span>Genre</span>
+                </span>
+            </button>
+        </div>
+
+        <div id="GetMovieDirector" class="col-4 d-flex justify-content-center">
+            <button style="background: none; border: none">
+                <span style="font-size: 14px; color: Dodgerblue;">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Director</span>
+                </span>
+            </button>
+        </div>
+
+
+
+
+        <!-- <div class="col-4 d-flex justify-content-center">
+            <form method="GET" action="GetMovieDecade" id="GetMovieDecade">
+                <button id="GetMovieDecadeButton" style="background: none; border: none">
+                    <span style="font-size: 14px; color: Dodgerblue;">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Decade</span>
+                    </span>
+                </button>
+            </form>
+        </div> -->
+
+        <!-- <div class="col-4 d-flex justify-content-center">
+            <form method="POST" action="GetMovieGenre" id="GetMovieGenre">
+                <button style="background: none; border: none" data-toggle="tooltip" data-placement="bottom" title="Click for Movie's Genre">
+                    <span style="font-size: 14px; color: Dodgerblue;">
+                        <i class="fas fa-tasks"></i>
+                        <span>Genre</span>
+                    </span>
+                </button>
+            </form>
+        </div> -->
+
+        <!-- <div class="col-4 d-flex justify-content-center">
+            <form method="POST" action="GetMovieDirector" id="GetMovieDirector">
+                <button style="background: none; border: none">
+                    <span style="font-size: 14px; color: Dodgerblue;">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Director</span>
+                    </span>
+                </button>
+            </form>
+        </div> -->
+    </div>
+
+
+    <div class="row" id="formContainer">
+        <div class="subscribe subscribe-1" id="guessMovieForm">
+            <form action="guessMovie" method="GET" id="guessMovie">
+                <a href="#" class="subscribe__toggle" id="toggle">
+                    Click to Guess |
+                    <span class="testText">Remaining Guesses: <span id="remainingGuesses"></span></span>
+                </a>
+                <span class="subscribe__success">
+                    <ul id="guessResponse" class="ml-0 pl-0"></ul>
+                </span>
+                <div class="subscribe__wrapper">
+                    <input class="SuccessInput" id="movieGuessInput" name="movieGuessInput" type="text" />
+                    <button id="submit">Guess</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <p class="hiddenDiv" id="hiddenDiv"></p>
+    <p class="testDiv" id="testDiv"></p>
+
+
+
+
+    <!-- <div class="subscribe subscribe-1 subscribe-1__active subscribe-1__success" id="guessMovieForm">
+            <form action="guessMovie" method="GET" id="guessMovie">
+                <a href="#" class="subscribe__toggle subscribe__toggle__hidden" id="toggle">
+                    Click to Guess |
+                    <span class="testText" id="justGuesses">Remaining Guesses: 3</span>
+                </a>
+                <span class="subscribe__success subscribe__success--active">
+                    <ul id="guessResponse" class="ml-0 pl-0"><b>HOME ALONE</b> is WRONG.</ul>
+                </span>
+                <div class="subscribe__wrapper" style="display: none;">
+                    <input class="SuccessInput" id="movieGuessInput" name="movieGuessInput" type="text">
+                    <button id="submit">Guess</button>
+                </div>
+            </form>
+        </div> -->
+
+
+
+
+
+</div>
+
+
+<br>
+<br>
+<br>
+
+<div class="row searchResContainer">
+    <div class="col-sm-6" id="div_content">
+        <ul id="searchResult"></ul>
+        <div class="clear"></div>
+    </div>
+    <div class="col-1 ml-2"></div>
+</div>
+
+
+<br>
+<br>
 
 <div class="row">
-    <div id="instructionsContent" class="col-md-10">
-        <h6 id="instructionsButton" role="button" data-toggle="collapse" aria-expanded="true" href="#collapseExample">
-            <span id="buttonText" data-text-swap="Click to View Overview">Click to Hide Overview</span>
-        </h6>
-        <div class="collapse show" id="collapseExample">
-            <h4 id="OverViewHeader"><b>The Awesome and/or Amazing Movie Game Overview</b></h4>
-            <hr class="linebreak3">
-            <p id="GoalWord"><b>Goal</b><br>To guess the name of movie based on 10 one-word clues</p>
-            <p><b>Game Play </b><br>Clues are presented one at a time and you can guess the movie after any given clue. You have three total guesses. The earlier you correctly guess the movie, the higher the points you receive. </p>
-            <p id="instructionsWord"><b>Instructions</b></p>
-            <ol id="instructionsList" class="card card-body">
-                <li>To start the game, click the <span class="BlueWords">Begin Game </span>button in the <b>List of Clues </b> section. The first <span class="RedWords">Clue </span>will appear.</li>
-
-                <li>To get the next <span class="RedWords">Clue </span>, click the <span class="BlueWords">Get Next Clue </span>button. Repeat this any time you want another <span class="RedWords">Clue. </span></li>
-
-                <li>To guess the <span class="OrangeWords">Movie</span>, type the <span class="OrangeWords">Movie's </span> title in the <b>Guess Movie </b> section. As you type, a drop-down list of movie titles will appear. Select the appropriate <span class="OrangeWords">Movie</span> from the list.</li>
-
-                <li>Click the <span class="BlueWords">Click to Guess </span> button to submit your guess.</li>
-
-                <li>You will be alerted if your guess was right or wrong.</li>
-
-                <li>The game ends if you correctly guess the movie OR if you run out of clues.</li>
-            </ol>
-        </div>
+    <div class="col">
+        <ul id="clueText" class="clueText pl-0 ml-0"></ul>
     </div>
 </div>
 
 
-<div id="adminStuff">
-    <h6>Admin Stuff</h6>
-    <p>
-        <b>Movied ID: </b> @ViewBag.SessionMovieId_testing   |
-        <b>Movie Title: </b> @ViewBag.SessionMovieTitle_testing |
-        <b>Current Player Name: </b> @ViewBag.PlayerName
-    </p>
-</div>
 
 

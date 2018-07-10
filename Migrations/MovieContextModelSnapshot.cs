@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using movieGame.Models;
 using System;
+using System.Collections.Generic;
 
 namespace movieGame.Migrations
 {
@@ -19,6 +20,28 @@ namespace movieGame.Migrations
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
                 .HasAnnotation("ProductVersion", "2.0.1-rtm-125");
+
+            modelBuilder.Entity("movieGame.Models.Actor", b =>
+                {
+                    b.Property<int>("ActorId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ActorName");
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<List<string>>("ImageURLs");
+
+                    b.Property<int?>("MovieId");
+
+                    b.Property<DateTime>("UpdatedAt");
+
+                    b.HasKey("ActorId");
+
+                    b.HasIndex("MovieId");
+
+                    b.ToTable("Actors");
+                });
 
             modelBuilder.Entity("movieGame.Models.Clue", b =>
                 {
@@ -44,6 +67,26 @@ namespace movieGame.Migrations
                     b.ToTable("Clues");
                 });
 
+            modelBuilder.Entity("movieGame.Models.Genre", b =>
+                {
+                    b.Property<int>("GenreId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("GenreName");
+
+                    b.Property<int?>("MovieId");
+
+                    b.Property<DateTime>("UpdatedAt");
+
+                    b.HasKey("GenreId");
+
+                    b.HasIndex("MovieId");
+
+                    b.ToTable("Genres");
+                });
+
             modelBuilder.Entity("movieGame.Models.Movie", b =>
                 {
                     b.Property<int>("MovieId")
@@ -66,10 +109,56 @@ namespace movieGame.Migrations
                     b.ToTable("Movies");
                 });
 
+            modelBuilder.Entity("movieGame.Models.MovieActorJoin", b =>
+                {
+                    b.Property<int>("MovieActorJoinId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("ActorId");
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("MovieId");
+
+                    b.Property<DateTime>("UpdatedAt");
+
+                    b.HasKey("MovieActorJoinId");
+
+                    b.HasIndex("ActorId");
+
+                    b.HasIndex("MovieId");
+
+                    b.ToTable("ActorMovieJoin");
+                });
+
+            modelBuilder.Entity("movieGame.Models.MovieGenreJoin", b =>
+                {
+                    b.Property<int>("MovieGenreJoinId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("GenreId");
+
+                    b.Property<int>("MovieId");
+
+                    b.Property<DateTime>("UpdatedAt");
+
+                    b.HasKey("MovieGenreJoinId");
+
+                    b.HasIndex("GenreId");
+
+                    b.HasIndex("MovieId");
+
+                    b.ToTable("MovieGenreJoin");
+                });
+
             modelBuilder.Entity("movieGame.Models.MoviePlayerJoin", b =>
                 {
                     b.Property<int>("MoviePlayerJoinId")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<int>("AttemptCount");
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -77,7 +166,11 @@ namespace movieGame.Migrations
 
                     b.Property<int>("PlayerId");
 
+                    b.Property<int>("PointsReceived");
+
                     b.Property<DateTime>("UpdatedAt");
+
+                    b.Property<bool>("WinLoss");
 
                     b.HasKey("MoviePlayerJoinId");
 
@@ -95,7 +188,9 @@ namespace movieGame.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<int>("GamesPlayed");
+                    b.Property<int>("GamesAttempted");
+
+                    b.Property<int>("GamesWon");
 
                     b.Property<string>("PlayerName");
 
@@ -108,12 +203,26 @@ namespace movieGame.Migrations
                     b.ToTable("Players");
                 });
 
+            modelBuilder.Entity("movieGame.Models.Actor", b =>
+                {
+                    b.HasOne("movieGame.Models.Movie")
+                        .WithMany("Actors")
+                        .HasForeignKey("MovieId");
+                });
+
             modelBuilder.Entity("movieGame.Models.Clue", b =>
                 {
                     b.HasOne("movieGame.Models.Movie")
                         .WithMany("Clues")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("movieGame.Models.Genre", b =>
+                {
+                    b.HasOne("movieGame.Models.Movie")
+                        .WithMany("Genres")
+                        .HasForeignKey("MovieId");
                 });
 
             modelBuilder.Entity("movieGame.Models.Movie", b =>
@@ -123,14 +232,40 @@ namespace movieGame.Migrations
                         .HasForeignKey("PlayerId");
                 });
 
+            modelBuilder.Entity("movieGame.Models.MovieActorJoin", b =>
+                {
+                    b.HasOne("movieGame.Models.Actor", "Actor")
+                        .WithMany("MovieActorJoin")
+                        .HasForeignKey("ActorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("movieGame.Models.Movie", "Movie")
+                        .WithMany("MovieActorJoin")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("movieGame.Models.MovieGenreJoin", b =>
+                {
+                    b.HasOne("movieGame.Models.Genre", "Genre")
+                        .WithMany("MovieGenreJoin")
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("movieGame.Models.Movie", "Movie")
+                        .WithMany("MovieGenreJoin")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("movieGame.Models.MoviePlayerJoin", b =>
                 {
-                    b.HasOne("movieGame.Models.Movie", "Movies")
+                    b.HasOne("movieGame.Models.Movie", "Movie")
                         .WithMany("MoviePlayerJoin")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("movieGame.Models.Player", "Players")
+                    b.HasOne("movieGame.Models.Player", "Player")
                         .WithMany("MoviePlayerJoin")
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade);
