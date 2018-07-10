@@ -3,30 +3,28 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <!-- <LangVersion>7.1</LangVersion> -->
     <NoWarn>NU1701</NoWarn>
+    <!-- <NoWarn>NU1602</NoWarn>
+    <NoWarn>MSB3277</NoWarn> -->
+
   </PropertyGroup>
   <ItemGroup>
 
-    <PackageReference Include="ConsoleTables" Version="2.2.0" />
-
-    <PackageReference Include="jQuery.UI.Combined" Version="1.12.1" />
-
-    <PackageReference Include="libsassnet" Version="3.3.7-alpha-2" />
-
-    <PackageReference Include="libsassnet.Web" Version="2.3.0-alpha-1" />
-
-    <PackageReference Include="MarkdownLog" Version="0.9.3" />
     <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.6" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.1" />
-    <!-- <PackageReference Include="MongoDB.Driver" Version="2.5.1"/>
-    <PackageReference Include="MongoDB.Driver.Core" Version="2.5.1"/>
-    <PackageReference Include="MongoDB.Bson" version="2.5.1"/> -->
+
+    <PackageReference Include="ConsoleTables" Version="2.2.0" />
+    <PackageReference Include="jQuery.UI.Combined" Version="1.12.1" />
+    <PackageReference Include="libsassnet" Version="3.3.7-alpha-2" />
+    <PackageReference Include="libsassnet.Web" Version="2.3.0-alpha-1" />
+    <PackageReference Include="MarkdownLog" Version="0.9.3" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.0.1" />
     <PackageReference Include="ObjectDumper" Version="1.0.0.12" />
+    <PackageReference Include="popper.js" Version="1.14.3" />
     <PackageReference Include="RestSharp" Version="106.2.2" />
-    <PackageReference Include="System.Windows.Forms" Version="*" />
 
+    <PackageReference Include="System.Windows.Forms" Version="*" />
     <PackageReference Include="System.Windows.Forms.Ribbon35" Version="*" />
 
     <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="2.0.0" />

@@ -123,3 +123,58 @@
         <span class="col-9 text-left text-white m-auto">Remaining Guesses: </span>
         <span class="col-3 text-center text-white m-auto gameNumbers" id="justGuesses">3</span>
     </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                // var sevens = 7777;
+            // var testGet = $(".testDiv").val(sevens);
+            // console.log("TEST GET: ", testGet);
+            // var sevensString = sevens.toString();
+            // $(".testDiv").append(sevensString);
+            // var testGetter = $(".testDiv").get(0).value;
+            // console.log("TEST GETTER: ", testGetter);
+
+            // var setValx = Number(testGetter);
+            // console.log("SET VAL X: ", setValx);
+
+            // if(testGet == 2)
+            // {
+            //     $("#remainingGuesses").append(testGet);
+            // }
+
+
+
+                        // var currentGuessesD = document.getElementById('remainingGuesses');
+            // console.log("D OBJECT", currentGuessesD);
+            // var currentGuessesD_ = $('#remainingGuesses').get(0).innerHTML;
+            // console.log("D STRING: ", currentGuessesD_);
+            // var currentGuessesD__ = Number(currentGuessesD_);
+            // console.log("D NUMBER", currentGuessesD__);
+
+
+
+
+
+
+            var currentGuesses = document.getElementById("remainingGuesses");
+            console.log("CG OBJECT: ", currentGuesses);
+            var currentGuessesString = $("#remainingGuesses").get(0).innerHTML;
+            console.log("CG STRING: ", currentGuessesString);
+            var currentGuessesNumber = Number(currentGuessesString);
+            console.log("CG NUMBER: ", currentGuessesNumber);
+
+            if(currentGuessesNumber > 0)
+            {
+                $("#remainingGuesses").empty();
+                $("#remainingGuesses").append(currentGuessesString);
+            }

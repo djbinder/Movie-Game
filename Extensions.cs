@@ -1,19 +1,14 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Diagnostics;
-using System.Reflection;            // <--- 'MethodBase'
-using System.Text;
-using System.Text.RegularExpressions;
-using ConsoleTables;
 using MarkdownLog;
-using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;              // <--- 'JsonConvert' and 'Formatting.Indented'
 
 
-namespace movieGame {
+namespace movieGame
+{
 
     public static class Extensions
     {

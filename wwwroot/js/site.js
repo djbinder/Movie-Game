@@ -1,6 +1,5 @@
 $(document).ready(function(){
 
-    console.log("DOCUMENT IS READY");
     $("#remainingGuesses").append("3");
 
     $("#getClueButton").click(function() {
@@ -11,43 +10,21 @@ $(document).ready(function(){
 
             $("ul#guessResponse").empty();
 
-            // var currentGuessesD = document.getElementById('remainingGuesses');
-            // console.log("CURRENT GUESSES D", currentGuessesD);
-            // var currentGuessesD_ = $('#remainingGuesses').get(0).innerHTML;
-            // console.log("D NUMBER: ", currentGuessesD_);
-            // var currentGuessesD__ = Number(currentGuessesD_);
-            // console.log("D______", currentGuessesD__);
-
             new ResetForm();
 
-            // var currentGuessesE = document.getElementById("testDiv");
-            // console.log("E: ", currentGuessesE);
-            // var currentGuessesE_ = $(".testDiv").get(0).innerHTML;
-            // console.log("EEEEEEEE: ", currentGuessesE_);
-            // var currentGuessesEEEEEEE = Number(currentGuessesE_);
-            // console.log("asldfjasdl;fkjads;fj: ", currentGuessesEEEEEEE);
+            // var HiddenObject = document.getElementById("hiddenDiv");
+            var HiddenString = $(".hiddenDiv").get(0).innerHTML;
+            var HiddenNumber = Number(HiddenString);
 
-            // if(currentGuessesEEEEEEE > 0)
-            // {
-            //     $("#remainingGuesses").empty();
-            //     $("#remainingGuesses").append(currentGuessesE_);
-            // }
+            // console.log("HIDDEN OBJECT: ", HiddenObject);
+            // console.log("HIDDEN STRING: ", HiddenString);
+            // console.log("HIDDEN NUMBER: ", HiddenNumber);
 
-            // var sevens = 7777;
-            // var testGet = $(".testDiv").val(sevens);
-            // console.log("TEST GET: ", testGet);
-            // var sevensString = sevens.toString();
-            // $(".testDiv").append(sevensString);
-            // var testGetter = $(".testDiv").get(0).value;
-            // console.log("TEST GETTER: ", testGetter);
-
-            // var setValx = Number(testGetter);
-            // console.log("SET VAL X: ", setValx);
-
-            // if(testGet == 2)
-            // {
-            //     $("#remainingGuesses").append(testGet);
-            // }
+            if(HiddenNumber > 0)
+            {
+                $("#remainingGuesses").empty();
+                $("#remainingGuesses").append(HiddenString);
+            }
 
             // ALL MOVIE CLUES ---> returns array of 10 [object object] of clues
             var allMovieClues = res.clues;
@@ -55,12 +32,8 @@ $(document).ready(function(){
             // CONTENT LENGTH ---> content length starts at -1 and keeps counting up; errors out after final clue
             var contentLength = $('ul#clueText > li').length - 1 ;
 
-            var ClueDifficulty = res.clues[contentLength+1].clueDifficulty;
-
-            // if (ClueDifficulty == 1)
-            // {
-            //     console.table(allMovieClues);
-            // }
+            // var ClueDifficulty = res.clues[contentLength+1].clueDifficulty;
+            // if (ClueDifficulty == 1) { console.table(allMovieClues); }
 
             // CLUE POINTS --> '10', then '9', then '8' etc.
             var CluePoints = res.clues[contentLength+1].cluePoints;
@@ -75,7 +48,6 @@ $(document).ready(function(){
             var NewProgress = '<div class="progress-bar progBarOrange" role="progressbar" style="width: ' + percentUp + '%" aria-valuenow=' + valUp + ' aria-valuemin="0" aria-valuemax="10"><span id="cluesLeft"></span></div>';
 
             $("#progressBar").append(NewProgress);
-            // $("#cluesLeft").empty();
 
             if(CluePoints == 1)
             {
@@ -140,12 +112,14 @@ $(document).ready(function(){
 
         console.log("-----'GUESS MOVIE' FUNCTION STARTED-----");
 
-        // USER GUESS ---> 'Goodfellas' etc.
+        // USER GUESS ---> what the player types in to the guess box; e.g., 'Goodfellas' etc.
         var UserGuess = $("input:first").val().toString();
 
         $.get("guessMovie", function(res) {
 
             var currentPointsInt = $("#justPoints").html();
+            var xPointsInt = Number(currentPointsInt);
+            console.log(xPointsInt);
 
             // SESSION MOVIE TITLE ---> 'Goodfellas' etc.
             var SessionMovieTitle = res[0];
@@ -156,7 +130,11 @@ $(document).ready(function(){
             // GUESS COUNT ---> 2, then 1, then 0
             var guessCount     = res[1];
             // var guessCountSpan = "<span class='guessCount'>" + guessCount + "</span>";
-            console.log("GUESS COUNT: ", guessCount);
+
+            // console.log(currentPointsInt);
+            // console.log(SessionMovieTitle);
+            // console.log(SessionMovieTitleToCaps);
+            // console.log("GUESS COUNT: ", guessCount);
 
             // USER GUESS TO CAPS ---> 'GOODFELLAS' etc.
             var UserGuessToCaps = UserGuess.toUpperCase();
@@ -166,9 +144,12 @@ $(document).ready(function(){
 
             if(guessCount > 0)
             {
+                console.log("HIT GUESS COUNT > 0");
                 // guesses remaining; the player WON
                 if(UserGuessToCaps == SessionMovieTitleToCaps)
                 {
+                    console.log("__________ user still has guesses and won __________");
+
                     // clears the 'remaining guesses'div if players wins the game
                     $("#remainingGuesses").empty();
 
@@ -179,7 +160,7 @@ $(document).ready(function(){
                     $("#guessButton").prop("disabled", true);
 
                     // calls the 'UpdatePlayerPoints' function; this sends the point value of the clue the movie was guessed on back to the controller
-                    UpdatePlayerPoints("#guessMovieForm");
+                    new UpdatePlayerPoints("#guessMovieForm", xPointsInt);
 
                     var dialog = bootbox.dialog({
                         message: '<br><div class="endGameMessage row border border-dark"><div class="col"><span class="align-middle"><b class="endWin align-middle">Correct. You win.</b> <br> Points received: ' + currentPointsInt + '</span></div><br><div class="col"><img class="align-middle" src="https://image.tmdb.org/t/p/w92/gKDNaAFzT21cSVeKQop7d1uhoSp.jpg" alt="ASP.NET" class="img-responsive"></div></div>',
@@ -209,13 +190,12 @@ $(document).ready(function(){
                 // guesses remaining; the player's guess was WRONG
                 else
                 {
+                    console.log("__________ user still has guesses and lost __________");
+
                     $("#remainingGuesses").empty();
                     $("#remainingGuesses").append(guessCount);
-                    $(".testDiv").empty();
-                    $(".testDiv").append(guessCount);
-
-                    var currentGuessesC = document.getElementById('remainingGuesses');
-                    console.log("CURRENT GUESSES C", currentGuessesC);
+                    $(".hiddenDiv").empty();
+                    $(".hiddenDiv").append(guessCount);
 
                     $("#movieGuessInput").val('');
 
@@ -230,7 +210,7 @@ $(document).ready(function(){
                 // out of guesses and the player won
                 if(UserGuessToCaps == SessionMovieTitleToCaps)
                 {
-                    console.log("USER GUESS: ", UserGuessToCaps," ", "SESSION MOVIE: " , SessionMovieTitleToCaps);
+                    console.log("__________ user is out of guesses and won __________");
 
                     $("#remainingGuesses").empty();
                     $('#remainingGuesses').append("0");
@@ -241,7 +221,7 @@ $(document).ready(function(){
                     $("#guessButton").prop("disabled", true);
 
                     // calls the 'UpdatePlayerPoints' function; this sends the point value of the clue the movie was guessed on back to the controller
-                    new UpdatePlayerPoints("#guessMovieForm");
+                    new UpdatePlayerPoints("#guessMovieForm", xPointsInt);
 
                     var dialog = bootbox.dialog({
                         message: '<p class="endGameMessage"><b class="endWin">Correct. You win.</b> <br> Points received: ' + currentPointsInt + '<br> </p>',
@@ -271,7 +251,7 @@ $(document).ready(function(){
                 // out of guesses and the player lost
                 else
                 {
-                    console.log("USER GUESS: ", UserGuessToCaps," ", "SESSION MOVIE: " , SessionMovieTitleToCaps);
+                    console.log("__________ user is out of guesses and lost __________");
 
                     $("#remainingGuesses").empty();
 
@@ -279,6 +259,9 @@ $(document).ready(function(){
                     $("#movieGuessInput").val('');
 
                     $("#guessButton").prop("disabled", true);
+
+                    new UpdatePlayerPoints("#guessMovieForm", 0);
+
                     var dialog = bootbox.dialog({
                         message: '<p class="endGameMessage"><b class="endLoss">You lost</b> <br> Please take some time to reflect on your failure. </p>',
                         buttons: {
@@ -360,21 +343,9 @@ $(document).ready(function(){
             $("#formContainer").empty();
             $("#formContainer").replaceWith(divClone.clone(true));
 
-            var currentGuesses = document.getElementById("hiddenDiv");
-            console.log("E: ", currentGuesses);
-            var currentGuessesString = $(".hiddenDiv").get(0).innerHTML;
-            console.log("CURRENT GUESSES STRING: ", currentGuessesString);
-            var currentGuessesNumber = Number(currentGuessesString);
-            console.log("CURRENT GUESSES NUMBER: ", currentGuessesNumber);
-
-            if(currentGuessesNumber > 0)
-            {
-                $("#remainingGuesses").empty();
-                $("#remainingGuesses").append(currentGuessesString);
-            }
         })
 
-        console.log("FORM WAS RESET");
+        // console.log("FORM WAS RESET");
         var toggle = document.getElementById('toggle');
         var wrapper = document.querySelectorAll('.subscribe');
         var submit = document.getElementById('submit');
@@ -386,15 +357,17 @@ $(document).ready(function(){
         // console.log(success);
         // console.log(content);
 
-        toggle.addEventListener('click', function() {
-        this.className += ' subscribe__toggle__hidden';
-        wrapper[0].className += ' subscribe-1__active';
+        toggle.addEventListener('click', function()
+        {
+            this.className += ' subscribe__toggle__hidden';
+            wrapper[0].className += ' subscribe-1__active';
         });
 
-        submit.addEventListener('click', function() {
-        success[0].className += ' subscribe__success--active';
-        wrapper[0].className += ' subscribe-1__success';
-        content[0].style.display = 'none';
+        submit.addEventListener('click', function()
+        {
+            success[0].className += ' subscribe__success--active';
+            wrapper[0].className += ' subscribe-1__success';
+            content[0].style.display = 'none';
         });
     };
 
@@ -431,24 +404,27 @@ function setText(element) {
 
 
 // #region UPDATE PLAYER POINTS
-function UpdatePlayerPoints (formContainer)
+function UpdatePlayerPoints (formContainer, element)
 {
-    // console.log();
-    // console.log("-----'UPDATE USER POINTS' JS FUNCTION STARTED-----");
+    console.log();
+    console.log("-----'UPDATE USER POINTS' JS FUNCTION STARTED-----");
     $.ajax ({
         type: "POST",
         url : "/updatePlayerPoints",
         data: {
             CluePoints: $("#justPoints").html(),
+            MovieId: element
         },
         success: function(data) {
             console.log("PLAYER POINTS SUCCESSFULLY UPDATED");
+            console.log(data.cluePoints);
+            console.log(element);
         },
         error: function(jqXHR, textStatus, errorThrown) {
         },
     })
-    // console.log("-----'UPDATE USER POINTS' JS FUNCTION COMPLETED-----");
-    // console.log();
+    console.log("-----'UPDATE USER POINTS' JS FUNCTION COMPLETED-----");
+    console.log();
 }
 
 
@@ -486,6 +462,39 @@ function ShowProgress ()
 }
 
 
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+});
+
+
+
+
+
+$("#GetMovieDecade").click(function(event)
+{
+    console.log("get hint -----> decade");
+    $('#MovieHints').empty();
+
+    var Replacement = '<div class="col text-center text-white">1990s</div>';
+
+    $('#MovieHints').append(Replacement);
+});
+
+
+$("#GetMovieGenre").click(function(event)
+{
+    console.log("get hint -----> genre");
+    $('#MovieHints').empty();
+    $('#MovieHints').append("comedy, drama, horror, sci-fi");
+});
+
+
+$("#GetMovieDirector").click(function(event)
+{
+    console.log("get hint -----> director");
+    $('#MovieHints').empty();
+    $('#MovieHints').append("Steven Spielberg");
+});
 
 
 
@@ -493,3 +502,12 @@ function ShowProgress ()
 
 
 
+
+$("#GetMovieDecadeButton").click(function(event)
+{
+    $.get("GetMovieDecade", function(res)
+    {
+        console.log("get hint -----> decade");
+        console.log(res);
+    })
+});
