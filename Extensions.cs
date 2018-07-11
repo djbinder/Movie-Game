@@ -100,7 +100,7 @@ namespace movieGame
             return UpperString;
         }
 
-
+        // https://msdn.microsoft.com/en-us/library/system.io.path.getfilename(v=vs.110).aspx
         public static String ThisMethod(this string String)
         {
             Console.ForegroundColor = ConsoleColor.Blue;
@@ -114,11 +114,14 @@ namespace movieGame
             StackFrame frame = new StackFrame(1, true);
             var method = frame.GetMethod();
             var fileName = frame.GetFileName();
+            // var path = @"/Users/DanBinder/Google_Drive/Coding/Projects/movieGame/movieGame/Controllers/";
             var lineNumber = frame.GetFileLineNumber();
+
+            string FileNameTrimmed = Path.GetFileName(fileName);
 
             var timing = DateTime.Now.ToShortTimeString();
 
-            Console.WriteLine("--------------- '{0}' method {1} [Line#: {2} @ {3}] ---------------", methodNameUp, String, lineNumber, timing);
+            Console.WriteLine("---------------File: '{0}' ---> {1} method {2} [Line#: {3} @ {4}] ---------------", FileNameTrimmed, methodName, String, lineNumber, timing);
 
             Console.ResetColor();
             Console.WriteLine();
@@ -140,6 +143,17 @@ namespace movieGame
         {
             // Object.Intro("object intro");
             int countCheck = Object.Count();
+
+            // foreach(var item in Object)
+            // {
+            //     var data = new[]
+            //     {
+            //         new {Num = 1, Name = Object[0], Type = Object[0].GetType()},
+            //     };
+            //     Console.WriteLine();
+            //     Console.Write(data.ToMarkdownTable());
+            //     Console.WriteLine();
+            // }
 
             if(countCheck == 1)
             {

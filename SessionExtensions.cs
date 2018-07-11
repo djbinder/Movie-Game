@@ -11,18 +11,18 @@ namespace movieGame
 
         public static void SetObjectAsJson(this ISession session, string key, object value)
         {
-            Start.ThisMethod();
+            // Start.ThisMethod();
             session.SetString(key, JsonConvert.SerializeObject(value));
-            Complete.ThisMethod();
+            // Complete.ThisMethod();
         }
 
         public static T GetObjectFromJson<T>(this ISession session, string key)
         {
-            Start.ThisMethod();
+            // Start.ThisMethod();
 
             var value = session.GetString(key);
 
-            Complete.ThisMethod();
+            // Complete.ThisMethod();
             return value == null ? default(T) : JsonConvert.DeserializeObject<T>(value);
         }
     }

@@ -13,6 +13,8 @@ namespace movieGame.Models
 
         public int Year { get; set;}
 
+        // public string Decade { get; set; }
+
         public IList<Genre> Genres { get; set; }
 
         public IList<Clue> Clues { get; set; }

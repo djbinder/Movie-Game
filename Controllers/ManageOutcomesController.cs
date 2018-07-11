@@ -21,22 +21,6 @@ namespace movieGame.Controllers
             String Complete = "COMPLETED";
         #endregion
 
-        // public int CheckSession()
-        // {
-        //     int? id = HttpContext.Session.GetInt32("id");
-
-        //     if(id == null)
-        //     {
-        //         Extensions.Spotlight("start new session");
-        //         return 0;
-        //     }
-        //     Extensions.Spotlight("continuing session");
-
-        //     id.Intro("session id");
-
-        //     return (int)id;
-        // }
-
         List<Clue> _clueList = new List<Clue>();
 
         [HttpPost]

@@ -15,8 +15,8 @@
 
     <PackageReference Include="ConsoleTables" Version="2.2.0" />
     <PackageReference Include="jQuery.UI.Combined" Version="1.12.1" />
-    <PackageReference Include="libsassnet" Version="3.3.7-alpha-2" />
-    <PackageReference Include="libsassnet.Web" Version="2.3.0-alpha-1" />
+    <!-- <PackageReference Include="libsassnet" Version="3.3.7-alpha-2" />
+    <PackageReference Include="libsassnet.Web" Version="2.3.0-alpha-1" /> -->
     <PackageReference Include="MarkdownLog" Version="0.9.3" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.0.1" />

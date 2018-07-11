@@ -13,17 +13,13 @@ $(document).ready(function(){
             new ResetForm();
 
             // var HiddenObject = document.getElementById("hiddenDiv");
-            var HiddenString = $(".hiddenDiv").get(0).innerHTML;
-            var HiddenNumber = Number(HiddenString);
+            var ComparisonString = $(".hiddenDiv").get(0).innerHTML;
+            var ComparisonNumber = Number(ComparisonString);
 
-            // console.log("HIDDEN OBJECT: ", HiddenObject);
-            // console.log("HIDDEN STRING: ", HiddenString);
-            // console.log("HIDDEN NUMBER: ", HiddenNumber);
-
-            if(HiddenNumber > 0)
+            if(ComparisonNumber > 0)
             {
                 $("#remainingGuesses").empty();
-                $("#remainingGuesses").append(HiddenString);
+                $("#remainingGuesses").append(ComparisonString);
             }
 
             // ALL MOVIE CLUES ---> returns array of 10 [object object] of clues
@@ -32,8 +28,8 @@ $(document).ready(function(){
             // CONTENT LENGTH ---> content length starts at -1 and keeps counting up; errors out after final clue
             var contentLength = $('ul#clueText > li').length - 1 ;
 
-            // var ClueDifficulty = res.clues[contentLength+1].clueDifficulty;
-            // if (ClueDifficulty == 1) { console.table(allMovieClues); }
+            var ClueDifficulty = res.clues[contentLength+1].clueDifficulty;
+            if (ClueDifficulty == 1) { console.table(allMovieClues); }
 
             // CLUE POINTS --> '10', then '9', then '8' etc.
             var CluePoints = res.clues[contentLength+1].cluePoints;
@@ -53,7 +49,8 @@ $(document).ready(function(){
             {
                 $("#progressBar").empty();
 
-                var FullBar = '<div class="progress-bar progBarOrange" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"><a href="/viewInstructions">You are out clues. Click Here for Help</a></div>';
+                var FullBar = '<div class="progress-bar progBarOrange" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>';
+
                 $("#progressBar").append(FullBar);
 
             }
@@ -110,16 +107,15 @@ $(document).ready(function(){
     // #region  --> GUESS MOVIE
     $("#guessMovie").submit(function(event) {
 
-        console.log("-----'GUESS MOVIE' FUNCTION STARTED-----");
+        // console.log("-----'GUESS MOVIE' FUNCTION STARTED-----");
 
         // USER GUESS ---> what the player types in to the guess box; e.g., 'Goodfellas' etc.
         var UserGuess = $("input:first").val().toString();
 
         $.get("guessMovie", function(res) {
 
-            var currentPointsInt = $("#justPoints").html();
-            var xPointsInt = Number(currentPointsInt);
-            console.log(xPointsInt);
+            var CurrentPointsHTML = $("#justPoints").html();
+            var CurrentPointsInteger = Number(CurrentPointsHTML);
 
             // SESSION MOVIE TITLE ---> 'Goodfellas' etc.
             var SessionMovieTitle = res[0];
@@ -129,12 +125,6 @@ $(document).ready(function(){
 
             // GUESS COUNT ---> 2, then 1, then 0
             var guessCount     = res[1];
-            // var guessCountSpan = "<span class='guessCount'>" + guessCount + "</span>";
-
-            // console.log(currentPointsInt);
-            // console.log(SessionMovieTitle);
-            // console.log(SessionMovieTitleToCaps);
-            // console.log("GUESS COUNT: ", guessCount);
 
             // USER GUESS TO CAPS ---> 'GOODFELLAS' etc.
             var UserGuessToCaps = UserGuess.toUpperCase();
@@ -144,11 +134,11 @@ $(document).ready(function(){
 
             if(guessCount > 0)
             {
-                console.log("HIT GUESS COUNT > 0");
+                // console.log("HIT GUESS COUNT > 0");
                 // guesses remaining; the player WON
                 if(UserGuessToCaps == SessionMovieTitleToCaps)
                 {
-                    console.log("__________ user still has guesses and won __________");
+                    // console.log("__________ user still has guesses and won __________");
 
                     // clears the 'remaining guesses'div if players wins the game
                     $("#remainingGuesses").empty();
@@ -160,16 +150,16 @@ $(document).ready(function(){
                     $("#guessButton").prop("disabled", true);
 
                     // calls the 'UpdatePlayerPoints' function; this sends the point value of the clue the movie was guessed on back to the controller
-                    new UpdatePlayerPoints("#guessMovieForm", xPointsInt);
+                    new UpdatePlayerPoints("#guessMovieForm", CurrentPointsInteger);
 
                     var dialog = bootbox.dialog({
-                        message: '<br><div class="endGameMessage row border border-dark"><div class="col"><span class="align-middle"><b class="endWin align-middle">Correct. You win.</b> <br> Points received: ' + currentPointsInt + '</span></div><br><div class="col"><img class="align-middle" src="https://image.tmdb.org/t/p/w92/gKDNaAFzT21cSVeKQop7d1uhoSp.jpg" alt="ASP.NET" class="img-responsive"></div></div>',
+                        message: '<br><div class="endGameMessage row border border-dark"><div class="col"><span class="align-middle"><b class="endWin align-middle">Correct. You win.</b> <br> Points received: ' + CurrentPointsHTML + '</span></div><br><div class="col"><img class="align-middle" src="https://image.tmdb.org/t/p/w92/gKDNaAFzT21cSVeKQop7d1uhoSp.jpg" alt="ASP.NET" class="img-responsive"></div></div>',
                         buttons: {
                             cancel: {
                                 label    : "Quit (I'm a loser)",
                                 className: 'btn-danger endButton',
                                 callback : function() {
-                                    console.log("QUIT GAME");
+                                    // console.log("QUIT GAME");
                                     window.location.href = "/";
                                 }
                             },
@@ -180,8 +170,8 @@ $(document).ready(function(){
                                 className: 'btn-success endButton',
                                 callback : function()
                                 {
-                                    console.log("PLAY AGAIN");
-                                    window.location.href = "/initiateGame";
+                                    // console.log("PLAY AGAIN");
+                                    window.location.href = "InitiateGame";
                                 }
                             }
                         }
@@ -190,7 +180,7 @@ $(document).ready(function(){
                 // guesses remaining; the player's guess was WRONG
                 else
                 {
-                    console.log("__________ user still has guesses and lost __________");
+                    // console.log("__________ user still has guesses and lost __________");
 
                     $("#remainingGuesses").empty();
                     $("#remainingGuesses").append(guessCount);
@@ -210,7 +200,7 @@ $(document).ready(function(){
                 // out of guesses and the player won
                 if(UserGuessToCaps == SessionMovieTitleToCaps)
                 {
-                    console.log("__________ user is out of guesses and won __________");
+                    // console.log("__________ user is out of guesses and won __________");
 
                     $("#remainingGuesses").empty();
                     $('#remainingGuesses').append("0");
@@ -221,16 +211,16 @@ $(document).ready(function(){
                     $("#guessButton").prop("disabled", true);
 
                     // calls the 'UpdatePlayerPoints' function; this sends the point value of the clue the movie was guessed on back to the controller
-                    new UpdatePlayerPoints("#guessMovieForm", xPointsInt);
+                    new UpdatePlayerPoints("#guessMovieForm", CurrentPointsInteger);
 
                     var dialog = bootbox.dialog({
-                        message: '<p class="endGameMessage"><b class="endWin">Correct. You win.</b> <br> Points received: ' + currentPointsInt + '<br> </p>',
+                        message: '<p class="endGameMessage"><b class="endWin">Correct. You win.</b> <br> Points received: ' + CurrentPointsHTML + '<br> </p>',
                         buttons: {
                             cancel: {
                                 label    : "Quit (I'm a loser)",
                                 className: 'btn-danger endButton',
                                 callback : function() {
-                                    console.log("QUIT GAME");
+                                    // console.log("QUIT GAME");
                                     window.location.href = "/";
                                 }
                             },
@@ -240,8 +230,8 @@ $(document).ready(function(){
                                 className: 'btn-success endButton',
                                 callback : function()
                                 {
-                                    console.log("PLAY AGAIN");
-                                    window.location.href = "/initiateGame";
+                                    // console.log("PLAY AGAIN");
+                                    window.location.href = "InitiateGame";
                                 }
                             }
                         }
@@ -251,8 +241,7 @@ $(document).ready(function(){
                 // out of guesses and the player lost
                 else
                 {
-                    console.log("__________ user is out of guesses and lost __________");
-
+                    // console.log("__________ user is out of guesses and lost __________");
                     $("#remainingGuesses").empty();
 
                     $("ul#guessResponse").empty();
@@ -269,7 +258,7 @@ $(document).ready(function(){
                                 label    : "Quit (I'm a loser)",
                                 className: 'btn-danger endButton',
                                 callback : function() {
-                                    console.log("QUIT GAME");
+                                    // console.log("QUIT GAME");
                                     window.location.href = "/";
                                 }
                             },
@@ -279,8 +268,8 @@ $(document).ready(function(){
                                 className: 'btn-success endButton',
                                 callback : function()
                                 {
-                                    console.log("PLAY AGAIN");
-                                    window.location.href = "/initiateGame";
+                                    // console.log("PLAY AGAIN");
+                                    window.location.href = "InitiateGame";
                                 }
                             }
                         }
@@ -289,7 +278,7 @@ $(document).ready(function(){
             }
         });
 
-        console.log("-----'GUESS MOVIE' FUNCTION COMPLETED-----");
+        // console.log("-----'GUESS MOVIE' FUNCTION COMPLETED-----");
         event.preventDefault();
     });
 
@@ -342,7 +331,6 @@ $(document).ready(function(){
         $("#getClueButton").click(function() {
             $("#formContainer").empty();
             $("#formContainer").replaceWith(divClone.clone(true));
-
         })
 
         // console.log("FORM WAS RESET");
@@ -371,10 +359,7 @@ $(document).ready(function(){
         });
     };
 
-
     var divClone = $("#formContainer").clone(true);
-    // console.log("DIV CLONE", divClone);
-
 });
 
 
@@ -406,8 +391,8 @@ function setText(element) {
 // #region UPDATE PLAYER POINTS
 function UpdatePlayerPoints (formContainer, element)
 {
-    console.log();
-    console.log("-----'UPDATE USER POINTS' JS FUNCTION STARTED-----");
+    // console.log();
+    // console.log("-----'UPDATE USER POINTS' JS FUNCTION STARTED-----");
     $.ajax ({
         type: "POST",
         url : "/updatePlayerPoints",
@@ -423,8 +408,8 @@ function UpdatePlayerPoints (formContainer, element)
         error: function(jqXHR, textStatus, errorThrown) {
         },
     })
-    console.log("-----'UPDATE USER POINTS' JS FUNCTION COMPLETED-----");
-    console.log();
+    // console.log("-----'UPDATE USER POINTS' JS FUNCTION COMPLETED-----");
+    // console.log();
 }
 
 
@@ -433,12 +418,13 @@ function SendClueToController (element)
 {
     $.ajax ({
         type: "GET",
-        url : "/getClueFromJavaScript",
+        url : "/GetClueFromJavaScript",
         data: {
             ClueText: element,
         },
         success: function(data) {
-            console.log("TO CONTROLLER: " + element);
+            console.log(element);
+            // console.log("TO CONTROLLER: " + element);
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.log("ERROR: CLUE NOT SENT TO CONTROLLER");
@@ -467,47 +453,42 @@ $(function () {
 });
 
 
-
-
-
-$("#GetMovieDecade").click(function(event)
-{
-    console.log("get hint -----> decade");
-    $('#MovieHints').empty();
-
-    var Replacement = '<div class="col text-center text-white">1990s</div>';
-
-    $('#MovieHints').append(Replacement);
-});
-
-
-$("#GetMovieGenre").click(function(event)
-{
-    console.log("get hint -----> genre");
-    $('#MovieHints').empty();
-    $('#MovieHints').append("comedy, drama, horror, sci-fi");
-});
-
-
-$("#GetMovieDirector").click(function(event)
-{
-    console.log("get hint -----> director");
-    $('#MovieHints').empty();
-    $('#MovieHints').append("Steven Spielberg");
-});
-
-
-
-
-
-
-
-
 $("#GetMovieDecadeButton").click(function(event)
 {
-    $.get("GetMovieDecade", function(res)
+    $.get("GetMovieHint", function(res)
     {
-        console.log("get hint -----> decade");
-        console.log(res);
+        var MovieDecade = res[1]['Decade'];
+
+        $('#MovieHints').empty();
+
+        var Replacement = '<div class="col text-center text-white">Movie Decade: ' + MovieDecade + '</div>';
+
+        $('#MovieHints').append(Replacement);
+    })
+});
+$("#GetMovieGenreButton").click(function(event)
+{
+    $.get("GetMovieHint", function(res)
+    {
+        var MovieGenre = res[1]['Genre'];
+
+        $('#MovieHints').empty();
+
+        var Replacement = '<div class="col text-center text-white">Movie Genre: ' + MovieGenre + '</div>';
+
+        $('#MovieHints').append(Replacement);
+    })
+});
+$("#GetMovieDirectorButton").click(function(event)
+{
+    $.get("GetMovieHint", function(res)
+    {
+        var MovieDirector = res[1]['Director'];
+
+        $('#MovieHints').empty();
+
+        var Replacement = '<div class="col text-center text-white">Movie Director: ' + MovieDirector + '</div>';
+
+        $('#MovieHints').append(Replacement);
     })
 });
