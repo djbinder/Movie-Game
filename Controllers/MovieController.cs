@@ -1,14 +1,6 @@
-// using System;
-// using System.Collections.Generic;
-// using System.Linq;
-// using System.Reflection;
-// using System.Text;
-// using System.Text.RegularExpressions;
-// using ConsoleTables;
-
-
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;                      // <--- various db queries (e.g., 'FirstOrDefault', 'OrderBy', etc.)
 using Microsoft.AspNetCore.Http;        // <--- set session variables (e.g., 'SetString', 'SetInt32', etc.)
 using Microsoft.AspNetCore.Mvc;         // <--- anything related to mvc (e.g., 'Controller', '[HttpGet]', 'HttpContext.Session')
@@ -23,6 +15,7 @@ namespace movieGame.Controllers
 {
     public class MovieController : Controller
     {
+        private const string Key = "MovieInfo";
         private MovieContext _context;
 
         public MovieController (MovieContext context) {
@@ -35,7 +28,7 @@ namespace movieGame.Controllers
 
         // view table of all movies including Id, Title, Description, Year, and list of Clues
         [HttpGet]
-        [Route ("allMovies")]
+        [Route ("AllMovies")]
         public IActionResult ViewAllMovies ()
         {
             Start.ThisMethod();
@@ -48,14 +41,14 @@ namespace movieGame.Controllers
 
 
         // get all of a movie's JSON info based on movie title and release year
-        [HttpGet]
-        [Route("getMovieJSON")]
-        public IActionResult GetMovieJSON(string movieName, int movieYear)
+        // [HttpGet]
+        // [Route("getMovieJSON")]
+        public JObject GetMovieJSON(string MovieName, int MovieYear)
         {
             Start.ThisMethod();
 
             // var APIqueryTitleYear = "https://www.omdbapi.com/?t=" + "Guardians of the Galaxy Vol. 2" + "&y=" + 2017 + "&apikey=4514dc2d";
-            var APIqueryTitleYear = "https://www.omdbapi.com/?t=" + movieName + "&y=" + movieYear + "&apikey=4514dc2d";
+            var APIqueryTitleYear = "https://www.omdbapi.com/?t=" + MovieName + "&y=" + MovieYear + "&apikey=4514dc2d";
 
             #region POSTMAN VARIABLES
                 // CLIENT ---> 'RestSharp.RestClient'
@@ -75,17 +68,67 @@ namespace movieGame.Controllers
             var responseJSON = response.Content;
 
             // MOVIE JSON ---> all movie JSON presented more cleanly (i.e., it has been parsed)
-            JObject movieJSON= JObject.Parse(responseJSON);
-
-            // MOVIE TITLE ---> the title of the movie
-            string MovieTitle = (string)movieJSON["Title"];
-
-            // IMDB ID ---> imdb id number (.e.g, tt3896198)
-            string imdbID = (string)movieJSON["imdbID"];
+            JObject MovieJSON = JObject.Parse(responseJSON);
+            // MovieJSON.Intro("movie json");
 
             // Complete.ThisMethod();
-            return Json(movieJSON);
+            return MovieJSON;
         }
+
+
+        public Hashtable GetMovieInfo(JObject MovieJSON)
+        {
+            Start.ThisMethod();
+
+            // MOVIE TITLE ---> the title of the movie
+            string MovieTitle = (string)MovieJSON ["Title"];
+            string MovieReleaseYear = (string)MovieJSON["Year"];
+            string MovieGenre = (string)MovieJSON["Genre"];
+            string MovieDirector = (string)MovieJSON["Director"];
+
+            // System.Collections.Hashtable
+            Hashtable MovieInfo = new Hashtable();
+            MovieInfo.Add("MovieTitle", MovieTitle);
+            MovieInfo.Add("MovieReleaseYear", MovieReleaseYear);
+            MovieInfo.Add("MovieGenre", MovieGenre);
+            MovieInfo.Add("MovieDirector", MovieDirector);
+
+            try {
+                HttpContext.Session.SetObjectAsJson(key: "MovieJson", value: MovieInfo);
+            }
+
+            catch {
+                Console.WriteLine("error is still occurring");
+            }
+
+            // set if you want the below to print to console
+            bool ExecuteWriteLines = false;
+
+            if(ExecuteWriteLines == true)
+            {
+                Extensions.TableIt(MovieTitle, MovieReleaseYear, MovieGenre, MovieDirector);
+
+                IDictionaryEnumerator _enumerator = MovieInfo.GetEnumerator();
+
+                int _enumeratorCount = 1;
+
+                while (_enumerator.MoveNext())
+                {
+                    Console.WriteLine();
+                    Console.WriteLine(_enumeratorCount);
+                    Console.WriteLine("Key   | " + _enumerator.Key.ToString());
+                    Console.WriteLine("Value | " + _enumerator.Value.ToString());
+                    Console.WriteLine();
+                    _enumeratorCount++;
+                }
+
+            };
+
+            return MovieInfo;
+
+        }
+
+
 
 
         // get information about one movie
@@ -99,19 +142,19 @@ namespace movieGame.Controllers
                 ViewBag.Movies = _context.Movies.Include(w => w.Clues).SingleOrDefault(x => x.MovieId == id);
 
                 // CURRENT MOVIE ---> movieGame.Models.Movie
-                var currentMovie = _context.Movies.Include(w => w.Clues).SingleOrDefault(x => x.MovieId == id);
+                var CurrentMovie = _context.Movies.Include(w => w.Clues).SingleOrDefault(x => x.MovieId == id);
 
                 // CURRENT MOVIE TITLE ---> the title of the movie pulled from the database
-                var currentMovieTitle = currentMovie.Title;
-                // currentMovieTitle.Intro("current movie title");
+                var CurrentMovieTitle = CurrentMovie.Title;
+                // CurrentMovieTitle.Intro("current movie title");
 
                 // CURRENT MOVIE YEAR ---> the release year of the movie pulled from the database
-                var currentMovieYear = currentMovie.Year;
+                var CurrentMovieYear = CurrentMovie.Year;
             #endregion DATABASE QUERIES
 
             #region API QUERIES
                 // API QUERY ---> 'Microsoft.AspNetCore.Mvc.JsonResult'
-                var APIquery = GetMovieJSON(currentMovieTitle, currentMovieYear);
+                var APIquery = GetMovieJSON(CurrentMovieTitle, CurrentMovieYear);
 
                 // API QUERY ---> 'Microsoft.AspNetCore.Mvc.JsonResult'; has a different type than APIquery
                 var jsonResult = Json(APIquery);
@@ -120,19 +163,19 @@ namespace movieGame.Controllers
                 string jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(jsonResult.Value);
 
                 // MOVIE JSON ---> JSON STRING but cleaner/parsed
-                JObject movieJSON = JObject.Parse(jsonString);
+                JObject MovieJSON  = JObject.Parse(jsonString);
             #endregion API QUERIES
 
             // #region API MOVIE INFO
-                string MovieTitle = (string)movieJSON["Value"]["Title"];
-                string MovieRating = (string)movieJSON["Value"]["Rated"];
-                string MovieYear = (string)movieJSON["Value"]["Year"];
+                string MovieTitle = (string)MovieJSON ["Value"]["Title"];
+                string MovieRating = (string)MovieJSON ["Value"]["Rated"];
+                string MovieYear = (string)MovieJSON ["Value"]["Year"];
 
-                string MovieActors = ViewBag.Actors = (string)movieJSON["Value"]["Actors"];
-                string MovieWriter = ViewBag.MovieWriter = (string)movieJSON["Value"]["Writer"];
-                string MovieDirector = ViewBag.MovieDirector = (string)movieJSON["Value"]["Director"];
-                string MovieGenre = ViewBag.MovieGenre = (string)movieJSON["Value"]["Genre"];
-                string MoviePoster = ViewBag.MoviePoster = (string)movieJSON["Value"]["Poster"];
+                string MovieActors = ViewBag.Actors = (string)MovieJSON ["Value"]["Actors"];
+                string MovieWriter = ViewBag.MovieWriter = (string)MovieJSON ["Value"]["Writer"];
+                string MovieDirector = ViewBag.MovieDirector = (string)MovieJSON ["Value"]["Director"];
+                string MovieGenre = ViewBag.MovieGenre = (string)MovieJSON ["Value"]["Genre"];
+                string MoviePoster = ViewBag.MoviePoster = (string)MovieJSON ["Value"]["Poster"];
             // #endregion API MOVIE INFO
 
             Complete.ThisMethod();

@@ -6,7 +6,7 @@
 <div class="row rounded-0 RedDarken-1 mb-4 sticky-top">
     <a class="col text-center text-white nav-link" href="/">Home</a>
     <a class="col text-center text-white nav-link" href="/Instructions">Instructions</a>
-    <a class="col text-center text-white nav-link" href="/initiateGame">Start Over</a>
+    <a class="col text-center text-white nav-link" href="/InitiateGame">Start Over</a>
 </div>
 
 
@@ -39,7 +39,7 @@
 
         <div id="GetMovieDecade" class="col-4 d-flex justify-content-center">
             <button id="GetMovieDecadeButton" style="background: none; border: none">
-                <span style="font-size: 14px; color: Dodgerblue;">
+                <span style="font-size: 14px; color:#304ffe;">
                     <i class="fas fa-calendar-alt"></i>
                     <span>Decade</span>
                 </span>
@@ -47,8 +47,8 @@
         </div>
 
         <div id="GetMovieGenre" class="col-4 d-flex justify-content-center">
-            <button style="background: none; border: none" data-toggle="tooltip" data-placement="bottom" title="Click for Movie's Genre">
-                <span style="font-size: 14px; color: Dodgerblue;">
+            <button id="GetMovieGenreButton" style="background: none; border: none">
+                <span style="font-size: 14px; color:#304ffe;">
                     <i class="fas fa-tasks"></i>
                     <span>Genre</span>
                 </span>
@@ -56,49 +56,14 @@
         </div>
 
         <div id="GetMovieDirector" class="col-4 d-flex justify-content-center">
-            <button style="background: none; border: none">
-                <span style="font-size: 14px; color: Dodgerblue;">
+            <button id="GetMovieDirectorButton" style="background: none; border: none">
+                <span style="font-size: 14px; color:#304ffe;">
                     <i class="fas fa-user-circle"></i>
                     <span>Director</span>
                 </span>
             </button>
         </div>
 
-
-
-
-        <!-- <div class="col-4 d-flex justify-content-center">
-            <form method="GET" action="GetMovieDecade" id="GetMovieDecade">
-                <button id="GetMovieDecadeButton" style="background: none; border: none">
-                    <span style="font-size: 14px; color: Dodgerblue;">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>Decade</span>
-                    </span>
-                </button>
-            </form>
-        </div> -->
-
-        <!-- <div class="col-4 d-flex justify-content-center">
-            <form method="POST" action="GetMovieGenre" id="GetMovieGenre">
-                <button style="background: none; border: none" data-toggle="tooltip" data-placement="bottom" title="Click for Movie's Genre">
-                    <span style="font-size: 14px; color: Dodgerblue;">
-                        <i class="fas fa-tasks"></i>
-                        <span>Genre</span>
-                    </span>
-                </button>
-            </form>
-        </div> -->
-
-        <!-- <div class="col-4 d-flex justify-content-center">
-            <form method="POST" action="GetMovieDirector" id="GetMovieDirector">
-                <button style="background: none; border: none">
-                    <span style="font-size: 14px; color: Dodgerblue;">
-                        <i class="fas fa-user-circle"></i>
-                        <span>Director</span>
-                    </span>
-                </button>
-            </form>
-        </div> -->
     </div>
 
 
@@ -119,32 +84,6 @@
             </form>
         </div>
     </div>
-
-    <p class="hiddenDiv" id="hiddenDiv"></p>
-    <p class="testDiv" id="testDiv"></p>
-
-
-
-
-    <!-- <div class="subscribe subscribe-1 subscribe-1__active subscribe-1__success" id="guessMovieForm">
-            <form action="guessMovie" method="GET" id="guessMovie">
-                <a href="#" class="subscribe__toggle subscribe__toggle__hidden" id="toggle">
-                    Click to Guess |
-                    <span class="testText" id="justGuesses">Remaining Guesses: 3</span>
-                </a>
-                <span class="subscribe__success subscribe__success--active">
-                    <ul id="guessResponse" class="ml-0 pl-0"><b>HOME ALONE</b> is WRONG.</ul>
-                </span>
-                <div class="subscribe__wrapper" style="display: none;">
-                    <input class="SuccessInput" id="movieGuessInput" name="movieGuessInput" type="text">
-                    <button id="submit">Guess</button>
-                </div>
-            </form>
-        </div> -->
-
-
-
-
 
 </div>
 
@@ -171,6 +110,11 @@
     </div>
 </div>
 
+
+
+
+<p class="hiddenDiv" id="hiddenDiv"></p>
+<!-- <p class="testDiv" id="testDiv"></p> -->
 
 
 

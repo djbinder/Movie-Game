@@ -1,15 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;       // <--- 'List'
-using System.Diagnostics;               // <-- 'StackFrame'
 using System.Linq;                      // <--- various db queries (e.g., 'FirstOrDefault', 'OrderBy', etc.)
 using Microsoft.AspNetCore.Http;        // <--- set session variables (e.g., 'SetString', 'SetInt32', etc.)
 using Microsoft.AspNetCore.Mvc;         // <--- anything related to mvc (e.g., 'Controller', '[HttpGet]', 'HttpContext.Session')
 using Microsoft.EntityFrameworkCore;    // <--- 'include' in db queries
-using Newtonsoft.Json;                  // <--- 'JsonConvert'
-using Newtonsoft.Json.Linq;             // <--- 'JObject'
-using MarkdownLog;
-using RestSharp;                        // <--- REST related things: 'RestClient', 'RestRequest', 'IRestResponse'
 using movieGame.Models;
 
 namespace movieGame.Controllers
@@ -126,49 +121,34 @@ namespace movieGame.Controllers
             return Json(MovieGuessItems);
         }
 
-        [HttpGet]
-        [Route("GetMovieDecade")]
-        public JsonResult GetMovieDecade ()
-        {
-            Console.WriteLine("decade");
-
-            var GetKind = "decade";
-
-            List<object> Retrieve = HttpContext.Session.GetObjectFromJson<List<object>>("TheList");
-
-            return Json(Retrieve);
-        }
 
         [HttpGet]
-        [Route("GetMovieGenre")]
-        public JsonResult GetMovieGenre ()
+        [Route("GetMovieHint")]
+
+        public JsonResult GetMovieHint ()
         {
-            Console.WriteLine("genre");
+            Start.ThisMethod();
 
-            var GetKind = "genre";
+            List<object> MovieHints = HttpContext.Session.GetObjectFromJson<List<object>>("MovieHints");
 
-            return Json(GetKind);
-        }
+            Hashtable MovieHintsTable = HttpContext.Session.GetObjectFromJson<Hashtable>("MovieHintsTable");
 
+            Dictionary<string, string> MovieHintsDictionary = HttpContext.Session.GetObjectFromJson<Dictionary<string, string>>("MovieHintsDictionary");
 
-        [HttpGet]
-        [Route("GetMovieDirector")]
-        public JsonResult GetMovieDirector ()
-        {
-            Console.WriteLine("director");
+            List<object> AllGroupingTypes = new List<object>();
 
-            var GetKind = "director";
+            AllGroupingTypes.Add(MovieHints);
+            AllGroupingTypes.Add(MovieHintsTable);
+            AllGroupingTypes.Add(MovieHintsDictionary);
 
-            return Json(GetKind);
+            // Complete.ThisMethod();
+            return Json(AllGroupingTypes);
         }
 
 
 
-
-        List<Clue> _clueList = new List<Clue>();
-
         [HttpGet]
-        [Route("getClueFromJavaScript")]
+        [Route("GetClueFromJavaScript")]
         public JsonResult GetClueFromJavaScript (Clue clueInfo)
         {
             string CurrentClue = clueInfo.ClueText;
