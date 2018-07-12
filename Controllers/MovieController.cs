@@ -106,7 +106,7 @@ namespace movieGame.Controllers
 
             if(ExecuteWriteLines == true)
             {
-                Extensions.TableIt(MovieTitle, MovieReleaseYear, MovieGenre, MovieDirector);
+                // Extensions.TableIt(MovieTitle, MovieReleaseYear, MovieGenre, MovieDirector);
 
                 IDictionaryEnumerator _enumerator = MovieInfo.GetEnumerator();
 
