@@ -23,7 +23,7 @@ namespace movieGame
         public Startup (IHostingEnvironment env)
         {
 
-            // Start.ThisMethod();
+            Console.WriteLine("test write");
 
             var builder = new ConfigurationBuilder ()
                 .SetBasePath (env.ContentRootPath)
@@ -47,7 +47,7 @@ namespace movieGame
         }
 
         // to switch to dev environment: export ASPNETCORE_ENVIRONMENT="Development"
-        public void Configure (IApplicationBuilder app, ILoggerFactory loggerFactory, IHostingEnvironment env, ForwardedHeadersOptions options)
+        public void Configure (IApplicationBuilder app, ILoggerFactory loggerFactory, IHostingEnvironment env)
         {
             // Start.ThisMethod();
 
@@ -57,18 +57,18 @@ namespace movieGame
                 app.UseDeveloperExceptionPage ();
             }
 
-            if (options == null)
-            {
-                throw new ArgumentNullException (nameof (options));
-            }
+            // if (options == null)
+            // {
+            //     throw new ArgumentNullException (nameof (options));
+            // }
 
-            if (env.IsProduction())
-            {
-                app.UseForwardedHeaders(new ForwardedHeadersOptions
-                {
-                    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-                });
-            }
+            // if (env.IsProduction())
+            // {
+            //     app.UseForwardedHeaders(new ForwardedHeadersOptions
+            //     {
+            //         ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            //     });
+            // }
             app.UseStaticFiles ();
             app.UseSession ();
             app.UseMvc ();
