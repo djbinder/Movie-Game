@@ -28,8 +28,8 @@ $(document).ready(function(){
             // CONTENT LENGTH ---> content length starts at -1 and keeps counting up; errors out after final clue
             var contentLength = $('ul#clueText > li').length - 1 ;
 
-            var ClueDifficulty = res.clues[contentLength+1].clueDifficulty;
-            if (ClueDifficulty == 1) { console.table(allMovieClues); }
+            // var ClueDifficulty = res.clues[contentLength+1].clueDifficulty;
+            // if (ClueDifficulty == 1) { console.table(allMovieClues); }
 
             // CLUE POINTS --> '10', then '9', then '8' etc.
             var CluePoints = res.clues[contentLength+1].cluePoints;
@@ -328,9 +328,12 @@ $(document).ready(function(){
 
     function ResetForm()
     {
+
         $("#getClueButton").click(function() {
             $("#formContainer").empty();
             $("#formContainer").replaceWith(divClone.clone(true));
+
+
         })
 
         // console.log("FORM WAS RESET");
@@ -461,7 +464,7 @@ $("#GetMovieDecadeButton").click(function(event)
 
         $('#MovieHints').empty();
 
-        var Replacement = '<div class="col text-center text-white">Movie Decade: ' + MovieDecade + '</div>';
+        var Replacement = '<div class="col text-center text-white">Movie Year: ' + MovieDecade + '</div>';
 
         $('#MovieHints').append(Replacement);
     })

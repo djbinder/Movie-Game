@@ -19,7 +19,9 @@ namespace movieGame.Controllers
 
         // SPOTLIGHT' and 'THISMETHOD' EXTENSION METHODS VARIABLES
         String Start = "STARTED";
-        String Complete = "COMPLETED";
+        // String Complete = "COMPLETED";
+
+
 
 
         [HttpGet]
@@ -34,12 +36,40 @@ namespace movieGame.Controllers
         }
 
 
+        public Movie GetSessionMovie()
+        {
+            Start.ThisMethod();
+
+            // SESSION MOVIE ID ---> retrieved to be used set JSON info below
+            int? SessionMovieId = HttpContext.Session.GetInt32("sessionMovieId");
+
+            // ONE MOVIE ---> movieGame.Models.Movie
+            var oneMovie = _context.Movies.Include(w => w.Clues).SingleOrDefault(x => x.MovieId == SessionMovieId);
+
+            // MOVIE ---> returns array of all movies objects
+                // Clues comes back as 'System.Collections.Generic.List`1[movieGame.Models.Clue]'
+            Movie movie = new Movie ()
+            {
+                Title = oneMovie.Title,
+                Year = oneMovie.Year,
+                Clues = new List<Clue>()
+            };
+
+            return movie;
+        }
+
+
         // get another clue during game; 10 clues per movie
         [HttpGet]
         [Route("getClue")]
         public JsonResult GetClue()
         {
             Start.ThisMethod();
+
+            // GetSessionMovie();
+
+            // var _movie = GetSessionMovie();
+            // _movie.Intro("_movie");
 
             #region get current movie info
                 // SESSION MOVIE ID ---> retrieved to be used set JSON info below

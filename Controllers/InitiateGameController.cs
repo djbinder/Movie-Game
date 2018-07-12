@@ -22,7 +22,7 @@ namespace movieGame.Controllers
 
         // 'SPOTLIGHT' and 'THISMETHOD' EXTENSION METHODS VARIABLES
         String Start = "STARTED";
-        String Complete = "COMPLETED";
+        // String Complete = "COMPLETED";
 
 
         // enter name on index page; set session name and id; redirect to 'INITIATE GAME' method
@@ -146,6 +146,7 @@ namespace movieGame.Controllers
 
             // SESSION MOVIE ID & NAME ---> sets the name and id for the movie that was selected
             HttpContext.Session.SetString("sessionMovieTitle", SetMovieObject.Title);
+            HttpContext.Session.SetInt32("sessionMovieYear", SetMovieObject.Year);
             HttpContext.Session.SetInt32("sessionMovieId", SetMovieId);
 
             Hashtable SessionMovieInfoTable = new Hashtable();
@@ -168,10 +169,13 @@ namespace movieGame.Controllers
         {
             Start.ThisMethod();
 
+            var SessionMovieTitle = HttpContext.Session.GetString("sessionMovieTitle");
+            int SessionMovieYear = (int)HttpContext.Session.GetInt32("sessionMovieYear");
+
             var _movieController = new MovieController(_context);
 
             // Microsoft.AspNetCore.Mvc.JsonResult
-            JObject OneMovieJObject = _movieController.GetMovieJSON("Top Gun", 1986);
+            JObject OneMovieJObject = _movieController.GetMovieJSON(SessionMovieTitle, SessionMovieYear);
 
             // System.Collections.Hashtable
             Hashtable OneMovieHashTable = _movieController.GetMovieInfo(OneMovieJObject);

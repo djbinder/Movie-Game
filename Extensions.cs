@@ -21,7 +21,8 @@ namespace movieGame
 
             string json = JsonConvert.SerializeObject(x, Formatting.Indented);
 
-            Console.WriteLine(x + " --------------------------- " + json + " --------------------------- " + x);
+            Console.WriteLine($"{x} --------------------------- {json} --------------------------- {x}");
+            // Console.WriteLine(x + " --------------------------- " + json + " --------------------------- " + x);
 
             Console.WriteLine("'DIG extension METHOD' COMPLETED");
 
@@ -52,8 +53,8 @@ namespace movieGame
         // public static void Spotlight<T>(this T x, string Message)
         public static void Spotlight (this string Message)
         {
-            string jsonMessage = JsonConvert.SerializeObject(Message, Formatting.Indented);
-            string UpperMessage = jsonMessage.ToUpper();
+            string FullMessage = JsonConvert.SerializeObject(Message, Formatting.Indented).ToUpper();
+            // string UpperMessage = jsonMessage.ToUpper();
 
             StackFrame frame = new StackFrame(1, true);
             var lineNumber = frame.GetFileLineNumber();
@@ -63,11 +64,11 @@ namespace movieGame
                 // change text color
                 Console.ForegroundColor = ConsoleColor.Magenta;
 
-                Console.WriteLine("***** {0} @ Line#: {1} *****", UpperMessage, lineNumber);
+                // Console.WriteLine("***** {0} @ Line#: {1} *****", UpperMessage, lineNumber);
+                Console.WriteLine($"***** {FullMessage} @ Line#: {lineNumber} *****");
 
                 Console.Write(writer.ToString());
 
-                // reset the console text color
                 Console.ResetColor();
             }
         }
@@ -87,6 +88,7 @@ namespace movieGame
             var lineNumber = frame.GetFileLineNumber();
 
             // Console.WriteLine(UpperString + " ---> " + Object);
+            // Console.WriteLine($"{UpperString} [@ Line#: {lineNumber}] ---> {Object} ");
             Console.WriteLine("{0} [@ Line#: {1}] ---> {2} ", UpperString, lineNumber - 1, Object);
 
             using (var writer = File.AppendText("debug.log"))
@@ -108,8 +110,8 @@ namespace movieGame
 
             StackTrace stackTrace = new StackTrace();
 
-            var methodName = stackTrace.GetFrame(1).GetMethod().Name;
-            var methodNameUp = methodName.ToUpper();
+            var MethodName = stackTrace.GetFrame(1).GetMethod().Name;
+            // var methodNameUp = methodName.ToUpper();
 
             StackFrame frame = new StackFrame(1, true);
             var method = frame.GetMethod();
@@ -121,7 +123,8 @@ namespace movieGame
 
             var timing = DateTime.Now.ToShortTimeString();
 
-            Console.WriteLine("---------------File: '{0}' ---> {1} method {2} [Line#: {3} @ {4}] ---------------", FileNameTrimmed, methodName, String, lineNumber, timing);
+            Console.WriteLine($"---------------File: {FileNameTrimmed} ---> {MethodName} {String} [Line#: {lineNumber} @ {timing}] ---------------");
+            // Console.WriteLine("---------------File: '{0}' ---> {1} method {2} [Line#: {3} @ {4}] ---------------", FileNameTrimmed, methodName, String, lineNumber, timing);
 
             Console.ResetColor();
             Console.WriteLine();
@@ -129,7 +132,7 @@ namespace movieGame
             using (var writer = File.AppendText("debug.log"))
             {
                 writer.WriteLine();
-                writer.WriteLine("--------------- '{0}' method {1} [Line#: {2} @ {3}] ---------------", methodNameUp, String, lineNumber, timing);
+                writer.WriteLine("--------------- '{0}' method {1} [Line#: {2} @ {3}] ---------------", MethodName, String, lineNumber, timing);
                 writer.WriteLine();
             }
 
@@ -141,19 +144,7 @@ namespace movieGame
 
         public static void TableIt(params object[] Object)
         {
-            // Object.Intro("object intro");
             int countCheck = Object.Count();
-
-            // foreach(var item in Object)
-            // {
-            //     var data = new[]
-            //     {
-            //         new {Num = 1, Name = Object[0], Type = Object[0].GetType()},
-            //     };
-            //     Console.WriteLine();
-            //     Console.Write(data.ToMarkdownTable());
-            //     Console.WriteLine();
-            // }
 
             if(countCheck == 1)
             {
@@ -218,10 +209,8 @@ namespace movieGame
 
             if(countCheck > 6)
             {
-                Console.WriteLine("!!!!! TOO MANY THINGS TO EXPLORE !!!!!");
+                Console.WriteLine("!!!!! TOO MANY THINGS TO TABLE !!!!!");
             }
-
-
             return;
         }
 
@@ -264,12 +253,6 @@ namespace movieGame
             };
 
             Console.Write(data.ToMarkdownTable());
-
-            // var rows = Enumerable.Repeat(x => x.Something);
-
-            // ConsoleTable
-            // .From<Something>(rows)
-            // .Write(Format.Alternative);
 
             Console.ReadKey();
 

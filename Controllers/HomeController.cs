@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;         // <--- anything related to mvc (e.g., '
 using Microsoft.EntityFrameworkCore;    // <--- 'include' in db queries
 using Newtonsoft.Json.Linq;             // <--- 'JObject'
 using movieGame.Models;
-using System.Windows.Forms;
+
 
 
 namespace movieGame.Controllers
@@ -20,8 +20,6 @@ namespace movieGame.Controllers
             _context = context;
         }
 
-
-        // 'SPOTLIGHT' and 'THISMETHOD' EXTENSION METHODS VARIABLES
         String Start = "STARTED";
         String Complete = "COMPLETED";
 
@@ -32,12 +30,12 @@ namespace movieGame.Controllers
 
             if(id == null)
             {
-                Console.WriteLine("start new session with id {0}", id);
+                Console.WriteLine($"start new session with id {id}");
                 return 0;
             }
 
             HttpContext.Session.SetInt32("id", (int)id);
-            Console.WriteLine("continuing session with id {0}", id);
+            Console.WriteLine($"continuing session with id {id}");
 
             return (int)id;
         }
@@ -71,11 +69,10 @@ namespace movieGame.Controllers
         public IActionResult ViewLeaderBoard ()
         {
             // LEADERS ---> System.Collections.Generic.List`1[movieGame.Models.Player]
-            var Leaders = _context.Players.OrderByDescending(t => t.Points).ToList();
-            ViewBag.Leaders = Leaders;
+            var Leaders = ViewBag.Leaders = _context.Players.OrderByDescending(t => t.Points).ToList();
+            // ViewBag.Leaders = Leaders;
             return View("leaderboard");
         }
-
 
 
         [HttpGet]
@@ -84,12 +81,13 @@ namespace movieGame.Controllers
         {
             Start.ThisMethod();
 
+            // movieGame.Models.Player
             Player QueryPlayer = _context.Players.Include(m => m.MoviePlayerJoin).ThenInclude(n => n.Movie).SingleOrDefault(p => p.PlayerId == id);
 
-            QueryPlayer.Intro("query player");
             var GamesWon = ViewBag.GamesWon = QueryPlayer.GamesWon;
 
-            ViewBag.PlayerName = QueryPlayer.PlayerName;
+            var PlayerName = ViewBag.PlayerName = QueryPlayer.PlayerName;
+            // PlayerName.Intro("getting profile for player");
             ViewBag.GamesPlayed = QueryPlayer.GamesAttempted;
             ViewBag.PlayerPoints = QueryPlayer.Points;
 
@@ -110,15 +108,14 @@ namespace movieGame.Controllers
                 ViewBag.Attempts = movie.AttemptCount;
 
                 var _movieController = new MovieController(_context);
-                var GetJSON = _movieController.GetMovieJSON(_movie.Title, _movie.Year);
+                JObject MovieJObject = _movieController.GetMovieJSON(_movie.Title, _movie.Year);
 
-                var MovieJSON = Json(GetJSON);
-                string MovieString = Newtonsoft.Json.JsonConvert.SerializeObject(MovieJSON.Value);
-                var MovieJObject = JObject.Parse(MovieString);
 
-                string MoviePoster = ViewBag.MoviePoster = (string)MovieJObject["Value"]["Poster"];
-
+                string MoviePoster = ViewBag.MoviePoster = MovieJObject["Poster"].ToString();
+                // MoviePoster.Intro("movie poster");
+                // string MoviePoster = ViewBag.MoviePoster = (string)MovieJObject["Value"]["Poster"];
                 _moviePoster.Add(MoviePoster);
+
 
                 if(movie.MovieId <= GamesWon)
                 {
@@ -162,9 +159,9 @@ namespace movieGame.Controllers
 
 
 
-            // var GetJSON = _movieController.GetMovieJSON(_movie.Title, _movie.Year);
+            // var MovieJObject = _movieController.GetMovieJSON(_movie.Title, _movie.Year);
 
-            // var MovieJSON = Json(GetJSON);
+            // var MovieJSON = Json(MovieJObject);
             // string MovieString = Newtonsoft.Json.JsonConvert.SerializeObject(MovieJSON.Value);
             // var MovieJObject = JObject.Parse(MovieString);
 
@@ -172,15 +169,15 @@ namespace movieGame.Controllers
             // var _movieController = new MovieController(_context);
             // _movieController.GetActorImage("Tom Cruise");
 
-            // var GetJSON = _movieController.GetActorImage("Tom Cruise");
-            // GetJSON.Dig();
-            // var ActorJSON = Json(GetJSON);
+            // var MovieJObject = _movieController.GetActorImage("Tom Cruise");
+            // MovieJObject.Dig();
+            // var ActorJSON = Json(MovieJObject);
             // string ActorString = Newtonsoft.Json.JsonConvert.SerializeObject(ActorJSON.Value);
             // ActorString.Intro("actor string");
             // var ActorJObject = JObject.Parse(ActorString);
             // // ActorJObject.Intro("actor jobject");
 
-            // // Extensions.TableIt(GetJSON, ActorJSON, ActorString, ActorJObject);
+            // // Extensions.TableIt(MovieJObject, ActorJSON, ActorString, ActorJObject);
 
             // string ActorName = ViewBag.ActorName = (string)ActorJObject["Value"]["results"][0]["name"];
             // ActorName.Intro("actor name");

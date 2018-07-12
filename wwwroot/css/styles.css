@@ -22,7 +22,6 @@ Animate the size, inside
 @keyframes pulse {
   0% {
     box-shadow: 0 0 0 0 var(--hover); } }
-
 .close:hover,
 .close:focus {
   box-shadow: inset -3.5em 0 0 0 var(--hover), inset 3.5em 0 0 0 var(--hover); }
@@ -113,7 +112,7 @@ html {
 .subscribe-1 {
   position: absolute;
   left: 0;
-  top: 225px;
+  top: 100px;
   right: 0;
   bottom: 0;
   width: 25em;
@@ -131,7 +130,7 @@ html {
   .subscribe-1 .SuccessInput {
     color: #304ffe;
     width: 75%;
-    height: 100%;
+    height: 25px;
     margin-right: 2%;
     padding-left: 0.5em;
     padding-right: 0.5em;
@@ -195,3 +194,5 @@ html {
 
 .testText {
   font-size: .75em; }
+
+/*# sourceMappingURL=styles.css.map */
