@@ -15,7 +15,7 @@ namespace movieGame.Controllers
 {
     public class MovieController : Controller
     {
-        private const string Key = "MovieInfo";
+        // private const string Key = "MovieInfo";
         private MovieContext _context;
 
         public MovieController (MovieContext context) {
@@ -68,23 +68,23 @@ namespace movieGame.Controllers
             var responseJSON = response.Content;
 
             // MOVIE JSON ---> all movie JSON presented more cleanly (i.e., it has been parsed)
-            JObject MovieJSON = JObject.Parse(responseJSON);
-            // MovieJSON.Intro("movie json");
+            JObject MovieJObject = JObject.Parse(responseJSON);
+            // MovieJObject.Intro("movie json");
 
             // Complete.ThisMethod();
-            return MovieJSON;
+            return MovieJObject;
         }
 
 
-        public Hashtable GetMovieInfo(JObject MovieJSON)
+        public Hashtable GetMovieInfo(JObject MovieJObject)
         {
             Start.ThisMethod();
 
             // MOVIE TITLE ---> the title of the movie
-            string MovieTitle = (string)MovieJSON ["Title"];
-            string MovieReleaseYear = (string)MovieJSON["Year"];
-            string MovieGenre = (string)MovieJSON["Genre"];
-            string MovieDirector = (string)MovieJSON["Director"];
+            string MovieTitle = (string)MovieJObject ["Title"];
+            string MovieReleaseYear = (string)MovieJObject["Year"];
+            string MovieGenre = (string)MovieJObject["Genre"];
+            string MovieDirector = (string)MovieJObject["Director"];
 
             // System.Collections.Hashtable
             Hashtable MovieInfo = new Hashtable();
@@ -152,31 +152,21 @@ namespace movieGame.Controllers
                 var CurrentMovieYear = CurrentMovie.Year;
             #endregion DATABASE QUERIES
 
-            #region API QUERIES
-                // API QUERY ---> 'Microsoft.AspNetCore.Mvc.JsonResult'
-                var APIquery = GetMovieJSON(CurrentMovieTitle, CurrentMovieYear);
 
-                // API QUERY ---> 'Microsoft.AspNetCore.Mvc.JsonResult'; has a different type than APIquery
-                var jsonResult = Json(APIquery);
+            JObject MovieJObject = GetMovieJSON(CurrentMovieTitle, CurrentMovieYear);
+            // MovieJObject.Intro("movie object");
 
-                // JSON STRING ---> all JSON data; movie JSON data is nested within this data;
-                string jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(jsonResult.Value);
+            string MovieTitle = MovieJObject["Title"].ToString();
+            MovieTitle.Intro("getting profile for movie");
+            string MovieRating = (string)MovieJObject["Rated"];
+            string MovieYear = (string)MovieJObject["Year"];
 
-                // MOVIE JSON ---> JSON STRING but cleaner/parsed
-                JObject MovieJSON  = JObject.Parse(jsonString);
-            #endregion API QUERIES
+            string MovieActors = ViewBag.Actors = (string)MovieJObject["Actors"];
+            string MovieWriter = ViewBag.MovieWriter = (string)MovieJObject["Writer"];
+            string MovieDirector = ViewBag.MovieDirector = (string)MovieJObject["Director"];
+            string MovieGenre = ViewBag.MovieGenre = (string)MovieJObject["Genre"];
+            string MoviePoster = ViewBag.MoviePoster = (string)MovieJObject["Poster"];
 
-            // #region API MOVIE INFO
-                string MovieTitle = (string)MovieJSON ["Value"]["Title"];
-                string MovieRating = (string)MovieJSON ["Value"]["Rated"];
-                string MovieYear = (string)MovieJSON ["Value"]["Year"];
-
-                string MovieActors = ViewBag.Actors = (string)MovieJSON ["Value"]["Actors"];
-                string MovieWriter = ViewBag.MovieWriter = (string)MovieJSON ["Value"]["Writer"];
-                string MovieDirector = ViewBag.MovieDirector = (string)MovieJSON ["Value"]["Director"];
-                string MovieGenre = ViewBag.MovieGenre = (string)MovieJSON ["Value"]["Genre"];
-                string MoviePoster = ViewBag.MoviePoster = (string)MovieJSON ["Value"]["Poster"];
-            // #endregion API MOVIE INFO
 
             Complete.ThisMethod();
             return View("Movie");

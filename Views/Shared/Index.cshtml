@@ -1,7 +1,19 @@
 <head>
+    <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+
+    <link rel="stylesheet"
+        href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css"
+        asp-fallback-test-class="sr-only"
+        asp-fallback-test-property="position"
+        asp-fallback-test-value="absolute" />
+
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
-  </head>
+</head>
 
 
 <body>
@@ -19,7 +31,7 @@
     <div class="col px-4">
         <form action="SetGamePlayer" method="POST" class="enterNameForm">
 
-            <input class="input-field text-white"name="NameEntered" placeholder="Enter Your Name to Play" type="text" aria-describedby="basic-addon2" value="Joe">
+            <input class="input-field text-white"name="NameEntered" placeholder="Enter Your Name to Play" type="text" aria-describedby="basic-addon2">
 
             <br><p id="NameError">@ViewBag.ErrorMessage</p>
             <div class="buttons">
@@ -65,4 +77,5 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+
 </body>

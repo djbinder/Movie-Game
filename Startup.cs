@@ -1,22 +1,27 @@
 using System;
-using Microsoft.AspNetCore.Builder;                 // <--- 'IApplicationBuilder'
-using Microsoft.AspNetCore.Hosting;                 // <--- 'IHostingEnvironment'
-using Microsoft.AspNetCore.Mvc;         // <--- anything related to mvc (e.g., 'Controller', '[HttpGet]', 'HttpContext.Session')
-using Microsoft.EntityFrameworkCore;                // <--- 'UseNpgsql'
-using Microsoft.Extensions.Configuration;           // <--- 'IConfiguration' and 'ConfigurationBuilder'
-using Microsoft.Extensions.DependencyInjection;     // <--- 'IServiceCollection'
-using Microsoft.Extensions.Logging;                 // <--- 'ILoggerFactory'
+
+using Microsoft.AspNetCore.Builder; // <--- 'IApplicationBuilder'
+using Microsoft.AspNetCore.Hosting; // <--- 'IHostingEnvironment'
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc; // <--- anything related to mvc (e.g., 'Controller', '[HttpGet]', 'HttpContext.Session')
+using Microsoft.EntityFrameworkCore; // <--- 'UseNpgsql'
+using Microsoft.Extensions.Configuration; // <--- 'IConfiguration' and 'ConfigurationBuilder'
+using Microsoft.Extensions.DependencyInjection; // <--- 'IServiceCollection'
+using Microsoft.Extensions.Logging; // <--- 'ILoggerFactory'
 
 using movieGame.Controllers;
 using movieGame.Models;
 
+namespace movieGame
+{
+    public class Startup
+    {
 
-namespace movieGame {
-    public class Startup {
 
         public IConfiguration Configuration { get; private set; }
 
-        public Startup (IHostingEnvironment env) {
+        public Startup (IHostingEnvironment env)
+        {
 
             // Start.ThisMethod();
 
@@ -29,7 +34,8 @@ namespace movieGame {
             // Complete.ThisMethod();
         }
 
-        public void ConfigureServices (IServiceCollection services) {
+        public void ConfigureServices (IServiceCollection services)
+        {
 
             // Start.ThisMethod();
 
@@ -41,16 +47,28 @@ namespace movieGame {
         }
 
         // to switch to dev environment: export ASPNETCORE_ENVIRONMENT="Development"
-        public void Configure (IApplicationBuilder app, ILoggerFactory loggerFactory, IHostingEnvironment env)
+        public void Configure (IApplicationBuilder app, ILoggerFactory loggerFactory, IHostingEnvironment env, ForwardedHeadersOptions options)
         {
             // Start.ThisMethod();
 
-            if( env.IsDevelopment() )
+            if (env.IsDevelopment ())
             {
                 loggerFactory.AddConsole ();
                 app.UseDeveloperExceptionPage ();
             }
 
+            if (options == null)
+            {
+                throw new ArgumentNullException (nameof (options));
+            }
+
+            if (env.IsProduction())
+            {
+                app.UseForwardedHeaders(new ForwardedHeadersOptions
+                {
+                    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+                });
+            }
             app.UseStaticFiles ();
             app.UseSession ();
             app.UseMvc ();
