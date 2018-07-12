@@ -23,7 +23,7 @@ namespace movieGame
         public Startup (IHostingEnvironment env)
         {
 
-            // Start.ThisMethod();
+            Console.WriteLine("test write");
 
             var builder = new ConfigurationBuilder ()
                 .SetBasePath (env.ContentRootPath)
