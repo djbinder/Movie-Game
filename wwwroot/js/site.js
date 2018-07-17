@@ -495,3 +495,7 @@ $("#GetMovieDirectorButton").click(function(event)
         $('#MovieHints').append(Replacement);
     })
 });
+
+
+
+

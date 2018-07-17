@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace movieGame.Models
 {
-    public class MovieContext : DbContext
+    public class MovieContext : IdentityDbContext<Player>
+    // public class MovieContext : DbContext
     {
         public MovieContext(DbContextOptions<MovieContext> options) : base(options) { }
 
@@ -14,8 +16,7 @@ namespace movieGame.Models
         public DbSet<MovieGenreJoin> MovieGenreJoin { get; set; }
         public DbSet<MoviePlayerJoin> MoviePlayerJoin { get; set; }
         public DbSet<MovieActorJoin> MovieActorJoin { get; set; }
-
-
+        public DbSet<PowerUser> PowerUsers { get; set; }
     }
 }
 

@@ -22,7 +22,18 @@ namespace movieGame.Controllers
 
         // 'SPOTLIGHT' and 'THISMETHOD' EXTENSION METHODS VARIABLES
         String Start = "STARTED";
-        // String Complete = "COMPLETED";
+        String Complete = "COMPLETED";
+
+
+        [HttpGet]
+        [Route("GameList")]
+        public IActionResult ViewGameList ()
+        {
+            Start.ThisMethod();
+            Complete.ThisMethod();
+
+            return View("GameList");
+        }
 
 
         // enter name on index page; set session name and id; redirect to 'INITIATE GAME' method
