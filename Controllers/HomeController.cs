@@ -175,7 +175,7 @@ namespace movieGame.Controllers
             // string ActorString = Newtonsoft.Json.JsonConvert.SerializeObject(ActorJSON.Value);
             // ActorString.Intro("actor string");
             // var ActorJObject = JObject.Parse(ActorString);
-            // // ActorJObject.Intro("actor jobject");
+            // // ActorJObject.Intro("actor JObject");
 
             // // Extensions.TableIt(MovieJObject, ActorJSON, ActorString, ActorJObject);
 

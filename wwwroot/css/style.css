@@ -12,8 +12,11 @@
 
 
 /* #region OTHER GLOBAL FORMATTING */
-.linebreak1 {
+.LineBreakBlack {
     border: 1.5px solid black;
+}
+.LineBreakWhite {
+    border: 2px solid white;
 }
 .linebreak2 {
     border: 1px solid slateblue;
