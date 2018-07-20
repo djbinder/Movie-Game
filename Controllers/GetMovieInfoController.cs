@@ -25,8 +25,8 @@ namespace movieGame.Controllers
 
         public int MoviesInDatabaseCount ()
         {
+            Start.ThisMethod();
             int _movieCount = _context.Movies.Count();
-            Console.WriteLine(_movieCount);
             return _movieCount;
         }
 
@@ -161,7 +161,8 @@ namespace movieGame.Controllers
 
 
             // Complete.ThisMethod();
-            return RedirectToAction("ViewSingleMovie", "ShowViews");
+            return View("SingleMovie");
+            // return RedirectToAction("ViewSingleMovie", "ShowViews");
         }
 
 

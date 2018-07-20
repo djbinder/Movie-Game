@@ -1,18 +1,12 @@
 <head>
-    <link rel="stylesheet"
-        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <link rel="stylesheet"
-        href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css"
-        asp-fallback-test-class="sr-only"
-        asp-fallback-test-property="position"
-        asp-fallback-test-value="absolute" />
-
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css" asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.css" asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+    <!-- <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/> -->
+
+    <link rel="stylesheet" href="~/css/styles.css" />
 </head>
 
 
@@ -35,7 +29,7 @@
     <div class="col px-4">
         <form action="SetGamePlayer" method="POST" class="enterNameForm">
 
-            <input class="input-field text-white"name="NameEntered" placeholder="Enter Your Name to Play" type="text" value="Dan" aria-describedby="basic-addon2">
+            <input class="input-field text-white"name="NameEntered" placeholder="Enter Your Name to Play" type="text" value="Brian" aria-describedby="basic-addon2">
 
             <br><p id="NameError">@ViewBag.ErrorMessage</p>
             <div class="buttons">
@@ -80,6 +74,6 @@
     <div class="col-md-3"></div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script> -->
 
 </body>
