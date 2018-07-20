@@ -44,7 +44,7 @@ namespace movieGame
         // reference: https://github.com/aspnet/Security/issues/1310
         public void ConfigureServices (IServiceCollection services)
         {
-            services.AddIdentity<Player, IdentityRole>()
+            services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<MovieContext>()
                 .AddDefaultTokenProviders();
 

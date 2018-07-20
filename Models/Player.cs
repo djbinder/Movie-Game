@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace movieGame.Models
 {
-    public class Player : IdentityUser
-    // public class Player : BaseEntity
+    public class Player : BaseEntity
+
     {
         public int PlayerId { get; set; }
 
@@ -25,9 +25,9 @@ namespace movieGame.Models
 
         public int GamesWon { get; set; }
 
-        public DateTime CreatedAt {get;set;}
+        public new DateTime CreatedAt {get;set;}
 
-        public DateTime UpdatedAt {get;set;}
+        public new DateTime UpdatedAt {get;set;}
 
         public IList<Movie> Movies {get; set; }
 

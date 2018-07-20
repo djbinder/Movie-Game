@@ -1,4 +1,4 @@
-@model movieGame.Models.PlayerViewModel
+@model PlayerViewModel
 
 <h3 class="text-white">Log In and Register</h3>
 <hr style="border: 2px solid black;">
@@ -9,27 +9,27 @@
     <form asp-controller="ManagePlayers" asp-action="RegisterPlayer" method="POST">
         <table>
             <tr style="height: 35px">
-                <td class="text-white">First Name: </td>
+                <label for="PlayerFirstName"><td class="text-white">First Name: </td></label>
                 <td><input asp-for="RegisterViewModel.PlayerFirstName" placeholder="Enter First Name"></td>
                 <td style="padding-left: 10px"><span class="error" asp-validation-for="RegisterViewModel.PlayerFirstName"></span></td>
             </tr>
             <tr style="height: 35px">
-                <td class="text-white">Last Name: </td>
+                <label for="PlayerLastName"></label><td class="text-white">Last Name: </td></label>
                 <td><input asp-for="RegisterViewModel.PlayerLastName" placeholder="Enter Last Name"></td>
                 <td style="padding-left: 10px"><span class="error" asp-validation-for="RegisterViewModel.PlayerLastName"></span></td>
             </tr>
             <tr style="height: 35px">
-                <td class="text-white">Email: </td>
+                <label for="PlayerEmail"></label><td class="text-white">Email: </td></label>
                 <td><input asp-for="RegisterViewModel.PlayerEmail" placeholder="Enter Email"></td>
                 <td style="padding-left: 10px"><span class="error" asp-validation-for="RegisterViewModel.PlayerEmail"></span></td>
             </tr>
             <tr style="height: 35px">
-                <td class="text-white">Password: </td>
+                <label for="PlayerPassword"></label><td class="text-white">Password: </td></label>
                 <td><input asp-for="RegisterViewModel.PlayerPassword" placeholder="Enter Password"></td>
                 <td style="padding-left: 10px"><span class="error" asp-validation-for="RegisterViewModel.PlayerPassword"></span></td>
             </tr>
             <tr style="height: 35px">
-                <td class="text-white" style="width: 150px">Confirm Password: </td>
+                <label for="Confirm"></label><td class="text-white" style="width: 150px">Confirm Password: </td></label>
                 <td><input asp-for="RegisterViewModel.Confirm" placeholder="Confirm Password"></td>
                 <td style="padding-left: 10px"><span class="error" asp-validation-for="RegisterViewModel.Confirm"></span></td>
             </tr>

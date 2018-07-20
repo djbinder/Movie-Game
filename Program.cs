@@ -14,6 +14,7 @@ namespace movieGame {
 
         public static void Main (string[] args) {
             Start.ThisMethod();
+
             Console.WriteLine($"Version: {Environment.Version}");
             BuildWebHost (args).Run ();
         }
@@ -24,3 +25,19 @@ namespace movieGame {
             .Build ();
     }
 }
+
+
+// without azure
+    // public static IWebHost BuildWebHost (string[] args) =>
+        // WebHost.CreateDefaultBuilder (args)
+        // .UseStartup<Startup> ()
+        //.Build ();
+
+// WITH azure deployment
+    // public static IWebHost BuildWebHost(string[] args) =>
+        // WebHost.CreateDefaultBuilder(args)
+        // .UseKestrel()
+        // .UseContentRoot(Directory.GetCurrentDirectory())
+        // .UseStartup<startup>()
+        // .UseIISIntegration()
+        // .Build();

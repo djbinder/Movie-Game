@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;                      // <--- various db queries (e.g., 'FirstOrDefault', 'OrderBy', etc.)
 using Microsoft.AspNetCore.Http;        // <--- set session variables (e.g., 'SetString', 'SetInt32', etc.)
 using Microsoft.AspNetCore.Mvc;         // <--- anything related to mvc (e.g., 'Controller', '[HttpGet]', 'HttpContext.Session')
@@ -8,17 +7,15 @@ using Microsoft.EntityFrameworkCore;    // <--- 'include' in db queries
 using Newtonsoft.Json.Linq;             // <--- 'JObject'
 using RestSharp;                        // <--- REST related things: 'RestClient', 'RestRequest', 'IRestResponse'
 using movieGame.Models;
-
-
+using Newtonsoft.Json;
 
 namespace movieGame.Controllers
 {
-    public class MovieController : Controller
+    public class GetMovieInfoController : Controller
     {
-        // private const string Key = "MovieInfo";
         private MovieContext _context;
 
-        public MovieController (MovieContext context) {
+        public GetMovieInfoController (MovieContext context) {
             _context = context;
         }
 
@@ -26,28 +23,33 @@ namespace movieGame.Controllers
         String Complete = "COMPLETED";
 
 
-        // view table of all movies including Id, Title, Description, Year, and list of Clues
-        [HttpGet]
-        [Route ("AllMovies")]
-        public IActionResult ViewAllMovies ()
+        public int MoviesInDatabaseCount ()
+        {
+            int _movieCount = _context.Movies.Count();
+            Console.WriteLine(_movieCount);
+            return _movieCount;
+        }
+
+
+        public Movie DeserializeMovieObject ()
         {
             Start.ThisMethod();
 
-            ViewBag.Movies = _context.Movies.Include(w => w.Clues).OrderBy(d => d.MovieId).ToList();
+            var apiResponse = "https://www.omdbapi.com/?t=Toy+Story&y=1995&apikey=4514dc2d";
+            Movie m = JsonConvert.DeserializeObject<Movie>(apiResponse);
 
-            // Complete.ThisMethod();
-            return View ();
+            return m;
         }
 
 
         // get all of a movie's JSON info based on movie title and release year
-        // [HttpGet]
-        // [Route("getMovieJSON")]
         public JObject GetMovieJSON(string MovieName, int MovieYear)
         {
             Start.ThisMethod();
 
-            // var APIqueryTitleYear = "https://www.omdbapi.com/?t=" + "Guardians of the Galaxy Vol. 2" + "&y=" + 2017 + "&apikey=4514dc2d";
+            // the test version DOES work
+            // var APIqueryTitleYearTEST = $"https://www.omdbapi.com/?t={MovieName}&y={MovieYear}&apikey=4514dc2d";
+            // APIqueryTitleYearTEST.Intro("test");
             var APIqueryTitleYear = "https://www.omdbapi.com/?t=" + MovieName + "&y=" + MovieYear + "&apikey=4514dc2d";
 
             #region POSTMAN VARIABLES
@@ -69,18 +71,16 @@ namespace movieGame.Controllers
 
             // MOVIE JSON ---> all movie JSON presented more cleanly (i.e., it has been parsed)
             JObject MovieJObject = JObject.Parse(responseJSON);
-            // MovieJObject.Intro("movie json");
 
             // Complete.ThisMethod();
             return MovieJObject;
         }
 
 
-        public Hashtable GetMovieInfo(JObject MovieJObject)
+        public Hashtable GetMovieInfoHashTable(JObject MovieJObject)
         {
             Start.ThisMethod();
 
-            // MOVIE TITLE ---> the title of the movie
             string MovieTitle = (string)MovieJObject ["Title"];
             string MovieReleaseYear = (string)MovieJObject["Year"];
             string MovieGenre = (string)MovieJObject["Genre"];
@@ -92,14 +92,6 @@ namespace movieGame.Controllers
             MovieInfo.Add("MovieReleaseYear", MovieReleaseYear);
             MovieInfo.Add("MovieGenre", MovieGenre);
             MovieInfo.Add("MovieDirector", MovieDirector);
-
-            try {
-                HttpContext.Session.SetObjectAsJson(key: "MovieJson", value: MovieInfo);
-            }
-
-            catch {
-                Console.WriteLine("error is still occurring");
-            }
 
             // set if you want the below to print to console
             bool ExecuteWriteLines = false;
@@ -168,12 +160,14 @@ namespace movieGame.Controllers
             string MoviePoster = ViewBag.MoviePoster = (string)MovieJObject["Poster"];
 
 
-            Complete.ThisMethod();
-            return View("Movie");
+            // Complete.ThisMethod();
+            return RedirectToAction("ViewSingleMovie", "ShowViews");
         }
 
+
+
         [HttpGet]
-        [Route("/getActorImage")]
+        [Route("GetActorImage")]
         public JsonResult GetActorImage(string actorName)
         {
             Start.ThisMethod();
@@ -226,7 +220,7 @@ namespace movieGame.Controllers
 
 
         [HttpGet]
-        [Route("getBackgroundPosters")]
+        [Route("GetBackgroundPosters")]
         public JsonResult GetBackgroundPosters()
         {
             Start.ThisMethod();
@@ -277,7 +271,7 @@ namespace movieGame.Controllers
                 ViewBag.TopMoviePosters = TopMoviePosters;
             }
 
-            Complete.ThisMethod();
+            // Complete.ThisMethod();
             return Json(TopMoviePosters);
         }
     }
