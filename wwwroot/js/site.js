@@ -3,7 +3,7 @@ $(document).ready(function(){
     $("#remainingGuesses").append("3");
 
     $("#getClueButton").click(function() {
-        $.get("getClue", function(res){
+        $.get("GetClue", function(res){
 
             $("#clueButtonText").empty();
             $("#clueButtonText").append("Get Next Clue");
@@ -28,15 +28,18 @@ $(document).ready(function(){
             // CONTENT LENGTH ---> content length starts at -1 and keeps counting up; errors out after final clue
             var contentLength = $('ul#clueText > li').length - 1 ;
 
-            // var ClueDifficulty = res.clues[contentLength+1].clueDifficulty;
-            // if (ClueDifficulty == 1) { console.table(allMovieClues); }
+            var ClueDifficulty = res.clues[contentLength+1].clueDifficulty;
+            if (ClueDifficulty == 1)
+            {
+                console.table(allMovieClues);
+            }
 
             // CLUE POINTS --> '10', then '9', then '8' etc.
             var CluePoints = res.clues[contentLength+1].cluePoints;
 
-            var currentClue = allMovieClues[contentLength+1].clueText;
+            var CurrentClue = allMovieClues[contentLength+1].clueText;
 
-            new SendClueToController(currentClue);
+            new SendClueToController(CurrentClue);
 
             var valUp     = 1;
             var percentUp = 10;
@@ -112,31 +115,32 @@ $(document).ready(function(){
         // USER GUESS ---> what the player types in to the guess box; e.g., 'Goodfellas' etc.
         var UserGuess = $("input:first").val().toString();
 
-        $.get("guessMovie", function(res) {
+        $.get("GuessMovie", function(res) {
 
             var CurrentPointsHTML = $("#justPoints").html();
             var CurrentPointsInteger = Number(CurrentPointsHTML);
 
             // SESSION MOVIE TITLE ---> 'Goodfellas' etc.
-            var SessionMovieTitle = res[0];
+            var ThisGamesMovieTitle = res[0];
 
             // SESSION MOVIE TITLE TO CAPS --> e.g., 'goodfellas' TO 'GOODFELLAS'
-            var SessionMovieTitleToCaps = SessionMovieTitle.toUpperCase();
+            var ThisGamesMovieTitleToUpperCase = ThisGamesMovieTitle.toUpperCase();
 
             // GUESS COUNT ---> 2, then 1, then 0
-            var guessCount     = res[1];
+            var GuessCount     = res[1];
+            console.log(GuessCount);
 
             // USER GUESS TO CAPS ---> 'GOODFELLAS' etc.
-            var UserGuessToCaps = UserGuess.toUpperCase();
+            var PlayersGuessToUpperCase = UserGuess.toUpperCase();
 
             // GUESS RESPONSE WRONG --> concatenated response to wrong answer
-            var guessResponseWrong = '<b>' + UserGuessToCaps + "</b>" + " is WRONG.";
+            var ResponseIfGuessWrong = '<b>' + PlayersGuessToUpperCase + "</b>" + " is WRONG.";
 
-            if(guessCount > 0)
+            if(GuessCount > 0)
             {
                 // console.log("HIT GUESS COUNT > 0");
                 // guesses remaining; the player WON
-                if(UserGuessToCaps == SessionMovieTitleToCaps)
+                if(PlayersGuessToUpperCase == ThisGamesMovieTitleToUpperCase)
                 {
                     // console.log("__________ user still has guesses and won __________");
 
@@ -171,7 +175,7 @@ $(document).ready(function(){
                                 callback : function()
                                 {
                                     // console.log("PLAY AGAIN");
-                                    window.location.href = "InitiateGame";
+                                    window.location.href = "InitiateSinglePlayerGame";
                                 }
                             }
                         }
@@ -183,22 +187,28 @@ $(document).ready(function(){
                     // console.log("__________ user still has guesses and lost __________");
 
                     $("#remainingGuesses").empty();
-                    $("#remainingGuesses").append(guessCount);
+                    $("#remainingGuesses").append(GuessCount);
                     $(".hiddenDiv").empty();
-                    $(".hiddenDiv").append(guessCount);
+                    $(".hiddenDiv").append(GuessCount);
 
                     $("#movieGuessInput").val('');
 
+                    var GuessAgain = '<span id="GuessAgainNoCluesLeft">Click to Guess Again</span>';
+
+                    var ClickToGuessAgain = ResponseIfGuessWrong + GuessAgain;
+                    console.log(ClickToGuessAgain);
+
                     $("ul#guessResponse").empty();
-                    $('ul#guessResponse').append(guessResponseWrong);
+                    $('ul#guessResponse').append(ClickToGuessAgain);
+                    // $('ul#guessResponse').append(ResponseIfGuessWrong);
                 }
             }
 
             // user is out of guesses
-            if(guessCount == 0)
+            if(GuessCount == 0)
             {
                 // out of guesses and the player won
-                if(UserGuessToCaps == SessionMovieTitleToCaps)
+                if(PlayersGuessToUpperCase == ThisGamesMovieTitleToUpperCase)
                 {
                     // console.log("__________ user is out of guesses and won __________");
 
@@ -231,7 +241,7 @@ $(document).ready(function(){
                                 callback : function()
                                 {
                                     // console.log("PLAY AGAIN");
-                                    window.location.href = "InitiateGame";
+                                    window.location.href = "InitiateSinglePlayerGame";
                                 }
                             }
                         }
@@ -269,7 +279,7 @@ $(document).ready(function(){
                                 callback : function()
                                 {
                                     // console.log("PLAY AGAIN");
-                                    window.location.href = "InitiateGame";
+                                    window.location.href = "InitiateSinglePlayerGame";
                                 }
                             }
                         }
@@ -326,14 +336,24 @@ $(document).ready(function(){
         })
     })
 
+
+
+
+
+
+
+
     function ResetForm()
     {
 
         $("#getClueButton").click(function() {
             $("#formContainer").empty();
             $("#formContainer").replaceWith(divClone.clone(true));
+        })
 
-
+        $("#GuessAgainNoCluesLeft").click(function() {
+            $("#formContainer").empty();
+            $("#formContainer").replaceWith(divClone.clone(true));
         })
 
         // console.log("FORM WAS RESET");
@@ -421,7 +441,7 @@ function SendClueToController (element)
 {
     $.ajax ({
         type: "GET",
-        url : "/GetClueFromJavaScript",
+        url : "GetClueFromJavaScript",
         data: {
             ClueText: element,
         },

@@ -16,15 +16,13 @@ namespace movieGame.Controllers
             _context = context;
         }
 
-        #region 'SPOTLIGHT' and 'THISMETHOD' EXTENSION METHODS VARIABLES
-            String Start = "STARTED";
-            String Complete = "COMPLETED";
-        #endregion
+        String Start = "STARTED";
+        String Complete = "COMPLETED";
 
         List<Clue> _clueList = new List<Clue>();
 
         [HttpPost]
-        [Route("createMoviePlayerJoin")]
+        [Route("CreateMoviePlayerJoin")]
 
         public JsonResult CreateMoviePlayerJoin (int GameOutcome)
         {
@@ -35,7 +33,7 @@ namespace movieGame.Controllers
             Player RetrievedPlayer = _context.Players.SingleOrDefault(p => p.PlayerId == playerId);
 
             // SESSION MOVIE ID --> id of current movie user was guessing
-            var sessionMovieId = HttpContext.Session.GetInt32("sessionMovieId");
+            var sessionMovieId = HttpContext.Session.GetInt32("SessionMovieId");
 
             // EXISTING JOINS --> System.Collections.Generic.List`1[movieGame.Models.MoviePlayerJoin]
             // JOINS LIST --> check if a join of player and movie already exists
@@ -58,7 +56,7 @@ namespace movieGame.Controllers
                 if(JoinsList.Count > 0)
                 {
                     // this is not the first time the player has attempted to guess this movie
-                    Extensions.Spotlight("MPJ_A -- WIN _____ NOT FIRST JOIN");
+                    ExtensionsD.Spotlight("MPJ_A -- WIN _____ NOT FIRST JOIN");
                     foreach(var item in JoinsList)
                     {
                         // get current attempt count and count of joins
@@ -81,7 +79,7 @@ namespace movieGame.Controllers
                         MovieId = (int)sessionMovieId,
                         AttemptCount = newAttemptsMax,
                         PointsReceived = (int)newPoints,
-                        WinLoss = true,
+                        WinFlag = true,
                     };
 
                     _context.Add(MPJ_A);
@@ -90,7 +88,7 @@ namespace movieGame.Controllers
                 // this is the first time this player has attempted to guess this movie
                 else
                 {
-                    Extensions.Spotlight("MPJ_B -- WIN _____ FIRST JOIN");
+                    ExtensionsD.Spotlight("MPJ_B -- WIN _____ FIRST JOIN");
 
                     // MPJ --> create new many-to-many of player and movie
                     MoviePlayerJoin MPJ_B = new MoviePlayerJoin
@@ -99,7 +97,7 @@ namespace movieGame.Controllers
                         MovieId = (int)sessionMovieId,
                         AttemptCount = 1,
                         PointsReceived = (int)newPoints,
-                        WinLoss = true,
+                        WinFlag = true,
                     };
 
                     _context.Add(MPJ_B);
@@ -112,7 +110,7 @@ namespace movieGame.Controllers
                 // this is not the first time the player has attempted to guess this movie
                 if(JoinsList.Count > 0)
                 {
-                    Extensions.Spotlight("MPJ_C -- LOSS _____ NOT FIRST JOIN");
+                    ExtensionsD.Spotlight("MPJ_C -- LOSS _____ NOT FIRST JOIN");
                     foreach(var item in JoinsList)
                     {
                         // get current attempt count and count of joins
@@ -134,7 +132,7 @@ namespace movieGame.Controllers
                         MovieId = (int)sessionMovieId,
                         AttemptCount = newAttemptsMax,
                         PointsReceived = 0,
-                        WinLoss = false,
+                        WinFlag = false,
                     };
 
                     _context.Add(MPJ_C);
@@ -142,7 +140,7 @@ namespace movieGame.Controllers
 
                 else
                 {
-                    Extensions.Spotlight("MPJ_D -- LOSS _____ FIRST JOIN");
+                    ExtensionsD.Spotlight("MPJ_D -- LOSS _____ FIRST JOIN");
 
                     // MPJ --> create new many-to-many of player and movie
                     MoviePlayerJoin MPJ_D = new MoviePlayerJoin
@@ -151,7 +149,7 @@ namespace movieGame.Controllers
                         MovieId = (int)sessionMovieId,
                         AttemptCount = 1,
                         PointsReceived = 0,
-                        WinLoss = false,
+                        WinFlag = false,
                     };
 
                     _context.Add(MPJ_D);
@@ -166,7 +164,7 @@ namespace movieGame.Controllers
 
 
         [HttpPost]
-        [Route("/updatePlayerGames")]
+        [Route("UpdatePlayerGames")]
         public IActionResult UpdatePlayerGames (int gameOutcome, int playerId)
         {
             Start.ThisMethod();
@@ -182,7 +180,7 @@ namespace movieGame.Controllers
             newGamesAttempted.Intro("new games played");
             RetrievedPlayer.GamesAttempted = newGamesAttempted;
 
-            // Extensions.TableIt(RetrievedPlayer, currGamesAttempted, newGamesAttempted);
+            // ExtensionsD.TableIt(RetrievedPlayer, currGamesAttempted, newGamesAttempted);
 
             // if the player won, update games won
             if(gameOutcome == 1)
@@ -210,22 +208,13 @@ namespace movieGame.Controllers
 
 
         [HttpPost]
-        [Route("/updatePlayerPoints")]
+        [Route("UpdatePlayerPoints")]
         public JsonResult UpdatePlayerPoints (Clue clueInfo)
         {
             Start.ThisMethod();
 
             // PLAYER ID ---> the PlayerId of the current player (e.g., 8 OR 4 OR 12 etc.)
             var playerId = HttpContext.Session.GetInt32("id");
-
-            // PLAYER --> the name of the current player
-            // var player = HttpContext.Session.GetString("player");
-
-            // SESSION MOVIE --> title of current movie user was guessing
-            // var sessionMovie = HttpContext.Session.GetString("sessionMovieTitle");
-
-            // SESSION MOVIE ID --> id of current movie user was guessing
-            // var sessionMovieId = HttpContext.Session.GetInt32("sessionMovieId");
 
             // MOVIE LIST ---> System.Collections.Generic.List`1[movieGame.Models.Movie]
             _clueList.Add(clueInfo);

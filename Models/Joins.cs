@@ -30,9 +30,12 @@ namespace movieGame.Models
 
         public int AttemptCount { get; set; }
 
-        public bool WinLoss { get; set; }
+        public bool WinFlag { get; set; }
 
         public int PointsReceived { get; set; }
+
+        public int ClueGameWonAt { get; set; }
+
     }
 
     public class MovieActorJoin : BaseEntity
