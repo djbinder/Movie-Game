@@ -104,6 +104,8 @@ namespace movieGame.Controllers
                 }
             #endregion
 
+            movie.Dig();
+
             Complete.ThisMethod();
             return Json(movie);
         }

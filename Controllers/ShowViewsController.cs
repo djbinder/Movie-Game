@@ -156,14 +156,14 @@ namespace movieGame.Controllers
         }
 
 
-        [HttpGet]
-        [Route("Movie/{id}")]
-        public IActionResult ViewSingleMovie ()
-        {
-            Start.ThisMethod();
-            Complete.ThisMethod();
-            return View("SingleMovie");
-        }
+        // [HttpGet]
+        // [Route("Movie/{id}")]
+        // public IActionResult ViewSingleMovie ()
+        // {
+        //     Start.ThisMethod();
+        //     Complete.ThisMethod();
+        //     return View("SingleMovie");
+        // }
 
 
         [HttpGet]

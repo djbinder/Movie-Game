@@ -55,13 +55,13 @@ namespace movieGame.Controllers
             var ThisGamesPlayer_CurrentGamesWon = ViewBag.GamesWon = ThisGamesPlayer.GamesWon;
 
             int ThisGamesMovieId = ThisGamesPlayer_CurrentGamesWon + 1;
-            ThisGamesMovieId.Intro("movie id");
+            ThisGamesMovieId.Intro("set movie id");
 
             GetMovieInfoController = new GetMovieInfoController(_context);
 
             // MOVIES IN DATABASE ---> '2' OR '3' etc.
             var CountOfMoviesInDatabase = GetMovieInfoController.MoviesInDatabaseCount();
-            CountOfMoviesInDatabase.Intro("count of movies");
+            CountOfMoviesInDatabase.Intro("count of movies in db");
 
             if(ThisGamesMovieId > CountOfMoviesInDatabase)
             {

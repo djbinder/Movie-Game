@@ -24,9 +24,11 @@ $(document).ready(function(){
 
             // ALL MOVIE CLUES ---> returns array of 10 [object object] of clues
             var allMovieClues = res.clues;
+            console.log("ALL MOVIE CLUES: " , allMovieClues);
 
             // CONTENT LENGTH ---> content length starts at -1 and keeps counting up; errors out after final clue
             var contentLength = $('ul#clueText > li').length - 1 ;
+            console.log("CONTENT LENGTH: ", contentLength);
 
             var ClueDifficulty = res.clues[contentLength+1].clueDifficulty;
             if (ClueDifficulty == 1)
@@ -36,6 +38,7 @@ $(document).ready(function(){
 
             // CLUE POINTS --> '10', then '9', then '8' etc.
             var CluePoints = res.clues[contentLength+1].cluePoints;
+            console.log("CLUE POINTS: ", CluePoints);
 
             var CurrentClue = allMovieClues[contentLength+1].clueText;
 

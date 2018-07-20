@@ -1,68 +1,83 @@
-@model PlayerViewModel
+@model UserViewModel
 
-<h3 class="text-white">Log In and Register</h3>
-<hr style="border: 2px solid black;">
-<div class="container">
+<head>
+    <link rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+
+
+</head>
+
+
+<body>
+
+    <h3 class="text-white">Log In and Register</h3>
+    <hr style="border: 2px solid black;">
+    <div class="container">
+        <div>
+        <h4 class="text-primary">Registration</h4>
+        <p class="error"><em>@ViewBag.RegError</em></p>
+        <form asp-controller="ManageUsers" asp-action="RegisterUser" method="POST">
+            <table>
+                <tr style="height: 35px">
+                    <label for="UserFirstName"><td class="text-white">First Name: </td></label>
+                    <td><input asp-for="RegisterViewModel.UserFirstName" placeholder="Enter First Name"></td>
+                    <td style="padding-left: 10px"><span class="error" asp-validation-for="RegisterViewModel.UserFirstName"></span></td>
+                </tr>
+                <tr style="height: 35px">
+                    <label for="UserLastName"></label><td class="text-white">Last Name: </td></label>
+                    <td><input asp-for="RegisterViewModel.UserLastName" placeholder="Enter Last Name"></td>
+                    <td style="padding-left: 10px"><span class="error" asp-validation-for="RegisterViewModel.UserLastName"></span></td>
+                </tr>
+                <tr style="height: 35px">
+                    <label for="UserEmail"></label><td class="text-white">Email: </td></label>
+                    <td><input asp-for="RegisterViewModel.UserEmail" placeholder="Enter Email"></td>
+                    <td style="padding-left: 10px"><span class="error" asp-validation-for="RegisterViewModel.UserEmail"></span></td>
+                </tr>
+                <tr style="height: 35px">
+                    <label for="UserPassword"></label><td class="text-white">Password: </td></label>
+                    <td><input asp-for="RegisterViewModel.UserPassword" placeholder="Enter Password"></td>
+                    <td style="padding-left: 10px"><span class="error" asp-validation-for="RegisterViewModel.UserPassword"></span></td>
+                </tr>
+                <tr style="height: 35px">
+                    <label for="Confirm"></label><td class="text-white" style="width: 150px">Confirm Password: </td></label>
+                    <td><input asp-for="RegisterViewModel.Confirm" placeholder="Confirm Password"></td>
+                    <td style="padding-left: 10px"><span class="error" asp-validation-for="RegisterViewModel.Confirm"></span></td>
+                </tr>
+            </table>
+            <br>
+            <button class="btn btn-info">Register</button>
+        </form>
+    </div>
+
+    <br>
+    <hr style="border: .5px solid blue";>
+
+
     <div>
-    <h4 class="text-primary">Registration</h4>
-    <p class="error"><em>@ViewBag.RegError</em></p>
-    <form asp-controller="ManagePlayers" asp-action="RegisterPlayer" method="POST">
-        <table>
-            <tr style="height: 35px">
-                <label for="PlayerFirstName"><td class="text-white">First Name: </td></label>
-                <td><input asp-for="RegisterViewModel.PlayerFirstName" placeholder="Enter First Name"></td>
-                <td style="padding-left: 10px"><span class="error" asp-validation-for="RegisterViewModel.PlayerFirstName"></span></td>
-            </tr>
-            <tr style="height: 35px">
-                <label for="PlayerLastName"></label><td class="text-white">Last Name: </td></label>
-                <td><input asp-for="RegisterViewModel.PlayerLastName" placeholder="Enter Last Name"></td>
-                <td style="padding-left: 10px"><span class="error" asp-validation-for="RegisterViewModel.PlayerLastName"></span></td>
-            </tr>
-            <tr style="height: 35px">
-                <label for="PlayerEmail"></label><td class="text-white">Email: </td></label>
-                <td><input asp-for="RegisterViewModel.PlayerEmail" placeholder="Enter Email"></td>
-                <td style="padding-left: 10px"><span class="error" asp-validation-for="RegisterViewModel.PlayerEmail"></span></td>
-            </tr>
-            <tr style="height: 35px">
-                <label for="PlayerPassword"></label><td class="text-white">Password: </td></label>
-                <td><input asp-for="RegisterViewModel.PlayerPassword" placeholder="Enter Password"></td>
-                <td style="padding-left: 10px"><span class="error" asp-validation-for="RegisterViewModel.PlayerPassword"></span></td>
-            </tr>
-            <tr style="height: 35px">
-                <label for="Confirm"></label><td class="text-white" style="width: 150px">Confirm Password: </td></label>
-                <td><input asp-for="RegisterViewModel.Confirm" placeholder="Confirm Password"></td>
-                <td style="padding-left: 10px"><span class="error" asp-validation-for="RegisterViewModel.Confirm"></span></td>
-            </tr>
-        </table>
-        <br>
-        <button class="btn btn-info">Register</button>
-    </form>
-</div>
-
-<br>
-<hr style="border: .5px solid blue";>
+        <h4 class="text-primary">Login</h4>
+        <p class="error"><em>@ViewBag.LogError</em></p>
+        <form asp-controller="ManageUsers" asp-action="LogUserIn" method="POST">
+            <table>
+                <tbody>
+                    <tr style="height: 50px">
+                        <td class="text-white" style="width: 100px">Email: </td>
+                        <td><input asp-for="LoginViewModel.UserEmail" placeholder="Enter Email"></td>
+                        <td style="padding-left: 10px"> <span class="error" asp-validation-for="LoginViewModel.UserEmail"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="text-white">Password: </td>
+                        <td><input asp-for="LoginViewModel.UserPassword" placeholder="Enter Password"></td>
+                        <td style="padding-left: 10px"> <span class="error" asp-validation-for="LoginViewModel.UserPassword"></span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+            <br>
+            <button class="btn btn-info">Log In</button>
+        </form>
+    </div>
 
 
-<div>
-    <h4 class="text-primary">Login</h4>
-    <p class="error"><em>@ViewBag.LogError</em></p>
-    <form asp-controller="ManageUsers" asp-action="LogPlayerIn" method="POST">
-        <table>
-            <tbody>
-                <tr style="height: 50px">
-                    <td class="text-white" style="width: 100px">Email: </td>
-                    <td><input asp-for="LoginViewModel.PlayerEmail" placeholder="Enter Email"></td>
-                    <td style="padding-left: 10px"> <span class="error" asp-validation-for="LoginViewModel.PlayerEmail"></span></td>
-                </tr>
-                <tr>
-                    <td class="text-white">Password: </td>
-                    <td><input asp-for="LoginViewModel.PlayerPassword" placeholder="Enter Password"></td>
-                    <td style="padding-left: 10px"> <span class="error" asp-validation-for="LoginViewModel.PlayerPassword"></span></td>
-                </tr>
-            </tbody>
-        </table>
-        <br>
-        <br>
-        <button class="btn btn-info">Log In</button>
-    </form>
-</div>
+</body>
+

@@ -2,47 +2,51 @@
     Layout = "_Layout";
 }
 
-<div id="wrapper" class="container-fluid">
-    <br>
-    <table class="bg-pan-right">
-        <tr>
-            <td class="MovieGameHeaderTable"><h1><b>Movie Game</b></h1></td>
-            <td class="HeaderLinks"><a href="/">Home</a></td>
-        </tr>
-    </table>
-    <hr class="linebreak1">
-    <br>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
 
-    <table class="table">
-
-        <thead class="thead-light">
-            <tr class="allMovieTableHeader">
-                <th scope="col">Id</th>
-                <th scope="col">Title</th>
-
-                <th scope="col">Year</th>
-                <th scope="col">Clues</th>
+<body>
+    <div id="wrapper" class="container-fluid">
+        <br>
+        <table class="bg-pan-right">
+            <tr>
+                <td class="MovieGameHeaderTable"><h1><b>Movie Game</b></h1></td>
+                <td class="HeaderLinks"><a href="/">Home</a></td>
             </tr>
-        </thead>
+        </table>
+        <hr class="linebreak1">
+        <br>
 
-        @foreach (var Movie in ViewBag.Movies)
-        {
-        <tr>
-            <th scope="row">@Movie.MovieId</th>
-            <td><a href="/getMovie/@Movie.MovieId">@Movie.Title</a></td>
+        <table class="table">
+            <thead class="thead-light">
+                <tr class="allMovieTableHeader">
+                    <th scope="col">Id</th>
+                    <th scope="col">Title</th>
 
-            <td>@Movie.Year</td>
-            <td>
-                <ul>
-                @foreach (var Clue in Movie.Clues)
-                {
-                    <li>@Clue.ClueId : @Clue.ClueText</li>
-                }
-                </ul>
-            </td>
-        </tr>
-        }
+                    <th scope="col">Year</th>
+                    <th scope="col">Clues</th>
+                </tr>
+            </thead>
 
+            @foreach (var Movie in ViewBag.Movies)
+            {
+            <tr>
+                <th scope="row">@Movie.MovieId</th>
+                <td><a href="/getMovie/@Movie.MovieId">@Movie.Title</a></td>
 
-    </table>
-</div>
+                <td>@Movie.Year</td>
+                <td>
+                    <ul>
+                    @foreach (var Clue in Movie.Clues)
+                    {
+                        <li>@Clue.ClueId : @Clue.ClueText</li>
+                    }
+                    </ul>
+                </td>
+            </tr>
+            }
+        </table>
+    </div>
+
+</body>
