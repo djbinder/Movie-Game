@@ -1,9 +1,13 @@
+using System;
+using System.Collections;
 using Microsoft.AspNetCore.Http;        // <--- set session variables (e.g., 'SetString', 'SetInt32', etc.)
+using Microsoft.AspNetCore.Mvc;
+using movieGame.Models;
 using Newtonsoft.Json;                  // <--- 'JsonConvert'
 
 namespace movieGame
 {
-    public static class SessionExtensions
+    public static class ExtensionsS
     {
         public static string Start = "STARTED";
         public static string Complete = "COMPLETED";

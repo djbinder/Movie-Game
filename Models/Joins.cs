@@ -35,8 +35,51 @@ namespace movieGame.Models
         public int PointsReceived { get; set; }
 
         public int ClueGameWonAt { get; set; }
-
     }
+
+    public class MovieTeamJoin : BaseEntity
+    {
+        public int MovieTeamJoinId { get; set; }
+
+        public int TeamId { get; set; }
+
+        public Team Team { get; set; }
+
+        public int MovieId { get; set; }
+
+        public Movie Movie { get; set; }
+
+        public bool WinFlag { get; set; }
+
+        public int PointsReceived { get; set; }
+
+        public int ClueGameWonAt { get; set; }
+    }
+
+    public class GameTeamGameJoin : BaseEntity
+    {
+        public int GameTeamGameJoinId { get; set; }
+
+        public int GameId { get; set; }
+
+        public Game Game { get; set; }
+
+        public int TeamId { get; set; }
+
+        public Team Team { get; set; }
+
+        public int NumberOfPlayersOnTeam { get; set; }
+
+        public TimeSpan TotalTimeTakenForGuesses { get; set; }
+
+        public bool ThisTeamWon { get; set; }
+
+        public bool ThisTeamLost { get; set; }
+
+        public int PointsReceived { get; set; }
+    }
+
+
 
     public class MovieActorJoin : BaseEntity
     {

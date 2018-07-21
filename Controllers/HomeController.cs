@@ -36,6 +36,21 @@ namespace movieGame.Controllers
             return (int)id;
         }
 
+        // examples of setting temp data; how can I use this?
+        public object SetTempData(string TempDataName)
+        {
+            TempData["Variable"] = TempDataName;
+            var TempDataVariable = TempData["Variable"];
+            Console.WriteLine(TempDataVariable);
+            return TempDataVariable;
+        }
+        public object GetTempData()
+        {
+            var TempDataVariable = TempData["Variable"];
+            Console.WriteLine(TempData["Variable"]);
+            return TempDataVariable;
+        }
+
 
         [HttpGet]
         [Route("LogPlayerOut")]

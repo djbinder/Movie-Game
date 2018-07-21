@@ -39,8 +39,8 @@ namespace movieGame.Controllers
         public string Complete {
             get => _complete;
             set => _complete = value;
-
         }
+
         public List<Movie> PlayerMovies {
             get => _playerMovies;
             set => _playerMovies = value;
@@ -72,20 +72,6 @@ namespace movieGame.Controllers
         }
 
 
-
-        // examples of setting temp data; how can I use this?
-        public IActionResult SetTempData()
-        {
-            TempData["Variable"] = "Hello World";
-            return RedirectToAction("OtherMethod");
-        }
-        public void GetTempData()
-        {
-            Console.WriteLine(TempData["Variable"]);
-            // writes "Hello World" if redirected to from Method()
-        }
-
-
         public Player GetPlayer (int id)
         {
             // Start.ThisMethod();
@@ -99,7 +85,6 @@ namespace movieGame.Controllers
         }
 
 
-
         public List<MoviePlayerJoin> PlayersMovieList (int id)
         {
             // Start.ThisMethod();
@@ -109,7 +94,6 @@ namespace movieGame.Controllers
             // Complete.ThisMethod();
             return PlayerMovieList;
         }
-
 
 
         public List<Movie> PlayersMovies (int id)

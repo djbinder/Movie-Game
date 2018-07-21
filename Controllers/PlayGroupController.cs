@@ -26,7 +26,7 @@ namespace movieGame.Controllers
         {
             Start.ThisMethod();
 
-            Complete.ThisMethod();
+            // Complete.ThisMethod();
             return View("PlayGroup");
         }
 
@@ -37,7 +37,7 @@ namespace movieGame.Controllers
         public IActionResult InitiateGroupGame()
         {
             Start.ThisMethod();
-            Complete.ThisMethod();
+            // Complete.ThisMethod();
             return RedirectToAction("ViewGroupGamePage");
         }
 
