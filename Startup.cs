@@ -1,12 +1,8 @@
-using System;
 // using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;  // <--- 'CookieAuthenticationDefaults'
 using Microsoft.AspNetCore.Builder;                 // <--- 'IApplicationBuilder'
 using Microsoft.AspNetCore.Hosting;                 // <--- 'IHostingEnvironment'
-using Microsoft.AspNetCore.Http;                    // <--- 'Pathstring'
 // using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;                // <--- 'IdentityRole' and 'AddDefaultTokenParameters'
-using Microsoft.AspNetCore.Mvc;                     // <--- anything related to mvc (e.g., 'Controller', '[HttpGet]', 'HttpContext.Session')
 using Microsoft.EntityFrameworkCore;                // <--- 'UseNpgsql'
 using Microsoft.Extensions.Configuration;           // <--- 'IConfiguration' and 'ConfigurationBuilder'
 using Microsoft.Extensions.DependencyInjection;     // <--- 'IServiceCollection'

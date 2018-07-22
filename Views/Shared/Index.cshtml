@@ -1,7 +1,9 @@
+@model UserViewModel
+
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css" asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.css" asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute">
+    <!-- <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css" asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.css" asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"> -->
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
     <!-- <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/> -->
@@ -11,69 +13,95 @@
 
 
 <body>
-
-<p><a href="LogInRegisterPage">Log In and Registrations</a></p>
-<p><a href="GameList">Game List</a></p>
-<br>
-
-<div class="row pt-0 mt-4 mb-4">
-    <div class="col mt-0 pt-0">
-        <h3 class="glow big4 mt-0 pt-0"><b>The Awesome and/or Amazing Movie Game</b></h3>
-        <p class="glow">(for serious players only)</p>
+    <a class="text-center text-white nav-link" href="/NewTeamForm">New Team Form</a>
+    <div class="row pt-0 mt-4 mb-4">
+        <div class="col mt-0 pt-0">
+            <h3 class="glow big4 mt-0 pt-0"><b>The Awesome and/or Amazing Movie Game</b></h3>
+            <p class="glow">(for serious players only)</p>
+        </div>
     </div>
-</div>
 
+    <hr class="linebreak2">
 
+    <div class="col mt-4" id="EnterNameBox">
+        <h6 class="row text-primary px-4">Simple Login</h6>
+        <div class="px-3">
+            <form action="SetGamePlayer" method="POST" class="enterNameForm">
 
-<div class="row mt-5" id="EnterNameBox">
-    <div class="col px-4">
-        <form action="SetGamePlayer" method="POST" class="enterNameForm">
+                <input class="row input-field text-white"name="NameEntered" placeholder="Enter Your Name to Play" type="text" value="Brian" aria-describedby="basic-addon2">
 
-            <input class="input-field text-white"name="NameEntered" placeholder="Enter Your Name to Play" type="text" value="Brian" aria-describedby="basic-addon2">
+                <br><p id="NameError" class="row">@ViewBag.ErrorMessage</p>
+                <div class="buttons row">
+                        <button class="BoxShadow pulse">Start Game</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-            <br><p id="NameError">@ViewBag.ErrorMessage</p>
-            <div class="buttons">
-                    <button class="BoxShadow up">Start Game</button>
-            </div>
+    <hr class="linebreak2">
+    <hr class="linebreak2">
+
+    <div class="col mt-5">
+        <h6 class="row text-primary pl-3 pb-0 mb-0">Full Registration</h6>
+        <p class="error"><em>@ViewBag.RegError</em></p>
+        <form asp-controller="ManageUsers" asp-action="RegisterUser" method="POST">
+            <table class="table">
+                <tr>
+                    <label for="UserFirstName"><td class="text-white">First Name: </td></label>
+                    <th scope="row"><input asp-for="RegisterViewModel.UserFirstName" placeholder="Enter First Name"></td>
+                    <td><span class="error" asp-validation-for="RegisterViewModel.UserFirstName"></span></td>
+                </tr>
+                <tr>
+                    <label for="UserLastName"></label><td class="text-white">Last Name: </td></label>
+                    <td><input asp-for="RegisterViewModel.UserLastName" placeholder="Enter Last Name"></td>
+                    <td><span class="error" asp-validation-for="RegisterViewModel.UserLastName"></span></td>
+                </tr>
+                <tr>
+                    <label for="UserEmail"></label><td class="text-white">Email: </td></label>
+                    <th scope="row"><input asp-for="RegisterViewModel.UserEmail" placeholder="Enter Email"></td>
+                    <td><span class="error" asp-validation-for="RegisterViewModel.UserEmail"></span></td>
+                </tr>
+                <tr>
+                    <label for="UserPassword"></label><td class="text-white">Password: </td></label>
+                    <th scope="row"><input asp-for="RegisterViewModel.UserPassword" placeholder="Enter Password"></td>
+                    <td><span class="error" asp-validation-for="RegisterViewModel.UserPassword"></span></td>
+                </tr>
+                <tr>
+                    <label for="Confirm"></label><td class="text-white">Confirm Password: </td></label>
+                    <th scope="row"><input asp-for="RegisterViewModel.Confirm" placeholder="Confirm Password"></td>
+                    <td><span class="error" asp-validation-for="RegisterViewModel.Confirm"></span></td>
+                </tr>
+            </table>
+            <button class="BoxShadow pulse">Register</button>
         </form>
     </div>
 
-</div>
+    <hr class="linebreak2">
 
-<div class="row">
-    <div class="col-md-3"></div>
-    <div class="col-md-6 col-sm-12">
-        <table class="table table-sm leaderboard">
-            <tr class="glow">
-                <td colspan="4" class="center-align">Top 10 Players</td>
-            </tr>
-            <tr class="text-white">
-                <th class="text-center">Rank</th>
-                <th class="text-left">Player</th>
-                <th class="text-center">Total Points</th>
-                <th class="text-center">Games Won</th>
-            </tr>
-            @{
-                var counter = 0;
-                foreach(var Player in ViewBag.Leaders)
-                {
+    <div class="col mt-5">
+        <h6 class="row text-primary pl-3">Full Login</h6>
+        <p class="error"><em>@ViewBag.LogError</em></p>
+        <form asp-controller="ManageUsers" asp-action="LogUserIn" method="POST">
+            <table class="table">
+                <tbody>
                     <tr>
-                        <td class="text-center text-white">@(++counter)</td>
-                        <td class="text-left text-primary"><a href="/PlayerProfile/@Player.PlayerId">@Player.PlayerName</a></td>
-                        <td class="text-center text-white">@Player.Points</td>
-                        <td class="text-center text-white">@Player.GamesWon</td>
+                        <td class="text-white">Email: </td>
+                        <td scope="row"><input asp-for="LoginViewModel.UserEmail" placeholder="Enter Email"></td>
+                        <td> <span class="error" asp-validation-for="LoginViewModel.UserEmail"></span></td>
                     </tr>
-                }
-            }
-
-            <tr>
-                <td colspan="4"><a href="/Leaderboard">View Full Leaderboard</a></td>
-            </tr>
-        </table>
+                    <tr>
+                        <td class="text-white">Password: </td>
+                        <td scope="row"><input asp-for="LoginViewModel.UserPassword" placeholder="Enter Password"></td>
+                        <td> <span class="error" asp-validation-for="LoginViewModel.UserPassword"></span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button class="BoxShadow pulse">Log In</button>
+        </form>
     </div>
-    <div class="col-md-3"></div>
-</div>
 
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script> -->
+
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script> -->
 
 </body>

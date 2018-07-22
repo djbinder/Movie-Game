@@ -107,8 +107,10 @@ namespace movieGame.Controllers
 
             HttpContext.Session.SetString("player", NameEntered);
 
+
             Complete.ThisMethod();
-            return RedirectToAction("InitiateSinglePlayerGame", "SetGameMovie");
+            return RedirectToAction("ViewGameList", "ShowViews");
+            // return RedirectToAction("InitiateSinglePlayerGame", "SetGameMovie");
         }
     }
 }

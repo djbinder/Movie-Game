@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -49,6 +50,10 @@ namespace movieGame.Controllers
         }
 
 
+        public string Index ()
+        {
+            return "this is my default action";
+        }
 
 
         [HttpGet]
@@ -67,9 +72,6 @@ namespace movieGame.Controllers
         public IActionResult ViewHomePage ()
         {
             Start.ThisMethod();
-
-            GetPlayer = new GetPlayerInfoController(_context);
-            IList<Player> TopTenLeaders = ViewBag.Leaders = GetPlayer.GetTopTenLeaders().ToList();
 
             ViewBag.ErrorMessage = HttpContext.Session.GetString("message");
             // Complete.ThisMethod();
@@ -109,12 +111,19 @@ namespace movieGame.Controllers
         }
 
 
+
         [HttpGet]
         [Route("GameList")]
         public IActionResult ViewGameList ()
         {
             Start.ThisMethod();
-            Complete.ThisMethod();
+
+            var ThisGamesPlayersName = HttpContext.Session.GetString("player");
+            ViewBag.PlayerName = ThisGamesPlayersName;
+
+            TempData["PlayerName"] = ThisGamesPlayersName;
+            Console.WriteLine(TempData["PlayerName"]);
+            ThisGamesPlayersName.Intro("this games players name");
 
             return View("GameList");
         }
@@ -128,6 +137,14 @@ namespace movieGame.Controllers
             Start.ThisMethod();
             Complete.ThisMethod();
             return View("PlaySingle");
+        }
+
+        [HttpGet]
+        [Route("NewTeamForm")]
+        public IActionResult ViewNewTeamForm ()
+        {
+            Start.ThisMethod();
+            return View("NewTeamForm");
         }
 
 

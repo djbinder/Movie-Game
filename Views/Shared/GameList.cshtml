@@ -8,14 +8,21 @@
 
 <body>
 
-    <div class="col">
-        <h1 class="text-white text-center mb-4">Game List</h1>
+    <div class="row pt-0 mt-4 mb-4">
+        <div class="col mt-0 pt-0">
+            <h3 class="glow big4 mt-0 pt-0"><b>The Awesome and/or Amazing Movie Game</b></h3>
+            <p class="glow">(for serious players only)</p>
+        </div>
+    </div>
 
-        <h3 class="text-white text-center font-weight-bold border border-white mb-3 p-4">Single Player</h3>
+
+    <div class="col mt-5">
+        <h5 class="text-white text-center">Welcome @ViewBag.PlayerName</h5>
+        <p class="text-white text-center mb-3">Please select the type of game you would like to play</p>
+        <a href="/InitiatSinglePlayerGame"><h3 class="text-white text-center font-weight-bold border border-white mb-3 p-4">Single Player</h3>
         <a href="/InitiateGroupGame"><h3 class="text-white text-center font-weight-bold border border-white mb-3 p-4">Group Play</h3></a>
         <h3 class="text-white text-center font-weight-bold border border-white mb-3 p-4">One vs One</h3>
     </div>
-
 </body>
 
 

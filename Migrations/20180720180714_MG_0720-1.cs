@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace movieGame.Migrations
 {
-    public partial class MG_07191 : Migration
+    public partial class MG_07201 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -55,25 +55,19 @@ namespace movieGame.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Players",
+                name: "Games",
                 columns: table => new
                 {
-                    PlayerId = table.Column<int>(nullable: false)
+                    GameId = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    GamesAttempted = table.Column<int>(nullable: false),
-                    GamesWon = table.Column<int>(nullable: false),
-                    PlayerEmail = table.Column<string>(nullable: true),
-                    PlayerFirstName = table.Column<string>(nullable: true),
-                    PlayerLastName = table.Column<string>(nullable: true),
-                    PlayerName = table.Column<string>(nullable: true),
-                    PlayerPassword = table.Column<string>(nullable: true),
-                    Points = table.Column<int>(nullable: false),
+                    DurationOfGame = table.Column<long>(nullable: false),
+                    MoviesPlayed = table.Column<int>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Players", x => x.PlayerId);
+                    table.PrimaryKey("PK_Games", x => x.GameId);
                 });
 
             migrationBuilder.CreateTable(
@@ -101,6 +95,29 @@ namespace movieGame.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PowerUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Teams",
+                columns: table => new
+                {
+                    TeamId = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    CountOfMoviesGuessedCorrectly = table.Column<int>(nullable: false),
+                    CountOfMoviesGuessedIncorrectly = table.Column<int>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    GamesPlayed = table.Column<int>(nullable: false),
+                    IsItThisTeamsTurn = table.Column<bool>(nullable: false),
+                    NumberOfPlayersOnTeam = table.Column<int>(nullable: false),
+                    TeamName = table.Column<string>(nullable: true),
+                    TeamNumberForThisGame = table.Column<int>(nullable: false),
+                    TeamPoints = table.Column<int>(nullable: false),
+                    TotalTimeTakenForGuesses = table.Column<TimeSpan>(nullable: false),
+                    UpdatedAt = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Teams", x => x.TeamId);
                 });
 
             migrationBuilder.CreateTable(
@@ -210,6 +227,76 @@ namespace movieGame.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "GameTeamJoin",
+                columns: table => new
+                {
+                    GameTeamGameJoinId = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    GameId = table.Column<int>(nullable: false),
+                    NumberOfPlayersOnTeam = table.Column<int>(nullable: false),
+                    PointsReceived = table.Column<int>(nullable: false),
+                    TeamId = table.Column<int>(nullable: false),
+                    ThisTeamLost = table.Column<bool>(nullable: false),
+                    ThisTeamWon = table.Column<bool>(nullable: false),
+                    TotalTimeTakenForGuesses = table.Column<TimeSpan>(nullable: false),
+                    UpdatedAt = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GameTeamJoin", x => x.GameTeamGameJoinId);
+                    table.ForeignKey(
+                        name: "FK_GameTeamJoin_Games_GameId",
+                        column: x => x.GameId,
+                        principalTable: "Games",
+                        principalColumn: "GameId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GameTeamJoin_Teams_TeamId",
+                        column: x => x.TeamId,
+                        principalTable: "Teams",
+                        principalColumn: "TeamId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Players",
+                columns: table => new
+                {
+                    PlayerId = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    GameId = table.Column<int>(nullable: true),
+                    GamesAttempted = table.Column<int>(nullable: false),
+                    GamesWon = table.Column<int>(nullable: false),
+                    PlayerCoins = table.Column<int>(nullable: false),
+                    PlayerEmail = table.Column<string>(nullable: true),
+                    PlayerFirstName = table.Column<string>(nullable: true),
+                    PlayerLastName = table.Column<string>(nullable: true),
+                    PlayerName = table.Column<string>(nullable: true),
+                    PlayerPassword = table.Column<string>(nullable: true),
+                    Points = table.Column<int>(nullable: false),
+                    TeamId = table.Column<int>(nullable: true),
+                    UpdatedAt = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Players", x => x.PlayerId);
+                    table.ForeignKey(
+                        name: "FK_Players_Games_GameId",
+                        column: x => x.GameId,
+                        principalTable: "Games",
+                        principalColumn: "GameId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Players_Teams_TeamId",
+                        column: x => x.TeamId,
+                        principalTable: "Teams",
+                        principalColumn: "TeamId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Movies",
                 columns: table => new
                 {
@@ -223,6 +310,8 @@ namespace movieGame.Migrations
                     Poster = table.Column<string>(nullable: true),
                     Released = table.Column<DateTime>(nullable: false),
                     Runtime = table.Column<TimeSpan>(nullable: false),
+                    TeamId = table.Column<int>(nullable: true),
+                    TeamId1 = table.Column<int>(nullable: true),
                     Title = table.Column<string>(nullable: true),
                     UpdatedAt = table.Column<DateTime>(nullable: false),
                     Year = table.Column<int>(nullable: false),
@@ -236,6 +325,18 @@ namespace movieGame.Migrations
                         column: x => x.PlayerId,
                         principalTable: "Players",
                         principalColumn: "PlayerId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Movies_Teams_TeamId",
+                        column: x => x.TeamId,
+                        principalTable: "Teams",
+                        principalColumn: "TeamId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Movies_Teams_TeamId1",
+                        column: x => x.TeamId1,
+                        principalTable: "Teams",
+                        principalColumn: "TeamId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -341,7 +442,38 @@ namespace movieGame.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Poster",
+                name: "MovieTeamJoin",
+                columns: table => new
+                {
+                    MovieTeamJoinId = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    ClueGameWonAt = table.Column<int>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    MovieId = table.Column<int>(nullable: false),
+                    PointsReceived = table.Column<int>(nullable: false),
+                    TeamId = table.Column<int>(nullable: false),
+                    UpdatedAt = table.Column<DateTime>(nullable: false),
+                    WinFlag = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MovieTeamJoin", x => x.MovieTeamJoinId);
+                    table.ForeignKey(
+                        name: "FK_MovieTeamJoin_Movies_MovieId",
+                        column: x => x.MovieId,
+                        principalTable: "Movies",
+                        principalColumn: "MovieId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MovieTeamJoin_Teams_TeamId",
+                        column: x => x.TeamId,
+                        principalTable: "Teams",
+                        principalColumn: "TeamId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Posters",
                 columns: table => new
                 {
                     PosterId = table.Column<int>(nullable: false)
@@ -354,9 +486,9 @@ namespace movieGame.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Poster", x => x.PosterId);
+                    table.PrimaryKey("PK_Posters", x => x.PosterId);
                     table.ForeignKey(
-                        name: "FK_Poster_Movies_MovieId",
+                        name: "FK_Posters_Movies_MovieId",
                         column: x => x.MovieId,
                         principalTable: "Movies",
                         principalColumn: "MovieId",
@@ -467,6 +599,16 @@ namespace movieGame.Migrations
                 column: "MovieId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_GameTeamJoin_GameId",
+                table: "GameTeamJoin",
+                column: "GameId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GameTeamJoin_TeamId",
+                table: "GameTeamJoin",
+                column: "TeamId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Genres_MovieId",
                 table: "Genres",
                 column: "MovieId");
@@ -507,8 +649,38 @@ namespace movieGame.Migrations
                 column: "PlayerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Poster_MovieId",
-                table: "Poster",
+                name: "IX_Movies_TeamId",
+                table: "Movies",
+                column: "TeamId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Movies_TeamId1",
+                table: "Movies",
+                column: "TeamId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MovieTeamJoin_MovieId",
+                table: "MovieTeamJoin",
+                column: "MovieId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MovieTeamJoin_TeamId",
+                table: "MovieTeamJoin",
+                column: "TeamId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Players_GameId",
+                table: "Players",
+                column: "GameId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Players_TeamId",
+                table: "Players",
+                column: "TeamId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Posters_MovieId",
+                table: "Posters",
                 column: "MovieId");
         }
 
@@ -533,6 +705,9 @@ namespace movieGame.Migrations
                 name: "Clues");
 
             migrationBuilder.DropTable(
+                name: "GameTeamJoin");
+
+            migrationBuilder.DropTable(
                 name: "MovieActorJoin");
 
             migrationBuilder.DropTable(
@@ -542,7 +717,10 @@ namespace movieGame.Migrations
                 name: "MoviePlayerJoin");
 
             migrationBuilder.DropTable(
-                name: "Poster");
+                name: "MovieTeamJoin");
+
+            migrationBuilder.DropTable(
+                name: "Posters");
 
             migrationBuilder.DropTable(
                 name: "PowerUsers");
@@ -564,6 +742,12 @@ namespace movieGame.Migrations
 
             migrationBuilder.DropTable(
                 name: "Players");
+
+            migrationBuilder.DropTable(
+                name: "Games");
+
+            migrationBuilder.DropTable(
+                name: "Teams");
         }
     }
 }

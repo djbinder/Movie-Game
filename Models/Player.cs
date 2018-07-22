@@ -25,9 +25,7 @@ namespace movieGame.Models
 
         public int GamesWon { get; set; }
 
-        public new DateTime CreatedAt {get;set;}
-
-        public new DateTime UpdatedAt {get;set;}
+        public int PlayerCoins { get; set; }
 
         public IList<Movie> Movies {get; set; }
 

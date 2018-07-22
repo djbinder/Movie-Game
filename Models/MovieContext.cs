@@ -8,16 +8,23 @@ namespace movieGame.Models
     {
         public MovieContext(DbContextOptions<MovieContext> options) : base(options) { }
 
-        public DbSet<Movie> Movies {get;set;}
-        public DbSet<Clue> Clues {get;set;}
-        public DbSet<Player> Players { get; set; }
-        public DbSet<Genre> Genres { get; set; }
         public DbSet<Actor> Actors { get; set; }
+        public DbSet<Clue> Clues {get;set;}
+        public DbSet<Game> Games { get; set; }
+        public DbSet<Genre> Genres { get; set; }
+        public DbSet<Movie> Movies {get;set;}
+        public DbSet<Player> Players { get; set; }
+        public DbSet<Poster> Posters { get; set; }
+        public DbSet<PowerUser> PowerUsers { get; set; }
+        public DbSet<Team> Teams { get; set; }
+        public new DbSet<User> Users { get; set; }
+
+        public DbSet<GameTeamGameJoin> GameTeamJoin { get; set; }
+        public DbSet<MovieActorJoin> MovieActorJoin { get; set; }
         public DbSet<MovieGenreJoin> MovieGenreJoin { get; set; }
         public DbSet<MoviePlayerJoin> MoviePlayerJoin { get; set; }
-        public DbSet<MovieActorJoin> MovieActorJoin { get; set; }
-        public new DbSet<User> Users { get; set; }
-        public DbSet<PowerUser> PowerUsers { get; set; }
+        public DbSet<MovieTeamJoin> MovieTeamJoin { get; set; }
+
     }
 }
 
