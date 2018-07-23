@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;                 // <--- 'IApplicationBuilder
 using Microsoft.AspNetCore.Hosting;                 // <--- 'IHostingEnvironment'
 using Microsoft.AspNetCore.Http;                     // <--- 'HttpContext' and 'WriteAsync'
 using Microsoft.AspNetCore.Identity;                // <--- 'IdentityRole' and 'AddDefaultTokenParameters'
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;                // <--- 'UseNpgsql'
 using Microsoft.Extensions.Configuration;           // <--- 'IConfiguration' and 'ConfigurationBuilder'
 using Microsoft.Extensions.DependencyInjection;     // <--- 'IServiceCollection'
@@ -48,15 +49,12 @@ namespace movieGame
                 .AddEntityFrameworkStores<MovieContext>()
                 .AddDefaultTokenProviders();
 
-            // services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            //     .AddCookie(o => o.LoginPath = new PathString("/login"))
-            //     .AddFacebook(o =>
-            //     {
-            //         o.AppId = Configuration["facebook:appid"];
-            //         o.AppSecret = Configuration["facebook:appsecret"];
-            //     });
-            services.AddMvc ();
+            // changed for migraitons to 2.1
+            // services.AddMvc ();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
             services.AddSession ();
+
             services.AddDbContext<MovieContext> (options => options.UseNpgsql (Configuration["DBInfo:ConnectionString"]));
         }
 
@@ -70,7 +68,16 @@ namespace movieGame
                 loggerFactory.AddConsole ();
                 app.UseDeveloperExceptionPage ();
                 app.UseDatabaseErrorPage();
-                app.UseBrowserLink();
+
+                // removed for 2.1 migrations
+                // app.UseBrowserLink();
+            }
+
+            // added for 2.1
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                app.UseHsts();
             }
 
             // //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-2.0
@@ -146,10 +153,12 @@ namespace movieGame
                 // });
             #endregion
 
+
             app.UseStaticFiles ();
             app.UseSession ();
             app.UseAuthentication();
             app.UseMvc ();
+
 
         }
     }

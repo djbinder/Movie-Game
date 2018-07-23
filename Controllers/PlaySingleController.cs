@@ -12,7 +12,7 @@ namespace movieGame.Controllers
     public class PlaySingleController : Controller
     {
         private MovieContext _context;
-        private GetMovieInfoController _getMovieInfoController;
+        // private GetMovieInfoController _getMovieInfoController;
 
         public PlaySingleController (MovieContext context) {
             _context = context;

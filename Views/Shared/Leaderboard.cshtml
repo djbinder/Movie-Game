@@ -68,9 +68,9 @@
                     <th class="text-center">Games Played</th>
                     <th class="text-center">Games Won</th>
                 </tr>
-                @{ var counter = 0; foreach(var Player in ViewBag.Leaders) {
+                @{ var counter2 = 0; foreach(var Player in ViewBag.Leaders) {
                 <tr class="text-white">
-                    <td class="text-center">@(++counter)</td>
+                    <td class="text-center">@(++counter2)</td>
                     <td class="text-left text-primary">@Player.PlayerName</td>
                     <td class="text-center">@Player.Points</td>
                     <td class="text-center">@Player.GamesAttempted</td>

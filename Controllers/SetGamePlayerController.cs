@@ -44,6 +44,8 @@ namespace movieGame.Controllers
                 return String.Format("(\"{0}\") is neither null nor empty", s);
         }
 
+
+
         [HttpPost]
         [Route ("SetGamePlayer")]
         public IActionResult SetGamePlayer (string NameEntered)
@@ -75,8 +77,9 @@ namespace movieGame.Controllers
                         Points = 0,
                         GamesAttempted = 0,
                         GamesWon = 0,
-                        Movies = new List<Movie>(),
+                        PlayerCoins = 0,
                         MoviePlayerJoin = new List<MoviePlayerJoin>(),
+                        PlayerTeamJoin = new List<PlayerTeamJoin>()
                     };
 
                     _context.Add(NewPlayer);
@@ -95,8 +98,9 @@ namespace movieGame.Controllers
                         Points = ExistingPlayer.Points,
                         GamesAttempted = ExistingPlayer.GamesAttempted,
                         GamesWon = ExistingPlayer.GamesWon,
-                        Movies = ExistingPlayer.Movies,
+                        PlayerCoins = ExistingPlayer.PlayerCoins,
                         MoviePlayerJoin = ExistingPlayer.MoviePlayerJoin,
+                        PlayerTeamJoin = ExistingPlayer.PlayerTeamJoin,
                     };
 
                     ExtensionsD.Spotlight("this is an existing player");
@@ -106,6 +110,9 @@ namespace movieGame.Controllers
             }
 
             HttpContext.Session.SetString("player", NameEntered);
+
+            string ThisGamesPlayersName = HttpContext.Session.GetString("player");
+            int? ThisGamesPlayerId = HttpContext.Session.GetInt32("id");
 
 
             Complete.ThisMethod();

@@ -4,16 +4,25 @@
 
     <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css" asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.css" asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <link rel="stylesheet" href="~/css/styles.css" />
 </head>
 
 
 <body>
 
-    <div class="row rounded-0 RedDarken-1 mb-4 sticky-top">
-        <a class="col text-center text-white nav-link" href="/">Home</a>
-        <a class="col text-center text-white nav-link" href="/Instructions">Instructions</a>
-        <a class="col text-center text-white nav-link" href="/InitiateSinglePlayerGame">Start Over</a>
+    <div class="GroupNavbar">
+        <div class="GroupDropDown">
+            <button class="GroupDropButton">Menu
+                <i class="fa fa-caret-down text-white"></i>
+            </button>
+            <div class="GroupDropDown-content">
+                <a class="col text-center text-primary nav-link" href="/">Home</a>
+                <a class="col text-center text-primary nav-link" href="/Instructions">Instructions</a>
+                <a class="col text-center text-primary nav-link" href="/InitiateSinglePlayerGame">Start Over</a>
+            </div>
+        </div>
     </div>
 
     <div class="setRelative">

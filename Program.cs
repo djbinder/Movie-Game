@@ -16,15 +16,32 @@ namespace movieGame {
             Start.ThisMethod();
 
             Console.WriteLine($"Version: {Environment.Version}");
-            BuildWebHost (args).Run ();
+            CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IWebHost BuildWebHost (string[] args) =>
-            WebHost.CreateDefaultBuilder (args)
-            .UseStartup<Startup> ()
-            .Build ();
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>();
     }
 }
+
+
+
+
+// 2.0 version
+    // public static void Main (string[] args) {
+    //     Start.ThisMethod();
+
+    //     Console.WriteLine($"Version: {Environment.Version}");
+    //     BuildWebHost (args).Run ();
+    // }
+
+    // public static IWebHost BuildWebHost (string[] args) =>
+    //     WebHost.CreateDefaultBuilder (args)
+    //     .UseStartup<Startup> ()
+    //     .Build ();
+
+
 
 
 // without azure

@@ -2,3 +2,34 @@ var GamesWon = ViewBag.GamesWon = Player.GamesWon;
 var PlayerName = ViewBag.PlayerName = Player.PlayerName;
 var GamesAttempted = ViewBag.GamesPlayed = Player.GamesAttempted;
 var PlayerPoints = ViewBag.PlayerPoints = Player.Points;
+
+
+TOP TEN LEADERS
+<!-- hiding this for 2.1 migration -->
+<!-- <div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8 col-sm-12">
+        <table class="table table-sm leaderboard">
+            <tr class="glow">
+                <td colspan="5">Full Leaderboard</td>
+            </tr>
+            <tr class="text-white">
+                <th class="text-center">Rank</th>
+                <th class="text-left">Player</th>
+                <th class="text-center">Total Points</th>
+                <th class="text-center">Games Played</th>
+                <th class="text-center">Games Won</th>
+            </tr>
+            @{ var counter = 0; foreach(var Player in ViewBag.Leaders) {
+            <tr class="text-white">
+                <td class="text-center">@(++counter)</td>
+                <td class="text-left text-primary">@Player.PlayerName</td>
+                <td class="text-center">@Player.Points</td>
+                <td class="text-center">@Player.GamesAttempted</td>
+                <td class="text-center">@Player.GamesWon</td>
+            </tr>
+            } }
+        </table>
+    </div>
+    <div class="col-md-2"></div>
+</div> -->
