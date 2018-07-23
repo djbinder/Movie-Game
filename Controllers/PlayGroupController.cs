@@ -17,11 +17,14 @@ namespace movieGame.Controllers
         String Start = "STARTED";
         String Complete = "COMPLETED";
 
-        public PlaySingleController Playsinglecontroller { get => _playsinglecontroller; set => _playsinglecontroller = value; }
+        public PlaySingleController Playsinglecontroller {
+            get => _playsinglecontroller;
+            set => _playsinglecontroller = value;
+        }
+
 
         [HttpGet]
         [Route("GroupGame")]
-
         public IActionResult ViewGroupGamePage ()
         {
             Start.ThisMethod();

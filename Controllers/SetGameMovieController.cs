@@ -75,7 +75,8 @@ namespace movieGame.Controllers
             SetThisGamesHints();
 
             // Complete.ThisMethod();
-            return RedirectToAction ("ViewPlaySingle", "ShowViews");
+            return View("PlaySingle");
+            // return RedirectToAction ("ViewPlaySingle", "ShowViews");
         }
 
 

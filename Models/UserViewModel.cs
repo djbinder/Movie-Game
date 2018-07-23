@@ -5,6 +5,7 @@ namespace movieGame.Models
     public class RegisterViewModel
     {
         [Required]
+        [Display(Name = "User Name")]
         public string UserFirstName {get;set;}
 
         [Required]

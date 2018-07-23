@@ -8,11 +8,10 @@
 
   </PropertyGroup>
 
-  <!-- <ItemGroup Condition = "'$(TargetEnvironment)' == 'Development'">
-    <PackageReference Include="ObjectDumper" Version="1.0.0.12" />
-  </ItemGroup> -->
-
   <ItemGroup>
+
+
+
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.1" />
 
@@ -24,7 +23,7 @@
 
     <PackageReference Include="ObjectDumper" Version="1.*" />
     <!-- <PackageReference Include="ObjectDumper" Version="1.0.0.12" /> -->
-    <PackageReference Include="ObjectDumper.NET" Version="1.0.3"/>
+    <PackageReference Include="ObjectDumper.NET" Version="1.0.3" />
     <PackageReference Include="popper.js" Version="1.14.3" />
     <PackageReference Include="RestSharp" Version="106.2.2" />
 

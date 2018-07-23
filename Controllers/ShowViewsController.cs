@@ -50,20 +50,15 @@ namespace movieGame.Controllers
         }
 
 
-        public string Index ()
-        {
-            return "this is my default action";
-        }
 
-
-        [HttpGet]
-        [Route("LogInRegisterPage")]
-        public IActionResult ViewLogInRegisterPage()
-        {
-            Start.ThisMethod();
-            Complete.ThisMethod();
-            return View("LoginRegister");
-        }
+        // [HttpGet]
+        // [Route("LogInRegisterPage")]
+        // public IActionResult ViewLogInRegisterPage()
+        // {
+        //     Start.ThisMethod();
+        //     Complete.ThisMethod();
+        //     return View("LoginRegister");
+        // }
 
 
         // view landing page
@@ -129,15 +124,15 @@ namespace movieGame.Controllers
         }
 
 
-        [HttpGet]
-        [Route("PlaySingle")]
+        // [HttpGet]
+        // [Route("PlaySingle")]
 
-        public IActionResult ViewPlaySingle()
-        {
-            Start.ThisMethod();
-            Complete.ThisMethod();
-            return View("PlaySingle");
-        }
+        // public IActionResult ViewPlaySingle()
+        // {
+        //     Start.ThisMethod();
+        //     Complete.ThisMethod();
+        //     return View("PlaySingle");
+        // }
 
         [HttpGet]
         [Route("NewTeamForm")]
