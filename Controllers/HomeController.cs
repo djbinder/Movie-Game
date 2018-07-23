@@ -10,6 +10,7 @@ namespace movieGame.Controllers
     {
         private MovieContext _context;
 
+
         public HomeController (MovieContext context ) {
             _context = context;
         }

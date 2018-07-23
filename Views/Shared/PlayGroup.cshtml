@@ -1,41 +1,56 @@
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <!-- <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css" asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.css" asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"> -->
+    <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css" asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.css" asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="~/css/groupstyle.css" />
 
 </head>
 
-<body>
-
-
-    <div class="row rounded-0 mb-4 sticky-top border-bottom border-white ">
-        <a class="col text-center text-white nav-link" href="/">Home</a>
-        <a class="col text-center text-white nav-link" href="/Instructions">Instructions</a>
-        <a class="col text-center text-white nav-link" href="/InitiateGame">Start Over</a>
-    </div>
-
-    <div id="GroupPlay_Clues" class="row d-flex justify-content-center p-0 m-0">
-        <p class="text-white">Click for Next Clue</p>
-    </div>
-
-    <div class="col p-0 m-0">
-        <div class="row p-0 m-0">
-            <div class="col-6 card border-dark mb-1 mr-1 ml-1 p-0 rounded-0 d-flex justify-content-center">
-                <div class="card-header text-center pt-1 pb-1">#1</div>
-                <div class="card-body text-dark p-0 mb-1">
-                    <h3 class="card-title text-center text-primary mt-2 mb-1"><b>Helicopter</b></h3>
-                <p class="card-text text-center">Point Value: 10</p>
-                </div>
-            </div>
-            <div class="col-6 card border-dark mb-1 p-0 rounded-0 d-flex justify-content-center" style="max-width: 11rem;">
-                <div class="card-header text-center pt-1 pb-1">#2</div>
-                <div class="card-body text-dark p-0 mb-1">
-                    <h3 class="card-title text-center text-primary mt-2 mb-1"><b>Henry Hill</b></h3>
-                <p class="card-text text-center">Point Value: 9</p>
-                </div>
+<body id="BodyColor">
+    <div class="GroupNavbar">
+        <div class="GroupDropDown">
+            <button class="GroupDropButton">Menu
+                <i class="fa fa-caret-down text-white"></i>
+            </button>
+            <div class="GroupDropDown-content">
+                <a class="col text-center text-primary nav-link" href="/">Home</a>
+                <a class="col text-center text-primary nav-link" href="/Instructions">Instructions</a>
+                <a class="col text-center text-primary nav-link" href="/InitiateGame">Start Over</a>
             </div>
         </div>
     </div>
 
+    <div id="GroupPlay_Container" class="text-dark mt-1 mb-2">
+        <span class="d-flex justify-content-center">Click Anywhere For Next Clue</span>
+        <br>
+
+        <div class="height">
+        <table class="table" id="ClueTable">
+            <thead>
+                <tr>
+                    <th scope="col" class="text-center p-0">#</th>
+                    <th scope="col" class="text-center p-0">Clue</th>
+                    <th scope="col" class="text-center p-0">Value</th>
+                </tr>
+            </thead>
+            <tbody id="TableBody">
+
+            </tbody>
+        </table>
+        </div>
+
+        </div>
+    </div>
+
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js" asp-fallback-src="~/lib/jquery/dist/jquery.js" asp-fallback-test="window.jQuery"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+
     <script src="~/js/GroupPlay.js" asp-append-version="true"></script>
+    <!-- <script src="~/js/site.js" asp-append-version="true"></script> -->
 </body>

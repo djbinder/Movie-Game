@@ -46,10 +46,14 @@ namespace movieGame.Controllers
         {
             Start.ThisMethod();
 
-            int? PlayerId = ViewBag.PlayerId = HttpContext.Session.GetInt32("id");
+            int? PlayerId = HttpContext.Session.GetInt32("id");
+            // int? PlayerId = ViewBag.PlayerId = HttpContext.Session.GetInt32("id");
+            PlayerId.Intro("player id");
 
             // QUERY PLAYER ---> movieGame.Models.Player
             Player ThisGamesPlayer = _context.Players.Include(m => m.MoviePlayerJoin).SingleOrDefault(p => p.PlayerId == PlayerId);
+
+            ThisGamesPlayer.PlayerName.Intro("player name");
 
             // GAMES WON --> how many games has the player won; the next movie served is based off of this
             var ThisGamesPlayer_CurrentGamesWon = ViewBag.GamesWon = ThisGamesPlayer.GamesWon;

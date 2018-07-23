@@ -15,7 +15,7 @@ namespace movieGame.Controllers
         }
 
         String Start = "STARTED";
-        String Complete = "COMPLETED";
+        // String Complete = "COMPLETED";
 
         public PlaySingleController Playsinglecontroller {
             get => _playsinglecontroller;

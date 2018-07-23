@@ -113,12 +113,11 @@ namespace movieGame.Controllers
         {
             Start.ThisMethod();
 
-            var ThisGamesPlayersName = HttpContext.Session.GetString("player");
+            string ThisGamesPlayersName = HttpContext.Session.GetString("player");
             ViewBag.PlayerName = ThisGamesPlayersName;
-
-            TempData["PlayerName"] = ThisGamesPlayersName;
-            Console.WriteLine(TempData["PlayerName"]);
             ThisGamesPlayersName.Intro("this games players name");
+
+            int? ThisGamesPlayerId = HttpContext.Session.GetInt32("id");
 
             return View("GameList");
         }

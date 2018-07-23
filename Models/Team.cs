@@ -1,50 +1,54 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace movieGame.Models
 {
     public class Team : BaseEntity
     {
+        [Key]
+        [Display(Name="Team Id")]
         public int TeamId { get; set; }
 
+        [Display(Name="Team Name")]
         public string TeamName { get; set; }
 
+
+        [Display(Name="# of Players on Team")]
         public int NumberOfPlayersOnTeam { get; set; }
 
-        public bool IsItThisTeamsTurn { get; set; }
 
-        public int TeamNumberForThisGame { get; set; }
-
+        [Display(Name="Team Points")]
         public int TeamPoints { get; set; }
 
+
+        [Display(Name="Games Played")]
         public int GamesPlayed { get; set; }
 
+
+        [Display(Name="Number of Movies Guessed Correctly")]
         public int CountOfMoviesGuessedCorrectly { get; set; }
 
+
+        [Display(Name="Number of Movies Guessed Incorrectly")]
         public int CountOfMoviesGuessedIncorrectly { get; set; }
 
-        public TimeSpan TotalTimeTakenForGuesses { get; set; }
 
-        public IList<Player> Players { get; set; }
-
-        public IList<Movie> MoviesTeamWon { get; set; }
-
-        public IList<Movie> MoviesTeamLost { get; set; }
 
         public IList<MovieTeamJoin> MovieTeamJoin { get; set; }
 
-        public IList<GameTeamGameJoin> GameTeamGameJoin { get; set; }
+        public IList<GameTeamJoin> GameTeamJoin { get; set; }
+
+        public IList<PlayerTeamJoin> PlayerTeamJoin { get; set; }
 
 
         public Team ()
         {
             CreatedAt = DateTime.Now;
             UpdatedAt = DateTime.Now;
-            Players = new List<Player>();
-            MoviesTeamWon = new List<Movie>();
-            MoviesTeamLost = new List<Movie>();
             MovieTeamJoin = new List<MovieTeamJoin>();
-            GameTeamGameJoin = new List<GameTeamGameJoin>();
+            GameTeamJoin = new List<GameTeamJoin>();
+            PlayerTeamJoin = new List<PlayerTeamJoin>();
         }
     }
 }

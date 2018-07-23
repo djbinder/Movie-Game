@@ -1,45 +1,38 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
+using System.Diagnostics;           // <--- 'StackFrame' and 'StackTrace'
+using System.IO;                    // <--- 'Path'
 using Newtonsoft.Json;              // <--- 'JsonConvert' and 'Formatting.Indented'
 
 
-// using static System.Diagnostics.ObjectDumper;
-
 public static class ExtensionsD
 {
+
     public const String Start = "START";
     public const String Complete = "COMPLETE";
 
+
     // retrieve high-level info about 'this'
-    // example ---> valueX.Dig();
     public static void Dig<T>(this T x)
     {
         Console.ForegroundColor = ConsoleColor.DarkRed;
-        Console.WriteLine("'DIG extension METHOD' STARTED");
+        Console.WriteLine("'DIG' STARTED");
 
         string json = JsonConvert.SerializeObject(x, Formatting.Indented);
 
         Console.WriteLine($"{x} --------------------------- {json} --------------------------- {x}");
-        // Console.WriteLine(x + " --------------------------- " + json + " --------------------------- " + x);
 
         Console.WriteLine();
 
         Console.ResetColor();
     }
 
+
     // retrieve detailed info about 'this'
-        // example ---> valueX.DigDeep();
     public static void DigDeep<T>(this T x)
     {
         Console.ForegroundColor = ConsoleColor.DarkRed;
-        Console.WriteLine("'DIG DEEP extension METHOD' STARTED");
-
-        // var xDump = ObjectDumper.Dump(x, DumpStyle.CSharp);
-        // var yDump = ObjectDumper.Dump(x, DumpStyle.Console);
-        // Console.WriteLine(xDump);
-        // Console.WriteLine(yDump);
+        Console.WriteLine("'DIG DEEP' STARTED");
 
         using (var writer = new System.IO.StringWriter())
         {
@@ -79,9 +72,7 @@ public static class ExtensionsD
 
 
     // shortcut console writer
-        // example ---> var valueX = "VALUE X";
-        //              valueX = valueX.Intro(Object);
-    public static Object Intro(this object Object, string String)
+    public static void Intro(this object Object, string String)
     {
         Console.WriteLine();
         Console.ForegroundColor = ConsoleColor.Green;
@@ -91,23 +82,17 @@ public static class ExtensionsD
         StackFrame frame = new StackFrame(1, true);
         var lineNumber = frame.GetFileLineNumber();
 
-        // Console.WriteLine(UpperString + " ---> " + Object);
-        // Console.WriteLine($"{UpperString} [@ Line#: {lineNumber}] ---> {Object} ");
         Console.WriteLine("{0} [@ Line#: {1}] ---> {2} ", UpperString, lineNumber - 1, Object);
 
-        // using (var writer = File.AppendText("debug.log"))
-        // {
-        //     writer.WriteLine("{0} ---> {1}", UpperString, Object);
-        // }
-
         Console.ResetColor();
         Console.WriteLine();
 
-        return UpperString;
+        return;
     }
+
 
     // https://msdn.microsoft.com/en-us/library/system.io.path.getfilename(v=vs.110).aspx
-    public static String ThisMethod(this string String)
+    public static void ThisMethod(this string String)
     {
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.WriteLine();
@@ -115,7 +100,6 @@ public static class ExtensionsD
         StackTrace stackTrace = new StackTrace();
 
         var MethodName = stackTrace.GetFrame(1).GetMethod().Name;
-        // var methodNameUp = methodName.ToUpper();
 
         StackFrame frame = new StackFrame(1, true);
         var method = frame.GetMethod();
@@ -127,39 +111,10 @@ public static class ExtensionsD
 
         var timing = DateTime.Now.ToShortTimeString();
 
-        Console.WriteLine($"---------------File: {FileNameTrimmed} ---> {MethodName} {String} [Line#: {lineNumber} @ {timing}] ---------------");
-        // Console.WriteLine("---------------File: '{0}' ---> {1} method {2} [Line#: {3} @ {4}] ---------------", FileNameTrimmed, methodName, String, lineNumber, timing);
+        // var MessageToWriteToConsole = $"---------------File: {FileNameTrimmed} ---> {MethodName} {String} [Line#: {lineNumber} @ {timing}] ---------------";
+        // Console.WriteLine(MessageToWriteToConsole);
 
-        Console.ResetColor();
-        Console.WriteLine();
-
-        var dummyString = "dummyString";
-
-        return dummyString;
-    }
-
-    public static void Open()
-    {
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.WriteLine();
-
-        StackTrace stackTrace = new StackTrace();
-
-        var MethodName = stackTrace.GetFrame(1).GetMethod().Name;
-        // var methodNameUp = methodName.ToUpper();
-
-        StackFrame frame = new StackFrame(1, true);
-        var method = frame.GetMethod();
-        var fileName = frame.GetFileName();
-        // var path = @"/Users/DanBinder/Google_Drive/Coding/Projects/movieGame/movieGame/Controllers/";
-        var lineNumber = frame.GetFileLineNumber();
-
-        string FileNameTrimmed = Path.GetFileName(fileName);
-
-        var timing = DateTime.Now.ToShortTimeString();
-
-        Console.WriteLine($"---------------File: {FileNameTrimmed} ---> {MethodName} STARTED [Line#: {lineNumber} @ {timing}] ---------------");
-        // Console.WriteLine("---------------File: '{0}' ---> {1} method {2} [Line#: {3} @ {4}] ---------------", FileNameTrimmed, methodName, String, lineNumber, timing);
+        Console.WriteLine($"--------------->|     {FileNameTrimmed} ---> {MethodName} {String} [Line: {lineNumber} @ {timing}]     |<---------------");
 
         Console.ResetColor();
         Console.WriteLine();
@@ -241,24 +196,6 @@ public static class ExtensionsD
     // }
 
 
-
-    public static IEnumerable<T> LogQuery<T>
-        (this IEnumerable<T> sequence, string tag)
-    {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("----------!!!!! 'LOG QUERY extension METHOD' STARTED !!!!!----------");
-
-            // using (var writer = File.AppendText("debug.log"))
-            // {
-            //     writer.WriteLine($"Executing Query {tag}");
-            // }
-
-            Console.WriteLine("----------!!!!! 'LOG QUERY extension METHOD' COMPLETED !!!!!----------");
-            Console.ResetColor();
-
-            return sequence;
-    }
-
     public static void TestTypes (Type type)
     {
         Console.WriteLine("IsArray: {0}", type.IsArray);
@@ -267,24 +204,4 @@ public static class ExtensionsD
         Console.WriteLine("BaseType.Name: {0}", type.BaseType.Name);
         Console.WriteLine();
     }
-
-
-    public static String Explain(String args)
-    {
-        Console.WriteLine(args);
-
-        var data = new[]
-        {
-            new { Year = 1991, Album = "Out of Time", Songs = 11, Rating = "* * * *" },
-        };
-
-        // Console.Write(data.ToMarkdownTable());
-
-        Console.ReadKey();
-
-        string dummyString = "dummystring";
-        return dummyString;
-    }
-
-
 }

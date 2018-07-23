@@ -47,12 +47,10 @@ namespace movieGame.Controllers
                 GamesPlayed = 0,
                 CountOfMoviesGuessedCorrectly = 0,
                 CountOfMoviesGuessedIncorrectly = 0,
-                TotalTimeTakenForGuesses = new TimeSpan(0,0,0,0,0),
-                Players = new List<Player>(),
-                MoviesTeamWon = new List<Movie>(),
-                MoviesTeamLost = new List<Movie>(),
                 MovieTeamJoin = new List<MovieTeamJoin>(),
-                GameTeamGameJoin = new List<GameTeamGameJoin>()
+                GameTeamJoin = new List<GameTeamJoin>(),
+                PlayerTeamJoin = new List<PlayerTeamJoin>()
+
             };
 
             var xTeams = ViewData.Model = _context.Teams.ToList();
