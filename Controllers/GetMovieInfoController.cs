@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;             // <--- 'JObject'
 using RestSharp;                        // <--- REST related things: 'RestClient', 'RestRequest', 'IRestResponse'
 using movieGame.Models;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace movieGame.Controllers
 {
@@ -30,15 +31,19 @@ namespace movieGame.Controllers
             return _movieCount;
         }
 
-
-        public Movie DeserializeMovieObject ()
+        public async Task<IActionResult> EditMovie(int? MovieId)
         {
-            Start.ThisMethod();
+            if (MovieId == null)
+            {
+                return NotFound();
+            }
 
-            var apiResponse = "https://www.omdbapi.com/?t=Toy+Story&y=1995&apikey=4514dc2d";
-            Movie m = JsonConvert.DeserializeObject<Movie>(apiResponse);
-
-            return m;
+            var MovieToEdit = await _context.Movies.SingleOrDefaultAsync(m => m.MovieId == MovieId);
+            if (MovieToEdit == null)
+            {
+                return NotFound();
+            }
+            return View("SingleMovie");
         }
 
 

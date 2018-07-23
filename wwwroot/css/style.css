@@ -2,11 +2,7 @@
 * {
     font-family: 'Roboto Condensed', serif;
     box-sizing: inherit;
-    /* margin     : 0px 0px 0px 0px;
-    padding    : 0px 0px 0px 0px; */
 }
-
-
 /* #endregion */
 
 
@@ -57,12 +53,9 @@
 .WhiteWords {
     color: white;
 }
-
 .RedDarken-1 {
     background-color: #e53935;
 }
-
-
 /* #endregion */
 
 
@@ -142,10 +135,6 @@ ul.clueText li {
     padding      : 5px;
     margin-bottom: 1px;}
 
-/* #searchResult li:nth-child(even){
-    background: #222;
-    color     : white;} */
-
 #searchResult li:hover{
     cursor: pointer;
 }
@@ -163,7 +152,6 @@ ul.clueText li {
     padding-bottom: 2%;
     text-align    : center;
 }
-
 
 .endWin {
     color    : green;
@@ -234,13 +222,9 @@ ul.clueText li {
     animation  : neon .08s ease-in-out infinite alternate;
 }
 
-.big4 {
-    font-size: 4.0rem;
+.GameTitle {
+    font-size: 3.0rem;
 }
-
-
-
-
 
 @keyframes neon {
   from {

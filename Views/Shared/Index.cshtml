@@ -1,12 +1,14 @@
 @model UserViewModel
 
+@{
+    ViewData["Title"] = "Index";
+}
+
+
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <!-- <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css" asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.css" asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"> -->
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
-    <!-- <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/> -->
 
     <link rel="stylesheet" href="~/css/styles.css" />
 </head>
@@ -14,9 +16,10 @@
 
 <body>
     <a class="text-center text-white nav-link" href="/NewTeamForm">New Team Form</a>
+
     <div class="row pt-0 mt-4 mb-4">
         <div class="col mt-0 pt-0">
-            <h3 class="glow big4 mt-0 pt-0"><b>The Awesome and/or Amazing Movie Game</b></h3>
+            <h4 class="glow mt-0 pt-0"><b>The Awesome and/or Amazing Movie Game</b></h4>
             <p class="glow">(for serious players only)</p>
         </div>
     </div>
@@ -28,6 +31,7 @@
         <div class="px-3">
             <form action="SetGamePlayer" method="POST" class="enterNameForm">
 
+                <label asp-for="RegisterViewModel.UserFirstName"></label>
                 <input class="row input-field text-white"name="NameEntered" placeholder="Enter Your Name to Play" type="text" value="Brian" aria-describedby="basic-addon2">
 
                 <br><p id="NameError" class="row">@ViewBag.ErrorMessage</p>
