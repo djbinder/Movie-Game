@@ -1,27 +1,31 @@
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css" asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.css" asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <link rel="stylesheet" href="~/css/groupstyle.css" />
+    <!-- <link rel="stylesheet" href="~/css/groupstyle.css" /> -->
+    <link rel="stylesheet" href="~/css/style.css" />
 
 </head>
 
 <body id="BodyColor">
-    <div class="GroupNavbar">
-        <div class="GroupDropDown">
-            <button class="GroupDropButton">Menu
-                <i class="fa fa-caret-down text-white"></i>
-            </button>
-            <div class="GroupDropDown-content">
-                <a class="col text-center text-primary nav-link" href="/">Home</a>
-                <a class="col text-center text-primary nav-link" href="/Instructions">Instructions</a>
-                <a class="col text-center text-primary nav-link" href="/InitiateGame">Start Over</a>
+    <nav class="navbar navbar-expand-lg bg-dark navbar-light p-0">
+        <h6 class="glow m-1"><b>The Awesome and/or Amazing Movie Game</b></h6>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon bg-light"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav pr-1">
+                <a class="text-white nav-item nav-link active text-right pr-2" href="/">Home <span class="sr-only"></span></a>
+                <a class="text-white nav-item nav-link text-right pr-2" href="/Instructions">Instructions</a>
+                <a class="text-white nav-item nav-link text-right pr-2" href="/InitiateGame">Start Over</a>
+                <a class="text-white nav-item nav-link text-right pr-2" href="/NewTeamForm">Team List</a>
             </div>
         </div>
-    </div>
+    </nav>
+
 
     <div id="GroupPlay_Container" class="text-dark mt-1 mb-2">
         <span class="d-flex justify-content-center">Click Anywhere For Next Clue</span>
