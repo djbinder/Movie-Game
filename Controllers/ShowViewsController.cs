@@ -1,45 +1,25 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text.Encodings.Web;
+using movieGame.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
-using movieGame.Controllers;
-using movieGame.Models;
 
-namespace movieGame.Controllers
-{
-    public class ShowViewsController : Controller
-    {
+namespace movieGame.Controllers {
+    public class ShowViewsController : Controller {
         private MovieContext _context;
         private Player _player;
         private GetPlayerInfoController _getPlayerInfoController;
         private GetMovieInfoController _getMovieInfoController;
 
-
         public ShowViewsController (MovieContext context) {
             _context = context;
         }
-
-        private string _start = "STARTED";
-        private string _complete = "COMPLETED";
 
         public GetPlayerInfoController GetPlayer {
             get => _getPlayerInfoController;
             set => _getPlayerInfoController = value;
         }
 
-        public string Start {
-            get => _start;
-            set => _start = value;
-        }
-
-        public string Complete {
-            get => _complete;
-            set => _complete = value;
-        }
         public Player Player {
             get => _player;
             set => _player = value;
@@ -49,79 +29,57 @@ namespace movieGame.Controllers
             set => _getMovieInfoController = value;
         }
 
-
-
         // [HttpGet]
         // [Route("LogInRegisterPage")]
         // public IActionResult ViewLogInRegisterPage()
         // {
-        //     Start.ThisMethod();
-        //     Complete.ThisMethod();
         //     return View("LoginRegister");
         // }
-
 
         // view landing page
         [HttpGet]
         [Route ("")]
-        public IActionResult ViewHomePage ()
-        {
-            Start.ThisMethod();
+        public IActionResult ViewHomePage () {
 
-            ViewBag.ErrorMessage = HttpContext.Session.GetString("message");
-            // Complete.ThisMethod();
+            ViewBag.ErrorMessage = HttpContext.Session.GetString ("message");
             return View ("Index");
         }
 
-
         [HttpGet]
-        [Route("PlayerProfile/{id}")]
-        public IActionResult ViewPlayerProfile (int id)
-        {
-            Start.ThisMethod();
+        [Route ("PlayerProfile/{id}")]
+        public IActionResult ViewPlayerProfile (int id) {
 
-            GetPlayer = new GetPlayerInfoController(_context);
+            GetPlayer = new GetPlayerInfoController (_context);
 
-            Player = ViewBag.Player = GetPlayer.GetPlayer(id);
-            Player.PlayerName.Intro("viewing player profile for");
+            Player = ViewBag.Player = GetPlayer.GetPlayer (id);
+            Player.PlayerName.Intro ("viewing player profile for");
 
-            var PlayersMovies = ViewBag.PlayerMovies = GetPlayer.PlayersMovies(id);
-            var MoviesInDatabase = ViewBag.MovieCount = _context.Movies.Count();
+            var PlayersMovies = ViewBag.PlayerMovies = GetPlayer.PlayersMovies (id);
+            var MoviesInDatabase = ViewBag.MovieCount = _context.Movies.Count ();
 
-            Complete.ThisMethod();
-            return View("PlayerProfile");
+            return View ("PlayerProfile");
         }
 
-
-
         [HttpGet]
-        [Route("Instructions")]
+        [Route ("Instructions")]
 
-        public IActionResult ViewInstructions ()
-        {
-            Start.ThisMethod();
+        public IActionResult ViewInstructions () {
 
-            // Complete.ThisMethod();
-            return View("instructions");
+            return View ("instructions");
         }
 
-
-
         [HttpGet]
-        [Route("GameList")]
-        public IActionResult ViewGameList ()
-        {
-            Start.ThisMethod();
+        [Route ("GameList")]
+        public IActionResult ViewGameList () {
 
-            string ThisGamesPlayersName = HttpContext.Session.GetString("player");
+            string ThisGamesPlayersName = HttpContext.Session.GetString ("player");
             ViewBag.PlayerName = ThisGamesPlayersName;
-            ThisGamesPlayersName.Intro("this games players name");
+            ThisGamesPlayersName.Intro ("this games players name");
 
-            int? ThisGamesPlayerId = HttpContext.Session.GetInt32("id");
+            int? ThisGamesPlayerId = HttpContext.Session.GetInt32 ("id");
 
-            return View("GameList");
+            return View ("GameList");
         }
-
 
         // [HttpGet]
         // [Route("PlaySingle")]
@@ -134,38 +92,22 @@ namespace movieGame.Controllers
         // }
 
         [HttpGet]
-        [Route("NewTeamForm")]
-        public IActionResult ViewNewTeamForm ()
-        {
-            Start.ThisMethod();
-            return View("NewTeamForm");
-        }
-
-
-        [HttpGet]
-        [Route("Leaderboard")]
-        public IActionResult ViewLeaderBoard ()
-        {
+        [Route ("Leaderboard")]
+        public IActionResult ViewLeaderBoard () {
             // LEADERS ---> System.Collections.Generic.List`1[movieGame.Models.Player]
-            var Leaders = ViewBag.Leaders = _context.Players.OrderByDescending(t => t.Points).ToList();
+            var Leaders = ViewBag.Leaders = _context.Players.OrderByDescending (t => t.Points).ToList ();
             // ViewBag.Leaders = Leaders;
-            return View("leaderboard");
+            return View ("leaderboard");
         }
-
-
 
         // view table of all movies including Id, Title, Description, Year, and list of Clues
         [HttpGet]
         [Route ("AllMovies")]
-        public IActionResult ViewAllMovies ()
-        {
-            Start.ThisMethod();
-            ViewBag.Movies = _context.Movies.Include(w => w.Clues).OrderBy(d => d.MovieId).ToList();
+        public IActionResult ViewAllMovies () {
+            ViewBag.Movies = _context.Movies.Include (w => w.Clues).OrderBy (d => d.MovieId).ToList ();
 
-            // Complete.ThisMethod();
             return View ("AllMovies");
         }
-
 
         // [HttpGet]
         // [Route("Movie/{id}")]
@@ -176,25 +118,17 @@ namespace movieGame.Controllers
         //     return View("SingleMovie");
         // }
 
-
         [HttpGet]
-        [Route("TheNet")]
-        public IActionResult ViewTheNet ()
-        {
-            Start.ThisMethod();
-            // Complete.ThisMethod();
-            return View("thenet");
+        [Route ("TheNet")]
+        public IActionResult ViewTheNet () {
+            return View ("thenet");
         }
-
 
         [HttpGet]
         [Route ("ErrorPage")]
-        public IActionResult ViewErrorPage()
-        {
-            return View("Error");
+        public IActionResult ViewErrorPage () {
+            return View ("Error");
         }
-
-
 
     }
 }

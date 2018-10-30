@@ -1,73 +1,61 @@
 using System;
-using Microsoft.AspNetCore.Http;        // <--- set session variables (e.g., 'SetString', 'SetInt32', etc.)
-using Microsoft.AspNetCore.Mvc;         // <--- anything related to mvc (e.g., 'Controller', '[HttpGet]', 'HttpContext.Session')
-
 using movieGame.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
-namespace movieGame.Controllers
-{
-    public class HomeController : Controller
-    {
+namespace movieGame.Controllers {
+    public class HomeController : Controller {
         private MovieContext _context;
 
-
-        public HomeController (MovieContext context ) {
+        public HomeController (MovieContext context) {
             _context = context;
         }
 
         String Start = "STARTED";
         String Complete = "COMPLETED";
 
+        public int CheckSession () {
+            Start.ThisMethod ();
+            int? id = HttpContext.Session.GetInt32 ("id");
 
-        public int CheckSession()
-        {
-            Start.ThisMethod();
-            int? id = HttpContext.Session.GetInt32("id");
-
-            if(id == null)
-            {
-                Console.WriteLine($"start new session with id {id}");
+            if (id == null) {
+                Console.WriteLine ($"start new session with id {id}");
                 return 0;
             }
 
-            HttpContext.Session.SetInt32("id", (int)id);
-            Console.WriteLine($"continuing session with id {id}");
+            HttpContext.Session.SetInt32 ("id", (int) id);
+            Console.WriteLine ($"continuing session with id {id}");
 
-            Complete.ThisMethod();
-            return (int)id;
+            Complete.ThisMethod ();
+            return (int) id;
         }
 
         // examples of setting temp data; how can I use this?
-        public object SetTempData(string TempDataName)
-        {
+        public object SetTempData (string TempDataName) {
             TempData["Variable"] = TempDataName;
             var TempDataVariable = TempData["Variable"];
-            Console.WriteLine(TempDataVariable);
+            Console.WriteLine (TempDataVariable);
             return TempDataVariable;
         }
-        public object GetTempData()
-        {
+        public object GetTempData () {
             var TempDataVariable = TempData["Variable"];
-            Console.WriteLine(TempData["Variable"]);
+            Console.WriteLine (TempData["Variable"]);
             return TempDataVariable;
         }
-
 
         [HttpGet]
-        [Route("LogPlayerOut")]
-        public IActionResult LogPlayerOut()
-        {
-            HttpContext.Session.Clear();
-            return RedirectToAction("Index");
+        [Route ("LogPlayerOut")]
+        public IActionResult LogPlayerOut () {
+            HttpContext.Session.Clear ();
+            return RedirectToAction ("Index");
         }
-
 
         // clear session
         [HttpGet]
-        [Route("ClearSession")]
-        public IActionResult ClearSession()
-        {
-            HttpContext.Session.Clear();
-            return RedirectToAction("Index");
+        [Route ("ClearSession")]
+        public IActionResult ClearSession () {
+            HttpContext.Session.Clear ();
+            return RedirectToAction ("Index");
         }
-}}
+    }
+}
