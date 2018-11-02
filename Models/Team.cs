@@ -39,7 +39,7 @@ namespace movieGame.Models
 
         public IList<GameTeamJoin> GameTeamJoin { get; set; }
 
-        public IList<PlayerTeamJoin> PlayerTeamJoin { get; set; }
+        public IList<UserTeamJoin> UserTeamJoin { get; set; }
 
 
         public Team ()
@@ -48,7 +48,7 @@ namespace movieGame.Models
             UpdatedAt = DateTime.Now;
             MovieTeamJoin = new List<MovieTeamJoin>();
             GameTeamJoin = new List<GameTeamJoin>();
-            PlayerTeamJoin = new List<PlayerTeamJoin>();
+            UserTeamJoin = new List<UserTeamJoin>();
         }
     }
 }

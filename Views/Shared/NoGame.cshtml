@@ -1,23 +1,13 @@
-<head>
-
-</head>
-
-
-<body>
-    <br>
-    <div class="row">
-        <div class="col">
-            <p id="noGameHeader" class="text-primary"><b>You are all caught up. No more movies to guess at this time</b><br><span>There are currently @ViewBag.MovieCount movies in the database. You have completed all of them because you are a nerd. Thank you for taking the game seriously!</span></p>
-            <div id="deuce"><img src="~/images/2deuce1.jpg" alt="ASP.NET" class="img-responsive"></div>
-        </div>
+@{
+ViewData["Title"] = "No Game";
+}
+<div class="row">
+    <div class="col">
+        <p id="noGameHeader" class="text-primary"><b>You are all caught up. No more movies to guess at this time</b><br><span>There are currently @ViewBag.MovieCount movies in the database. You have completed all of them because you are a nerd. Thank you for taking the game seriously!</span></p>
+        <div id="deuce"><img src="~/images/2deuce1.jpg" alt="ASP.NET" class="img-responsive"></div>
     </div>
+</div>
 
-    <div class="row" id="pi">
-        <div class="col"><a href="/theNet">π</a></div>
-    </div>
-</body>
-
-
-
-
-
+<div class="row" id="pi">
+    <div class="col"><a href="/theNet">π</a></div>
+</div>

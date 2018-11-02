@@ -1,128 +1,110 @@
 @model movieGame.Models.Movie
-<head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css" asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.css" asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute">
+@{
+ViewData["Title"] = "Single Play";
+}
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-    <link rel="stylesheet" href="~/css/styles.css" />
-</head>
-
-
-<body>
-
-    <div class="GroupNavbar">
-        <div class="GroupDropDown">
-            <button class="GroupDropButton">Menu
-                <i class="fa fa-caret-down text-white"></i>
-            </button>
-            <div class="GroupDropDown-content">
-                <a class="col text-center text-primary nav-link" href="/">Home</a>
-                <a class="col text-center text-primary nav-link" href="/Instructions">Instructions</a>
-                <a class="col text-center text-primary nav-link" href="/InitiateSinglePlayerGame">Start Over</a>
-            </div>
+<!-- <div class="GroupNavbar">
+    <div class="GroupDropDown">
+        <div class="GroupDropDown-content">
+            <a href="/">Home</a>
+            <a href="/Instructions">Instructions</a>
+            <a href="/InitiateSinglePlayerGame">Start Over</a>
         </div>
     </div>
+</div> -->
 
-    <div class="setRelative">
-        <div class="border border-dark rounded-0 mb-2">
-            <div class="row mb-2 ml-1 mr-1 mt-2 pt-2 pb-2">
-
-                <div class="col-sm-12 col-md d-flex justify-content-center justify-content-md-start mb-4">
-                    <a href="#"><button class="BoxShadow raise" type="button" id="getClueButton">
-                        <span id="clueButtonText">Begin Game</span>
-                    </button></a>
-                </div>
-
-                <div class="col-sm-12 col-md d-flex justify-content-center">
-                    <span class="col-6 text-left text-white m-auto pl-0" id="cluePoints">Current Clue Point Value:</span>
-                    <span class="col-1 text-center text-white m-auto gameNumbers" id="justPoints"></span>
-                </div>
-
-            </div>
-
-            <div class="progress ml-5 mr-5" id="progressBar">
-                <div class="progress-bar progBarOrange" role="progressbar" style="width: 0%" aria-valuenow="1" aria-valuemin="0" aria-valuemax="10">
-                </div>
-            </div>
-        </div>
-
-        <div class="setRelative">
-            <div id="MovieHints" class="row d-flex justify-content-center setRelative">
-                <div id="GetMovieDecade" class="col-4 d-flex justify-content-center">
-                    <button id="GetMovieDecadeButton" style="background: none; border: none">
-                        <span style="font-size: 14px; color:#304ffe;">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>Year</span>
-                        </span>
-                    </button>
-                </div>
-
-                <div id="GetMovieGenre" class="col-4 d-flex justify-content-center">
-                    <button id="GetMovieGenreButton" style="background: none; border: none">
-                        <span style="font-size: 14px; color:#304ffe;">
-                            <i class="fas fa-tasks"></i>
-                            <span>Genre</span>
-                        </span>
-                    </button>
-                </div>
-
-                <div id="GetMovieDirector" class="col-4 d-flex justify-content-center">
-                    <button id="GetMovieDirectorButton" style="background: none; border: none">
-                        <span style="font-size: 14px; color:#304ffe;">
-                            <i class="fas fa-user-circle"></i>
-                            <span>Director</span>
-                        </span>
-                    </button>
-                </div>
-            </div>
+<div>
+    <a href="/GetClue">
+        <button class="btn btn-primary" type="button" id="getClueButton">
+            <span id="clueButtonText">Begin Game</span>
+        </button>
+    </a>
+</div>
 
 
-        <div class="row" id="formContainer">
-            <div class="subscribe subscribe-1" id="guessMovieForm">
-                <form action="guessMovie" method="GET" id="guessMovie">
-                    <a href="#" class="subscribe__toggle" id="toggle">
-                        Click to Guess |
-                        <span class="testText">Remaining Guesses: <span id="remainingGuesses"></span></span>
-                    </a>
-                    <span class="subscribe__success">
-                        <ul id="guessResponse" class="ml-0 pl-0"></ul>
-                    </span>
-                    <div class="subscribe__wrapper">
-                        <input class="SuccessInput" id="movieGuessInput" name="movieGuessInput" type="text" />
-                        <button id="submit">Guess</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+<br>
+
+
+<div>
+    <div>
+        <span id="cluePoints" class="text-info">Current Clue Point Value:</span>
+        <span class="gameNumbers" id="justPoints"></span>
+    </div>
+    <div class="progress" id="progressBar">
+        <div class="progress-bar progBarOrange" role="progressbar" style="width: 0%" aria-valuenow="1" aria-valuemin="0" aria-valuemax="10">
         </div>
     </div>
+</div>
 
-    <br><br><br>
 
-    <div class="row searchResContainer">
-        <div class="col-sm-6" id="div_content">
-            <ul id="searchResult"></ul>
-            <div class="clear"></div>
-        </div>
-        <div class="col-1 ml-2"></div>
+<div id="MovieHints" class="setRelative">
+    <div id="GetMovieDecade">
+        <button id="GetMovieDecadeButton" style="background: none; border: none">
+            <span style="font-size: 14px; color:#304ffe;">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Year</span>
+            </span>
+        </button>
     </div>
 
-    <br>
-
-    <div class="row">
-        <div class="col">
-            <ul id="clueText" class="clueText pl-0 ml-0"></ul>
-        </div>
+    <div id="GetMovieGenre">
+        <button id="GetMovieGenreButton" style="background: none; border: none">
+            <span style="font-size: 14px; color:#304ffe;">
+                <i class="fas fa-tasks"></i>
+                <span>Genre</span>
+            </span>
+        </button>
     </div>
 
-    <p class="hiddenDiv" id="hiddenDiv"></p>
-    <!-- <p class="testDiv" id="testDiv"></p> -->
+    <div id="GetMovieDirector">
+        <button id="GetMovieDirectorButton" style="background: none; border: none">
+            <span style="font-size: 14px; color:#304ffe;">
+                <i class="fas fa-user-circle"></i>
+                <span>Director</span>
+            </span>
+        </button>
+    </div>
+</div>
 
-    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js" asp-fallback-src="~/lib/jquery/dist/jquery.js" asp-fallback-test="window.jQuery"></script>
+<br>
 
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<div class="row" id="formContainer">
+    <div class="subscribe subscribe-1" id="guessMovieForm">
+        <form action="guessMovie" method="GET" id="guessMovie">
+            <a href="#" class="subscribe__toggle" id="toggle">
+                Click to Guess |
+                <span class="testText">Remaining Guesses: <span id="remainingGuesses"></span></span>
+            </a>
+            <span class="subscribe__success">
+                <ul id="guessResponse"></ul>
+            </span>
+            <div class="subscribe__wrapper">
+                <input class="SuccessInput" id="movieGuessInput" name="movieGuessInput" type="text" />
+                <button id="submit" class="btn btn-warning">Guess</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
-</body>
+<br>
+
+<div class="row searchResContainer">
+    <div class="col-sm-6" id="div_content">
+        <ul id="searchResult"></ul>
+        <div class="clear"></div>
+    </div>
+    <div class="col-1 ml-2"></div>
+</div>
+
+<br>
+
+<div class="row">
+    <div class="col">
+        <ul id="clueText" class="clueText pl-0 ml-0"></ul>
+    </div>
+</div>
+
+<p class="hiddenDiv" id="hiddenDiv"></p>
+<!-- <p class="testDiv" id="testDiv"></p> -->
+

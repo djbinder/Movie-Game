@@ -72,13 +72,15 @@ namespace movieGame.Models
         public IList<MovieTeamJoin> MovieTeamJoin { get; set; }
 
         [DataMember]
-        public IList<MoviePlayerJoin> MoviePlayerJoin { get; set; }
+        public IList<MovieUserJoin> MovieUserJoin { get; set; }
 
         [DataMember]
         public IList<MovieGenreJoin> MovieGenreJoin { get; set; }
 
         [DataMember]
         public IList<MovieActorJoin> MovieActorJoin { get; set; }
+
+        public Hints Hints { get; set; }
 
 
         public Movie ()
@@ -88,7 +90,7 @@ namespace movieGame.Models
             Actors = new List<Actor>();
             Posters = new List<Poster>();
             MovieTeamJoin = new List<MovieTeamJoin>();
-            MoviePlayerJoin = new List<MoviePlayerJoin>();
+            MovieUserJoin = new List<MovieUserJoin>();
             MovieGenreJoin = new List<MovieGenreJoin>();
             MovieActorJoin = new List<MovieActorJoin>();
         }

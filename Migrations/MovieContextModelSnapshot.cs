@@ -20,113 +20,6 @@ namespace movieGame.Migrations
                 .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken();
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256);
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasName("RoleNameIndex");
-
-                    b.ToTable("AspNetRoles");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("ClaimType");
-
-                    b.Property<string>("ClaimValue");
-
-                    b.Property<string>("RoleId")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetRoleClaims");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("ClaimType");
-
-                    b.Property<string>("ClaimValue");
-
-                    b.Property<string>("UserId")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserClaims");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.Property<string>("LoginProvider");
-
-                    b.Property<string>("ProviderKey");
-
-                    b.Property<string>("ProviderDisplayName");
-
-                    b.Property<string>("UserId")
-                        .IsRequired();
-
-                    b.HasKey("LoginProvider", "ProviderKey");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserLogins");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.Property<string>("UserId");
-
-                    b.Property<string>("RoleId");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.Property<string>("UserId");
-
-                    b.Property<string>("LoginProvider");
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("Value");
-
-                    b.HasKey("UserId", "LoginProvider", "Name");
-
-                    b.ToTable("AspNetUserTokens");
-                });
-
             modelBuilder.Entity("movieGame.Models.Actor", b =>
                 {
                     b.Property<int>("ActorId")
@@ -245,6 +138,22 @@ namespace movieGame.Migrations
                     b.ToTable("Genres");
                 });
 
+            modelBuilder.Entity("movieGame.Models.Hints", b =>
+                {
+                    b.Property<int>("HintsId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Director");
+
+                    b.Property<string>("Genre");
+
+                    b.Property<string>("ReleaseYear");
+
+                    b.HasKey("HintsId");
+
+                    b.ToTable("Hints");
+                });
+
             modelBuilder.Entity("movieGame.Models.Movie", b =>
                 {
                     b.Property<int>("MovieId")
@@ -257,6 +166,8 @@ namespace movieGame.Migrations
                     b.Property<string>("Director");
 
                     b.Property<string>("Genre");
+
+                    b.Property<int?>("HintsId");
 
                     b.Property<string>("Poster");
 
@@ -273,6 +184,8 @@ namespace movieGame.Migrations
                     b.Property<string>("imdbId");
 
                     b.HasKey("MovieId");
+
+                    b.HasIndex("HintsId");
 
                     b.ToTable("Movies");
                 });
@@ -321,36 +234,6 @@ namespace movieGame.Migrations
                     b.ToTable("MovieGenreJoin");
                 });
 
-            modelBuilder.Entity("movieGame.Models.MoviePlayerJoin", b =>
-                {
-                    b.Property<int>("MoviePlayerJoinId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("AttemptCount");
-
-                    b.Property<int>("ClueGameWonAt");
-
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<int>("MovieId");
-
-                    b.Property<int>("PlayerId");
-
-                    b.Property<int>("PointsReceived");
-
-                    b.Property<DateTime>("UpdatedAt");
-
-                    b.Property<bool>("WinFlag");
-
-                    b.HasKey("MoviePlayerJoinId");
-
-                    b.HasIndex("MovieId");
-
-                    b.HasIndex("PlayerId");
-
-                    b.ToTable("MoviePlayerJoin");
-                });
-
             modelBuilder.Entity("movieGame.Models.MovieTeamJoin", b =>
                 {
                     b.Property<int>("MovieTeamJoinId")
@@ -379,58 +262,34 @@ namespace movieGame.Migrations
                     b.ToTable("MovieTeamJoin");
                 });
 
-            modelBuilder.Entity("movieGame.Models.Player", b =>
+            modelBuilder.Entity("movieGame.Models.MovieUserJoin", b =>
                 {
-                    b.Property<int>("PlayerId")
+                    b.Property<int>("MovieUserJoinId")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<int>("AttemptCount");
+
+                    b.Property<int>("ClueGameWonAt");
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<int>("GamesAttempted");
+                    b.Property<int>("MovieId");
 
-                    b.Property<int>("GamesWon");
-
-                    b.Property<int>("PlayerCoins");
-
-                    b.Property<string>("PlayerEmail");
-
-                    b.Property<string>("PlayerFirstName");
-
-                    b.Property<string>("PlayerLastName");
-
-                    b.Property<string>("PlayerName");
-
-                    b.Property<string>("PlayerPassword");
-
-                    b.Property<int>("Points");
+                    b.Property<int>("PointsReceived");
 
                     b.Property<DateTime>("UpdatedAt");
 
-                    b.HasKey("PlayerId");
+                    b.Property<int>("UserId");
 
-                    b.ToTable("Players");
-                });
+                    b.Property<bool>("WinFlag");
 
-            modelBuilder.Entity("movieGame.Models.PlayerTeamJoin", b =>
-                {
-                    b.Property<int>("PlayerTeamJoinId")
-                        .ValueGeneratedOnAdd();
+                    b.HasKey("MovieUserJoinId");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.HasIndex("MovieId");
 
-                    b.Property<int>("PlayerId");
+                    b.HasIndex("UserId");
 
-                    b.Property<int>("TeamId");
-
-                    b.Property<DateTime>("UpdatedAt");
-
-                    b.HasKey("PlayerTeamJoinId");
-
-                    b.HasIndex("PlayerId");
-
-                    b.HasIndex("TeamId");
-
-                    b.ToTable("PlayerTeamJoin");
+                    b.ToTable("MovieUserJoin");
                 });
 
             modelBuilder.Entity("movieGame.Models.Poster", b =>
@@ -453,48 +312,6 @@ namespace movieGame.Migrations
                     b.HasIndex("MovieId");
 
                     b.ToTable("Posters");
-                });
-
-            modelBuilder.Entity("movieGame.Models.PowerUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("AccessFailedCount");
-
-                    b.Property<string>("ConcurrencyStamp");
-
-                    b.Property<string>("Email");
-
-                    b.Property<bool>("EmailConfirmed");
-
-                    b.Property<bool>("LockoutEnabled");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd");
-
-                    b.Property<string>("NormalizedEmail");
-
-                    b.Property<string>("NormalizedUserName");
-
-                    b.Property<string>("PasswordHash");
-
-                    b.Property<string>("PhoneNumber");
-
-                    b.Property<bool>("PhoneNumberConfirmed");
-
-                    b.Property<int>("PowerUserId");
-
-                    b.Property<string>("PowerUserName");
-
-                    b.Property<string>("SecurityStamp");
-
-                    b.Property<bool>("TwoFactorEnabled");
-
-                    b.Property<string>("UserName");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PowerUsers");
                 });
 
             modelBuilder.Entity("movieGame.Models.Team", b =>
@@ -525,109 +342,56 @@ namespace movieGame.Migrations
 
             modelBuilder.Entity("movieGame.Models.User", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<int>("UserId")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<int>("AccessFailedCount");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken();
 
                     b.Property<string>("Confirm");
 
-                    b.Property<string>("Email")
-                        .HasMaxLength(256);
+                    b.Property<DateTime>("CreatedAt");
 
-                    b.Property<bool>("EmailConfirmed");
+                    b.Property<int>("GamesAttempted");
 
-                    b.Property<bool>("LockoutEnabled");
+                    b.Property<int>("GamesWon");
 
-                    b.Property<DateTimeOffset?>("LockoutEnd");
+                    b.Property<int>("Points");
 
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256);
+                    b.Property<DateTime>("UpdatedAt");
 
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256);
-
-                    b.Property<string>("PasswordHash");
-
-                    b.Property<string>("PhoneNumber");
-
-                    b.Property<bool>("PhoneNumberConfirmed");
-
-                    b.Property<string>("SecurityStamp");
-
-                    b.Property<bool>("TwoFactorEnabled");
+                    b.Property<int>("UserCoins");
 
                     b.Property<string>("UserEmail");
 
                     b.Property<string>("UserFirstName");
 
-                    b.Property<int>("UserId");
-
                     b.Property<string>("UserLastName");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256);
 
                     b.Property<string>("UserPassword");
 
-                    b.HasKey("Id");
+                    b.HasKey("UserId");
 
-                    b.HasIndex("NormalizedEmail")
-                        .HasName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasName("UserNameIndex");
-
-                    b.ToTable("AspNetUsers");
+                    b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("movieGame.Models.UserTeamJoin", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
+                    b.Property<int>("UserTeamJoinId")
+                        .ValueGeneratedOnAdd();
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.HasOne("movieGame.Models.User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
+                    b.Property<DateTime>("CreatedAt");
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.HasOne("movieGame.Models.User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
+                    b.Property<int>("TeamId");
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.Property<DateTime>("UpdatedAt");
 
-                    b.HasOne("movieGame.Models.User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
+                    b.Property<int>("UserId");
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.HasOne("movieGame.Models.User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasKey("UserTeamJoinId");
+
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserTeamJoin");
                 });
 
             modelBuilder.Entity("movieGame.Models.Actor", b =>
@@ -665,6 +429,13 @@ namespace movieGame.Migrations
                         .HasForeignKey("MovieId");
                 });
 
+            modelBuilder.Entity("movieGame.Models.Movie", b =>
+                {
+                    b.HasOne("movieGame.Models.Hints", "Hints")
+                        .WithMany()
+                        .HasForeignKey("HintsId");
+                });
+
             modelBuilder.Entity("movieGame.Models.MovieActorJoin", b =>
                 {
                     b.HasOne("movieGame.Models.Actor", "Actor")
@@ -691,19 +462,6 @@ namespace movieGame.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("movieGame.Models.MoviePlayerJoin", b =>
-                {
-                    b.HasOne("movieGame.Models.Movie", "Movie")
-                        .WithMany("MoviePlayerJoin")
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("movieGame.Models.Player", "Player")
-                        .WithMany("MoviePlayerJoin")
-                        .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("movieGame.Models.MovieTeamJoin", b =>
                 {
                     b.HasOne("movieGame.Models.Movie", "Movie")
@@ -717,16 +475,16 @@ namespace movieGame.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("movieGame.Models.PlayerTeamJoin", b =>
+            modelBuilder.Entity("movieGame.Models.MovieUserJoin", b =>
                 {
-                    b.HasOne("movieGame.Models.Player", "Player")
-                        .WithMany("PlayerTeamJoin")
-                        .HasForeignKey("PlayerId")
+                    b.HasOne("movieGame.Models.Movie", "Movie")
+                        .WithMany("MovieUserJoin")
+                        .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("movieGame.Models.Team", "Team")
-                        .WithMany("PlayerTeamJoin")
-                        .HasForeignKey("TeamId")
+                    b.HasOne("movieGame.Models.User", "User")
+                        .WithMany("MovieUserJoin")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -735,6 +493,19 @@ namespace movieGame.Migrations
                     b.HasOne("movieGame.Models.Movie", "Movie")
                         .WithMany("Posters")
                         .HasForeignKey("MovieId");
+                });
+
+            modelBuilder.Entity("movieGame.Models.UserTeamJoin", b =>
+                {
+                    b.HasOne("movieGame.Models.Team", "Team")
+                        .WithMany("UserTeamJoin")
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("movieGame.Models.User", "User")
+                        .WithMany("UserTeamJoin")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

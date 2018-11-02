@@ -5,181 +5,178 @@ using movieGame.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace movieGame.Controllers {
-    public class ManageOutcomesController : Controller {
+namespace movieGame.Controllers.Game.MixedControllers
+{
+    public class ManageOutcomesController : Controller
+    {
         private MovieContext _context;
 
-        public ManageOutcomesController (MovieContext context) {
+        public ManageOutcomesController (MovieContext context)
+        {
             _context = context;
         }
 
         List<Clue> _clueList = new List<Clue> ();
 
         [HttpPost]
-        [Route ("CreateMoviePlayerJoin")]
-
-        public JsonResult CreateMoviePlayerJoin (int GameOutcome) {
-
+        [Route ("CreateMovieUserJoin")]
+        public JsonResult CreateMovieUserJoin (int GameOutcome)
+        {
             int? playerId = HttpContext.Session.GetInt32 ("id");
             // playerId.Intro("player id");
-            Player RetrievedPlayer = _context.Players.SingleOrDefault (p => p.PlayerId == playerId);
+            User retrievedUser = _context.Users.SingleOrDefault (p => p.UserId == playerId);
 
             // SESSION MOVIE ID --> id of current movie user was guessing
             var sessionMovieId = HttpContext.Session.GetInt32 ("SessionMovieId");
 
-            // EXISTING JOINS --> System.Collections.Generic.List`1[movieGame.Models.MoviePlayerJoin]
+            // EXISTING JOINS --> System.Collections.Generic.List`1[movieGame.Models.MovieUserJoin]
             // JOINS LIST --> check if a join of player and movie already exists
-            var PlayerJoins = _context.MoviePlayerJoin.Where (p => p.MovieId == sessionMovieId).Where (t => t.PlayerId == playerId);
-            var JoinsList = PlayerJoins.ToList ();
+            var playerJoins = _context.MovieUserJoin.Where (p => p.MovieId == sessionMovieId).Where (t => t.UserId == playerId);
+            var joinsList = playerJoins.ToList ();
 
-            List<int> Maxes = new List<int> ();
+            List<int> maxes = new List<int> ();
 
             // check the game outcome - 1 is a win, 0 is a loss
             int oneGameOutcome = GameOutcome;
             // oneGameOutcome.Intro("one game outcome");
 
             // the player won, the join needs to reflect that
-            if (oneGameOutcome == 1) {
+            if (oneGameOutcome == 1)
+            {
                 // since the player won, check if any joins with player/movie combo already exists
                 int? newPoints = HttpContext.Session.GetInt32 ("newPoints");
                 // newPoints.Intro("new points");
 
-                if (JoinsList.Count > 0) {
+                if (joinsList.Count > 0)
+                {
                     // this is not the first time the player has attempted to guess this movie
                     ExtensionsD.Spotlight ("MPJ_A -- WIN _____ NOT FIRST JOIN");
-                    foreach (var item in JoinsList) {
+                    foreach (var item in joinsList)
+                    {
                         // get current attempt count and count of joins
                         int currAttemptCount = item.AttemptCount;
-
-                        // add them to lists to get maxes
-                        Maxes.Add (currAttemptCount);
-
-                        // intro
+                        maxes.Add (currAttemptCount);
                         currAttemptCount.Intro ("curr attempts count");
                     }
 
                     // get current max attempt of player/movie combo
-                    var newAttemptsMax = Maxes.Max () + 1;
+                    var newAttemptsMax = maxes.Max () + 1;
 
                     // MPJ --> create new many-to-many of player and movie
-                    MoviePlayerJoin MPJ_A = new MoviePlayerJoin {
-                        PlayerId = (int) playerId,
+                    MovieUserJoin MPJ_A = new MovieUserJoin
+                    {
+                        UserId = (int) playerId,
                         MovieId = (int) sessionMovieId,
                         AttemptCount = newAttemptsMax,
                         PointsReceived = (int) newPoints,
                         WinFlag = true,
                     };
-
                     _context.Add (MPJ_A);
                 }
 
                 // this is the first time this player has attempted to guess this movie
-                else {
+                else
+                {
                     ExtensionsD.Spotlight ("MPJ_B -- WIN _____ FIRST JOIN");
-
                     // MPJ --> create new many-to-many of player and movie
-                    MoviePlayerJoin MPJ_B = new MoviePlayerJoin {
-                        PlayerId = (int) playerId,
+                    MovieUserJoin MPJ_B = new MovieUserJoin
+                    {
+                        UserId = (int) playerId,
                         MovieId = (int) sessionMovieId,
                         AttemptCount = 1,
                         PointsReceived = (int) newPoints,
                         WinFlag = true,
                     };
-
                     _context.Add (MPJ_B);
                 }
             }
 
             // the player lost
-            if (oneGameOutcome == 0) {
+            if (oneGameOutcome == 0)
+            {
                 // this is not the first time the player has attempted to guess this movie
-                if (JoinsList.Count > 0) {
+                if (joinsList.Count > 0) {
                     ExtensionsD.Spotlight ("MPJ_C -- LOSS _____ NOT FIRST JOIN");
-                    foreach (var item in JoinsList) {
+                    foreach (var item in joinsList)
+                    {
                         // get current attempt count and count of joins
                         int currAttemptCount = item.AttemptCount;
-
-                        // add them to lists to get maxes
-                        Maxes.Add (currAttemptCount);
-
-                        // intro
+                        maxes.Add (currAttemptCount);
                         currAttemptCount.Intro ("curr attempts count");
                     }
 
-                    var newAttemptsMax = Maxes.Max () + 1;
+                    var newAttemptsMax = maxes.Max () + 1;
 
                     // MPJ --> create new many-to-many of player and movie
-                    MoviePlayerJoin MPJ_C = new MoviePlayerJoin {
-                        PlayerId = (int) playerId,
+                    MovieUserJoin MPJ_C = new MovieUserJoin
+                    {
+                        UserId = (int) playerId,
                         MovieId = (int) sessionMovieId,
                         AttemptCount = newAttemptsMax,
                         PointsReceived = 0,
                         WinFlag = false,
                     };
-
                     _context.Add (MPJ_C);
-                } else {
+                }
+                else
+                {
                     ExtensionsD.Spotlight ("MPJ_D -- LOSS _____ FIRST JOIN");
 
                     // MPJ --> create new many-to-many of player and movie
-                    MoviePlayerJoin MPJ_D = new MoviePlayerJoin {
-                        PlayerId = (int) playerId,
+                    MovieUserJoin MPJ_D = new MovieUserJoin
+                    {
+                        UserId = (int) playerId,
                         MovieId = (int) sessionMovieId,
                         AttemptCount = 1,
                         PointsReceived = 0,
                         WinFlag = false,
                     };
-
                     _context.Add (MPJ_D);
                 }
             }
-
             _context.SaveChanges ();
-
-            return Json (PlayerJoins);
+            return Json (playerJoins);
         }
+
 
         [HttpPost]
         [Route ("UpdatePlayerGames")]
-        public IActionResult UpdatePlayerGames (int gameOutcome, int playerId) {
-
+        public IActionResult UpdatePlayerGames (int gameOutcome, int playerId)
+        {
             gameOutcome.Intro ("this game outcome");
 
-            Player RetrievedPlayer = _context.Players.SingleOrDefault (p => p.PlayerId == playerId);
-            // var onePlayerId = RetrievedPlayer.PlayerId;
+            User retrievedPlayer = _context.Users.SingleOrDefault (p => p.UserId == playerId);
+            // var onePlayerId = retrievedPlayer.PlayerId;
 
             // update number of games attempted
-            var currGamesAttempted = RetrievedPlayer.GamesAttempted;
+            var currGamesAttempted = retrievedPlayer.GamesAttempted;
             int newGamesAttempted = currGamesAttempted + 1;
             newGamesAttempted.Intro ("new games played");
-            RetrievedPlayer.GamesAttempted = newGamesAttempted;
-
-            // ExtensionsD.TableIt(RetrievedPlayer, currGamesAttempted, newGamesAttempted);
+            retrievedPlayer.GamesAttempted = newGamesAttempted;
 
             // if the player won, update games won
-            if (gameOutcome == 1) {
-                var currGamesWon = RetrievedPlayer.GamesWon;
+            if (gameOutcome == 1)
+            {
+                var currGamesWon = retrievedPlayer.GamesWon;
                 int newGamesWon = currGamesWon + 1;
-                RetrievedPlayer.GamesWon = newGamesWon;
+                retrievedPlayer.GamesWon = newGamesWon;
                 newGamesWon.Intro ("new games won");
                 // Console.WriteLine("UP_GAMES  |  W  | send to C_MPJ");
-                CreateMoviePlayerJoin (1);
-            } else {
-                // Console.WriteLine("UP_GAMES  |  L  | send to C_MPJ");
-                CreateMoviePlayerJoin (0);
+                CreateMovieUserJoin (1);
             }
-
-            RetrievedPlayer.UpdatedAt = DateTime.Now;
-
+            else
+            {
+                // Console.WriteLine("UP_GAMES  |  L  | send to C_MPJ");
+                CreateMovieUserJoin (0);
+            }
+            retrievedPlayer.UpdatedAt = DateTime.Now;
             _context.SaveChanges ();
-
             return View ();
         }
 
-        [HttpPost]
-        [Route ("UpdatePlayerPoints")]
-        public JsonResult UpdatePlayerPoints (Clue clueInfo) {
 
+        public JsonResult UpdatePlayerPoints (Clue clueInfo)
+        {
             // PLAYER ID ---> the PlayerId of the current player (e.g., 8 OR 4 OR 12 etc.)
             var playerId = HttpContext.Session.GetInt32 ("id");
 
@@ -191,10 +188,10 @@ namespace movieGame.Controllers {
 
             if (oneGameOutcome > 0) {
                 // RETRIEVED PLAYER ---> movieGame.Models.Player
-                Player RetrievedPlayer = _context.Players.FirstOrDefault (p => p.PlayerId == playerId);
+                User retrievedPlayer = _context.Users.FirstOrDefault (p => p.UserId == playerId);
 
                 // CURRENT POINTS --> players current points pulled from the database
-                var currentPoints = RetrievedPlayer.Points;
+                var currentPoints = retrievedPlayer.Points;
                 // currentPoints.Intro("current points");
 
                 // NEW POINTS ---> the value of the clue the movie was correctly guessed on; retrieved from 'UpdatePlayerPoints' javascript function
@@ -203,15 +200,15 @@ namespace movieGame.Controllers {
                 // newPoints.Intro("new points to add");
 
                 // RETRIEVED PLAYER POINT --> adds current points and new points; then saves them to the database
-                RetrievedPlayer.Points = newPoints + currentPoints;
+                retrievedPlayer.Points = newPoints + currentPoints;
 
                 UpdatePlayerGames (1, (int) playerId);
-            } else {
+            }
+            else
+            {
                 UpdatePlayerGames (0, (int) playerId);
             }
-
             return Json (clueInfo);
         }
-
     }
 }

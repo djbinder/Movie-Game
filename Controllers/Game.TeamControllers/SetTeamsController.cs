@@ -2,22 +2,26 @@ using System.Collections.Generic;
 using movieGame.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace movieGame.Controllers {
-    public class SetTeamsController : Controller {
+namespace movieGame.Controllers.Game.TeamControllers
+{
+    public class SetTeamsController : Controller
+    {
         private MovieContext _context;
 
-        public SetTeamsController (MovieContext context) {
+        public SetTeamsController (MovieContext context)
+        {
             _context = context;
         }
 
         [HttpPost]
         [Route ("CreateNewTeam")]
-        public ActionResult CreateNewTeam (string SubmittedTeamName) {
+        public ActionResult CreateNewTeam (string submittedTeamName)
+        {
+            var teamName = submittedTeamName;
 
-            var TeamName = SubmittedTeamName;
-
-            var NewTeam = new Team () {
-                TeamName = SubmittedTeamName,
+            var newTeam = new Team ()
+            {
+                TeamName = submittedTeamName,
                 NumberOfPlayersOnTeam = 0,
                 TeamPoints = 0,
                 GamesPlayed = 0,
@@ -25,16 +29,9 @@ namespace movieGame.Controllers {
                 CountOfMoviesGuessedIncorrectly = 0,
                 MovieTeamJoin = new List<MovieTeamJoin> (),
                 GameTeamJoin = new List<GameTeamJoin> (),
-                PlayerTeamJoin = new List<PlayerTeamJoin> ()
-
+                UserTeamJoin = new List<UserTeamJoin> ()
             };
-
-            // var xTeams = ViewData.Model = _context.Teams.ToList();
-            // Console.WriteLine(xTeams);
-
-            // xTeams.Dig();
-
-            _context.Add (NewTeam);
+            _context.Add (newTeam);
             _context.SaveChanges ();
 
             return View ("PlayGroup");

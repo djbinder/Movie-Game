@@ -1,27 +1,13 @@
-<head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+@{
+ViewData["Title"] = "Game List";
+}
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
-</head>
-
-
-<body>
-
-    <div class="row pt-0 mt-4 mb-4">
-        <div class="col mt-0 pt-0">
-            <h4 class="glow mt-0 pt-0"><b>The Awesome and/or Amazing Movie Game</b></h4>
-            <p class="glow">(for serious players only)</p>
-        </div>
+<br>
+<div>
+    <h4 class="text-info text-center">Welcome @ViewBag.PlayerName. Please select the type of game you would like to play</h4>
+    <div>
+        <div class="text-center"><a href="/game/single">Single Player</a></div>
+        <div class="text-center"><a href="/group">Group Play</a></div>
+        <div class="text-center"><a href="/error">One vs One - COMING SOON</a></div>
     </div>
-
-
-    <div class="col mt-5">
-        <h5 class="text-white text-center">Welcome @ViewBag.PlayerName</h5>
-        <p class="text-white text-center mb-3">Please select the type of game you would like to play</p>
-        <a href="/InitiateSinglePlayerGame"><h5 class="text-white text-center font-weight-bold border border-white mb-3 p-4">Single Player</h5>
-        <a href="/NewTeamForm"><h5 class="text-white text-center font-weight-bold border border-white mb-3 p-4">Group Play</h5></a>
-        <h5 class="text-white text-center font-weight-bold border border-white mb-3 p-4">One vs One</h5>
-    </div>
-</body>
-
-
+</div>
