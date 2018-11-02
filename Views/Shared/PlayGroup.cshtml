@@ -1,60 +1,41 @@
-<head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+@{
+ViewData["Title"] = "Group Play";
+}
+<nav class="navbar navbar-expand-lg bg-dark navbar-light p-0">
+    <h6 class="glow m-1"><b>The Awesome and/or Amazing Movie Game</b></h6>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon bg-light"></span>
+    </button>
 
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-    <!-- <link rel="stylesheet" href="~/css/groupstyle.css" /> -->
-    <link rel="stylesheet" href="~/css/style.css" />
-
-</head>
-
-<body id="BodyColor">
-    <nav class="navbar navbar-expand-lg bg-dark navbar-light p-0">
-        <h6 class="glow m-1"><b>The Awesome and/or Amazing Movie Game</b></h6>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon bg-light"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav pr-1">
-                <a class="text-white nav-item nav-link active text-right pr-2" href="/">Home <span class="sr-only"></span></a>
-                <a class="text-white nav-item nav-link text-right pr-2" href="/Instructions">Instructions</a>
-                <a class="text-white nav-item nav-link text-right pr-2" href="/InitiateGame">Start Over</a>
-                <a class="text-white nav-item nav-link text-right pr-2" href="/NewTeamForm">Team List</a>
-            </div>
-        </div>
-    </nav>
-
-
-    <div id="GroupPlay_Container" class="text-dark mt-1 mb-2">
-        <span class="d-flex justify-content-center">Click Anywhere For Next Clue</span>
-        <br>
-
-        <div class="height">
-        <table class="table" id="ClueTable">
-            <thead>
-                <tr>
-                    <th scope="col" class="text-center p-0">#</th>
-                    <th scope="col" class="text-center p-0">Clue</th>
-                    <th scope="col" class="text-center p-0">Value</th>
-                </tr>
-            </thead>
-            <tbody id="TableBody">
-
-            </tbody>
-        </table>
-        </div>
-
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav pr-1">
+            <a class="text-white nav-item nav-link active text-right pr-2" href="/">Home <span class="sr-only"></span></a>
+            <a class="text-white nav-item nav-link text-right pr-2" href="/Instructions">Instructions</a>
+            <a class="text-white nav-item nav-link text-right pr-2" href="/InitiateGame">Start Over</a>
+            <a class="text-white nav-item nav-link text-right pr-2" href="/NewTeamForm">Team List</a>
         </div>
     </div>
+</nav>
 
-    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js" asp-fallback-src="~/lib/jquery/dist/jquery.js" asp-fallback-test="window.jQuery"></script>
 
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<div id="GroupPlay_Container" class="text-dark mt-1 mb-2">
+    <span class="d-flex justify-content-center">Click Anywhere For Next Clue</span>
+    <br>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+    <div class="height">
+    <table class="table" id="ClueTable">
+        <thead>
+            <tr>
+                <th scope="col" class="text-center p-0">#</th>
+                <th scope="col" class="text-center p-0">Clue</th>
+                <th scope="col" class="text-center p-0">Value</th>
+            </tr>
+        </thead>
+        <tbody id="TableBody">
 
-    <script src="~/js/GroupPlay.js" asp-append-version="true"></script>
-    <!-- <script src="~/js/site.js" asp-append-version="true"></script> -->
-</body>
+        </tbody>
+    </table>
+    </div>
+
+    </div>
+</div>

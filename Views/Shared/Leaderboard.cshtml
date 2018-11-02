@@ -1,84 +1,73 @@
-<head>
-    <link rel="stylesheet"
-    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-    crossorigin="anonymous">
-
-    <link rel="stylesheet"
-    href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css" asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.css"
-    asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-</head>
-
-
-<body>
-    <!-- top 10 -->
-    <div class="row">
-        <div class="col-md-3"></div>
-        <div class="col-md-6 col-sm-12">
-            <table class="table table-sm leaderboard">
-                <tr class="glow">
-                    <td colspan="4" class="center-align">Top 10 Players</td>
-                </tr>
-                <tr class="text-white">
-                    <th class="text-center">Rank</th>
-                    <th class="text-left">Player</th>
-                    <th class="text-center">Total Points</th>
-                    <th class="text-center">Games Won</th>
-                </tr>
-                @{
-                    var counter = 0;
-                    foreach(var Player in ViewBag.Leaders)
-                    {
-                        <tr>
-                            <td class="text-center text-white">@(++counter)</td>
-                            <td class="text-left text-primary"><a href="/PlayerProfile/@Player.PlayerId">@Player.PlayerName</a></td>
-                            <td class="text-center text-white">@Player.Points</td>
-                            <td class="text-center text-white">@Player.GamesWon</td>
-                        </tr>
-                    }
+@{
+ViewData["Title"] = "Leaderboard";
+}
+<!-- top 10 -->
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6 col-sm-12">
+        <table class="table table-sm leaderboard">
+            <tr class="glow">
+                <td colspan="4" class="center-align">Top 10 Players</td>
+            </tr>
+            <tr class="text-white">
+                <th class="text-center">Rank</th>
+                <th class="text-left">Player</th>
+                <th class="text-center">Total Points</th>
+                <th class="text-center">Games Won</th>
+            </tr>
+            @{
+                var counter = 0;
+                foreach(var Player in ViewBag.Leaders)
+                {
+                    <tr>
+                        <td class="text-center text-white">@(++counter)</td>
+                        <td class="text-left text-primary"><a href="/PlayerProfile/@Player.PlayerId">@Player.PlayerName</a></td>
+                        <td class="text-center text-white">@Player.Points</td>
+                        <td class="text-center text-white">@Player.GamesWon</td>
+                    </tr>
                 }
+            }
 
-                <tr>
-                    <td colspan="4"><a href="/Leaderboard">View Full Leaderboard</a></td>
-                </tr>
-            </table>
-        </div>
-        <div class="col-md-3"></div>
+            <tr>
+                <td colspan="4"><a href="/Leaderboard">View Full Leaderboard</a></td>
+            </tr>
+        </table>
     </div>
+    <div class="col-md-3"></div>
+</div>
 
 
-
-    <!-- full leaderboard -->
-    <div class="sticky-top mb-5">
-        <div class="row rounded-0 RedDarken-1 mb-1">
-            <a class="col text-center text-white nav-link" href="/">Home</a>
-        </div>
+<!-- full leaderboard -->
+<div class="sticky-top mb-5">
+    <div class="row rounded-0 RedDarken-1 mb-1">
+        <a class="col text-center text-white nav-link" href="/">Home</a>
     </div>
+</div>
 
-    <div class="row">
-        <div class="col-md-2"></div>
-        <div class="col-md-8 col-sm-12">
-            <table class="table table-sm leaderboard">
-                <tr class="glow">
-                    <td colspan="5">Full Leaderboard</td>
-                </tr>
-                <tr class="text-white">
-                    <th class="text-center">Rank</th>
-                    <th class="text-left">Player</th>
-                    <th class="text-center">Total Points</th>
-                    <th class="text-center">Games Played</th>
-                    <th class="text-center">Games Won</th>
-                </tr>
-                @{ var counter2 = 0; foreach(var Player in ViewBag.Leaders) {
-                <tr class="text-white">
-                    <td class="text-center">@(++counter2)</td>
-                    <td class="text-left text-primary">@Player.PlayerName</td>
-                    <td class="text-center">@Player.Points</td>
-                    <td class="text-center">@Player.GamesAttempted</td>
-                    <td class="text-center">@Player.GamesWon</td>
-                </tr>
-                } }
-            </table>
-        </div>
-        <div class="col-md-2"></div>
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8 col-sm-12">
+        <table class="table table-sm leaderboard">
+            <tr class="glow">
+                <td colspan="5">Full Leaderboard</td>
+            </tr>
+            <tr class="text-white">
+                <th class="text-center">Rank</th>
+                <th class="text-left">Player</th>
+                <th class="text-center">Total Points</th>
+                <th class="text-center">Games Played</th>
+                <th class="text-center">Games Won</th>
+            </tr>
+            @{ var counter2 = 0; foreach(var Player in ViewBag.Leaders) {
+            <tr class="text-white">
+                <td class="text-center">@(++counter2)</td>
+                <td class="text-left text-primary">@Player.PlayerName</td>
+                <td class="text-center">@Player.Points</td>
+                <td class="text-center">@Player.GamesAttempted</td>
+                <td class="text-center">@Player.GamesWon</td>
+            </tr>
+            } }
+        </table>
     </div>
-</body>
+    <div class="col-md-2"></div>
+</div>

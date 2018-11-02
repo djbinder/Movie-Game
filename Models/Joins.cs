@@ -16,13 +16,13 @@ namespace movieGame.Models
         public Genre Genre { get; set; }
     }
 
-    public class MoviePlayerJoin : BaseEntity
+    public class MovieUserJoin : BaseEntity
     {
-        public int MoviePlayerJoinId { get; set; }
+        public int MovieUserJoinId { get; set; }
 
-        public int PlayerId { get; set; }
+        public int UserId { get; set; }
 
-        public Player Player { get; set; }
+        public User User { get; set; }
 
         public int MovieId { get; set; }
 
@@ -95,13 +95,13 @@ namespace movieGame.Models
     }
 
 
-    public class PlayerTeamJoin : BaseEntity
+    public class UserTeamJoin : BaseEntity
     {
-        public int PlayerTeamJoinId { get; set; }
+        public int UserTeamJoinId { get; set; }
 
-        public int PlayerId { get; set; }
+        public int UserId { get; set; }
 
-        public Player Player { get; set; }
+        public User User { get; set; }
 
         public int TeamId { get; set; }
 

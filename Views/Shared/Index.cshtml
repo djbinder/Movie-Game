@@ -1,111 +1,67 @@
-@model UserViewModel
+@model movieGame.Models.UserViewModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
-
-<head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
-
-    <link rel="stylesheet" href="~/css/styles.css" />
-</head>
-
-
-<body>
-    <a class="text-center text-white nav-link" href="/NewTeamForm">New Team Form</a>
-
-    <div class="row pt-0 mt-4 mb-4">
-        <div class="col mt-0 pt-0">
-            <h4 class="glow mt-0 pt-0"><b>The Awesome and/or Amazing Movie Game</b></h4>
-            <p class="glow">(for serious players only)</p>
-        </div>
+<form asp-controller="ManageUsers" asp-action="loguserin" method="POST">
+    <div class="form-group">
+        <label asp-for="LoginViewModel.UserEmail" class="control-label"></label>
+        <input asp-for="LoginViewModel.UserEmail" class="form-control" placeholder="Enter Email Address" value="djbinder@test.com">
+        <span class="error text-danger" asp-validation-for="LoginViewModel.UserEmail"></span>
     </div>
-
-    <hr class="linebreak2">
-
-    <div class="col mt-4" id="EnterNameBox">
-        <h6 class="row text-primary px-4">Simple Login</h6>
-        <div class="px-3">
-            <form action="SetGamePlayer" method="POST" class="enterNameForm">
-
-                <label asp-for="RegisterViewModel.UserFirstName"></label>
-                <input class="row input-field text-white"name="NameEntered" placeholder="Enter Your Name to Play" type="text" value="Brian" aria-describedby="basic-addon2">
-
-                <br><p id="NameError" class="row">@ViewBag.ErrorMessage</p>
-                <div class="buttons row">
-                        <button class="BoxShadow pulse">Start Game</button>
-                </div>
-            </form>
-        </div>
+    <div class="form-group">
+        <label asp-for="LoginViewModel.UserPassword" class="control-label"></label>
+        <input asp-for="LoginViewModel.UserPassword" class="form-control" placeholder="Enter Password" value="password">
+        <span class="text-danger" asp-validation-for="LoginViewModel.UserPassword"></span>
     </div>
-
-    <hr class="linebreak2">
-    <hr class="linebreak2">
-
-    <div class="col mt-5">
-        <h6 class="row text-primary pl-3 pb-0 mb-0">Full Registration</h6>
-        <p class="error"><em>@ViewBag.RegError</em></p>
-        <form asp-controller="ManageUsers" asp-action="RegisterUser" method="POST">
-            <table class="table">
-                <tr>
-                    <label for="UserFirstName"><td class="text-white">First Name: </td></label>
-                    <th scope="row"><input asp-for="RegisterViewModel.UserFirstName" placeholder="Enter First Name" class="text-white"></td>
-                    <td><span class="error" asp-validation-for="RegisterViewModel.UserFirstName"></span></td>
-                </tr>
-                <tr>
-                    <label for="UserLastName"></label><td class="text-white">Last Name: </td></label>
-                    <td><input asp-for="RegisterViewModel.UserLastName" placeholder="Enter Last Name" class="text-white"></td>
-                    <td><span class="error" asp-validation-for="RegisterViewModel.UserLastName"></span></td>
-                </tr>
-                <tr>
-                    <label for="UserEmail"></label><td class="text-white">Email: </td></label>
-                    <th scope="row"><input asp-for="RegisterViewModel.UserEmail" placeholder="Enter Email" class="text-white"></td>
-                    <td><span class="error" asp-validation-for="RegisterViewModel.UserEmail"></span></td>
-                </tr>
-                <tr>
-                    <label for="UserPassword"></label><td class="text-white">Password: </td></label>
-                    <th scope="row"><input asp-for="RegisterViewModel.UserPassword" placeholder="Enter Password" class="text-white"></td>
-                    <td><span class="error" asp-validation-for="RegisterViewModel.UserPassword"></span></td>
-                </tr>
-                <tr>
-                    <label for="Confirm"></label><td class="text-white">Confirm Password: </td></label>
-                    <th scope="row"><input asp-for="RegisterViewModel.Confirm" placeholder="Confirm Password" class="text-white"></td>
-                    <td><span class="error" asp-validation-for="RegisterViewModel.Confirm"></span></td>
-                </tr>
-            </table>
-            <button class="BoxShadow pulse">Register</button>
-        </form>
+    <div class="form-group">
+        <input type="submit" value="Log In" class="btn btn-primary" />
     </div>
+</form>
 
-    <hr class="linebreak2">
+<hr class="linebreak2">
 
-    <div class="col mt-5">
-        <h6 class="row text-primary pl-3">Full Login</h6>
-        <p class="error"><em>@ViewBag.LogError</em></p>
-        <form asp-controller="ManageUsers" asp-action="LogUserIn" method="POST">
-            <table class="table">
-                <tbody>
-                    <tr>
-                        <td class="text-white">Email: </td>
-                        <td scope="row"><input asp-for="LoginViewModel.UserEmail" placeholder="Enter Email"></td>
-                        <td> <span class="error" asp-validation-for="LoginViewModel.UserEmail"></span></td>
-                    </tr>
-                    <tr>
-                        <td class="text-white">Password: </td>
-                        <td scope="row"><input asp-for="LoginViewModel.UserPassword" placeholder="Enter Password"></td>
-                        <td> <span class="error" asp-validation-for="LoginViewModel.UserPassword"></span></td>
-                    </tr>
-                </tbody>
-            </table>
-            <button class="BoxShadow pulse">Log In</button>
-        </form>
+<form action="register" method="POST">
+    <div class="form-group">
+        <label asp-for="RegisterViewModel.UserFirstName" class="control-label"></label>
+        <input asp-for="RegisterViewModel.UserFirstName" class="form-control" placeholder="Enter First Name">
+        <span class="error" asp-validation-for="RegisterViewModel.UserFirstName"></span>
     </div>
+    <div class="form-group">
+        <label asp-for="RegisterViewModel.UserLastName" class="control-label"></label>
+        <input asp-for="RegisterViewModel.UserLastName" class="form-control" placeholder="Enter Last Name">
+        <span class="error" asp-validation-for="RegisterViewModel.UserLastName"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="RegisterViewModel.UserEmail" class="control-label"></label>
+        <input asp-for="RegisterViewModel.UserEmail" class="form-control" placeholder="Enter Email Address">
+        <span class="error" asp-validation-for="RegisterViewModel.UserEmail"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="RegisterViewModel.UserPassword" class="control-label"></label>
+        <input asp-for="RegisterViewModel.UserPassword" class="form-control" placeholder="Enter Password">
+        <span class="error" asp-validation-for="RegisterViewModel.UserPassword"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="RegisterViewModel.Confirm" class="control-label"></label>
+        <input asp-for="RegisterViewModel.Confirm" class="form-control" placeholder="Enter Password Again">
+        <span class="error" asp-validation-for="RegisterViewModel.Confirm"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Register" class="btn btn-primary" />
+    </div>
+</form>
 
 
 
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script> -->
-
-</body>
+<!-- <form action="SetGamePlayer" method="POST">
+    <div class="form-group">
+        <label asp-for="RegisterViewModel.UserFirstName" class="control-label"></label>
+        <input asp-for="RegisterViewModel.UserFirstName" class="form-control" placeholder="Enter First Name">
+        <span class="error" asp-validation-for="RegisterViewModel.UserFirstName"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Play" class="btn btn-primary" />
+    </div>
+</form> -->

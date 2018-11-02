@@ -1,8 +1,10 @@
-$(document).ready(function() {
+// @ts-nocheck
+$(document).ready(function () {
   $("#remainingGuesses").append("3");
+  console.log("document is ready");
 
-  $("#getClueButton").click(function() {
-    $.get("GetClue", function(res) {
+  $("#getClueButton").click(function () {
+    $.get("GetClue", function (res) {
       $("#clueButtonText").empty();
       $("#clueButtonText").append("Get Next Clue");
 
@@ -19,6 +21,7 @@ $(document).ready(function() {
         $("#remainingGuesses").append(ComparisonString);
       }
 
+      console.log("RES: ", res);
       // ALL MOVIE CLUES ---> returns array of 10 [object object] of clues
       var allMovieClues = res.clues;
       console.log("ALL MOVIE CLUES: ", allMovieClues);
@@ -95,7 +98,7 @@ $(document).ready(function() {
     });
   });
 
-  $("#buttonText").on("click", function() {
+  $("#buttonText").on("click", function () {
     var el = $(this);
     if (el.text() == el.data("text-swap")) {
       el.text(el.data("text-original"));
@@ -106,7 +109,7 @@ $(document).ready(function() {
   });
 
   // #region  --> GUESS MOVIE
-  $("#guessMovie").submit(function(event) {
+  $("#guessMovie").submit(function (event) {
     // console.log("-----'GUESS MOVIE' FUNCTION STARTED-----");
 
     // USER GUESS ---> what the player types in to the guess box; e.g., 'Goodfellas' etc.
@@ -114,7 +117,7 @@ $(document).ready(function() {
       .val()
       .toString();
 
-    $.get("GuessMovie", function(res) {
+    $.get("GuessMovie", function (res) {
       var CurrentPointsHTML = $("#justPoints").html();
       var CurrentPointsInteger = Number(CurrentPointsHTML);
 
@@ -162,7 +165,7 @@ $(document).ready(function() {
               cancel: {
                 label: "Quit (I'm a loser)",
                 className: "btn-danger endButton",
-                callback: function() {
+                callback: function () {
                   // console.log("QUIT GAME");
                   window.location.href = "/";
                 }
@@ -171,7 +174,7 @@ $(document).ready(function() {
               playagain: {
                 label: "Play again (I'm a nerd)",
                 className: "btn-success endButton",
-                callback: function() {
+                callback: function () {
                   // console.log("PLAY AGAIN");
                   window.location.href = "InitiateSinglePlayerGame";
                 }
@@ -228,7 +231,7 @@ $(document).ready(function() {
               cancel: {
                 label: "Quit (I'm a loser)",
                 className: "btn-danger endButton",
-                callback: function() {
+                callback: function () {
                   // console.log("QUIT GAME");
                   window.location.href = "/";
                 }
@@ -236,7 +239,7 @@ $(document).ready(function() {
               playagain: {
                 label: "Play again (I'm a nerd)",
                 className: "btn-success endButton",
-                callback: function() {
+                callback: function () {
                   // console.log("PLAY AGAIN");
                   window.location.href = "InitiateSinglePlayerGame";
                 }
@@ -264,7 +267,7 @@ $(document).ready(function() {
               cancel: {
                 label: "Quit (I'm a loser)",
                 className: "btn-danger endButton",
-                callback: function() {
+                callback: function () {
                   // console.log("QUIT GAME");
                   window.location.href = "/";
                 }
@@ -272,7 +275,7 @@ $(document).ready(function() {
               playagain: {
                 label: "Play again (I'm a nerd)",
                 className: "btn-success endButton",
-                callback: function() {
+                callback: function () {
                   // console.log("PLAY AGAIN");
                   window.location.href = "InitiateSinglePlayerGame";
                 }
@@ -287,7 +290,7 @@ $(document).ready(function() {
     event.preventDefault();
   });
 
-  $("#movieGuessInput").keyup(function(event) {
+  $("#movieGuessInput").keyup(function (event) {
     // SEARCH QUERY --> 'godfa' OR 'godfathe' OR 'godfather' etc.
     var SearchQuery = $("#movieGuessInput").val();
 
@@ -299,7 +302,7 @@ $(document).ready(function() {
       // url example: "https://www.omdbapi.com/?s=godfather&apikey=4514dc2d",
       url: "https://www.omdbapi.com/?s=" + SearchQuery + "&apikey=4514dc2d",
       method: "GET",
-      success: function(serverResponse) {
+      success: function (serverResponse) {
         // REAL RES --> returns an array of movie objects (including 'title', 'release year' , etc.) that meet search criteria
         var realres = serverResponse["Search"];
 
@@ -318,7 +321,7 @@ $(document).ready(function() {
           }
 
           // when you click the movie title in the dropdown list, it populates the text box
-          $("#searchResult li").bind("click", function() {
+          $("#searchResult li").bind("click", function () {
             setText(this);
           });
         }
@@ -327,12 +330,12 @@ $(document).ready(function() {
   });
 
   function ResetForm() {
-    $("#getClueButton").click(function() {
+    $("#getClueButton").click(function () {
       $("#formContainer").empty();
       $("#formContainer").replaceWith(divClone.clone(true));
     });
 
-    $("#GuessAgainNoCluesLeft").click(function() {
+    $("#GuessAgainNoCluesLeft").click(function () {
       $("#formContainer").empty();
       $("#formContainer").replaceWith(divClone.clone(true));
     });
@@ -349,12 +352,12 @@ $(document).ready(function() {
     // console.log(success);
     // console.log(content);
 
-    toggle.addEventListener("click", function() {
+    toggle.addEventListener("click", function () {
       this.className += " subscribe__toggle__hidden";
       wrapper[0].className += " subscribe-1__active";
     });
 
-    submit.addEventListener("click", function() {
+    submit.addEventListener("click", function () {
       success[0].className += " subscribe__success--active";
       wrapper[0].className += " subscribe-1__success";
       //   content[0].style.display = "none";
@@ -364,13 +367,17 @@ $(document).ready(function() {
   var divClone = $("#formContainer").clone(true);
 });
 
+
+
 // #region SET TEXT
 function setText(element) {
   // SEARCH QUERY --> 'godfa' OR 'godfathe' OR 'godfather' etc.
   var SearchQuery = $("#movieGuessInput").val();
+  console.log("SearchQuery is: ", SearchQuery);
 
   // VALUE --> the movie title you select from the dropdown
   var value = $(element).text();
+
 
   $("#movieGuessInput").val(value);
   $("#searchResult").empty();
@@ -380,12 +387,13 @@ function setText(element) {
     url: "https://www.omdbapi.com/?s=" + SearchQuery + "&apikey=4514dc2d",
     // url    : "https://www.omdbapi.com/?s=" + SearchQuery + "&apikey=4514dc2d",
     method: "GET",
-    success: function(serverResponse) {
+    success: function (serverResponse) {
       // REAL RES --> returns an array of movie objects (including 'title', 'release year' , etc.) that meet search criteria
       var realres = serverResponse["Search"];
     }
   });
 }
+
 
 // #region UPDATE PLAYER POINTS
 function UpdatePlayerPoints(formContainer, element) {
@@ -398,16 +406,17 @@ function UpdatePlayerPoints(formContainer, element) {
       CluePoints: $("#justPoints").html(),
       MovieId: element
     },
-    success: function(data) {
+    success: function (data) {
       console.log("PLAYER POINTS SUCCESSFULLY UPDATED");
       console.log(data.cluePoints);
       console.log(element);
     },
-    error: function(jqXHR, textStatus, errorThrown) {}
+    error: function (jqXHR, textStatus, errorThrown) { }
   });
   // console.log("-----'UPDATE USER POINTS' JS FUNCTION COMPLETED-----");
   // console.log();
 }
+
 
 // #region UPDATE PLAYER POINTS
 function SendClueToController(element) {
@@ -417,18 +426,19 @@ function SendClueToController(element) {
     data: {
       ClueText: element
     },
-    success: function(data) {
+    success: function (data) {
       console.log(element);
       // console.log("TO CONTROLLER: " + element);
     },
-    error: function(jqXHR, textStatus, errorThrown) {
+    error: function (jqXHR, textStatus, errorThrown) {
       console.log("ERROR: CLUE NOT SENT TO CONTROLLER");
     }
   });
 }
 
+
 function ShowProgress() {
-  $("#getClueButton").on("click", function() {
+  $("#getClueButton").on("click", function () {
     var valUp = 1;
     var percentUp = 10;
 
@@ -444,12 +454,14 @@ function ShowProgress() {
   });
 }
 
-$(function() {
+
+$(function () {
   $('[data-toggle="tooltip"]').tooltip();
 });
 
-$("#GetMovieDecadeButton").click(function(event) {
-  $.get("GetMovieHint", function(res) {
+
+$("#GetMovieDecadeButton").click(function (event) {
+  $.get("GetMovieHint", function (res) {
     var MovieDecade = res[1]["Decade"];
 
     $("#MovieHints").empty();
@@ -462,8 +474,10 @@ $("#GetMovieDecadeButton").click(function(event) {
     $("#MovieHints").append(Replacement);
   });
 });
-$("#GetMovieGenreButton").click(function(event) {
-  $.get("GetMovieHint", function(res) {
+
+
+$("#GetMovieGenreButton").click(function (event) {
+  $.get("GetMovieHint", function (res) {
     var MovieGenre = res[1]["Genre"];
 
     $("#MovieHints").empty();
@@ -476,8 +490,10 @@ $("#GetMovieGenreButton").click(function(event) {
     $("#MovieHints").append(Replacement);
   });
 });
-$("#GetMovieDirectorButton").click(function(event) {
-  $.get("GetMovieHint", function(res) {
+
+
+$("#GetMovieDirectorButton").click(function (event) {
+  $.get("GetMovieHint", function (res) {
     var MovieDirector = res[1]["Director"];
 
     $("#MovieHints").empty();
