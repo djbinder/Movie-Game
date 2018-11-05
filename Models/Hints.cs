@@ -9,5 +9,6 @@ namespace movieGame.Models
         public string Genre { get; set; }
         public string ReleaseYear { get; set; }
         public string Director { get; set; }
+        public int MovieId { get; set; }
     }
 }

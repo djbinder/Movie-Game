@@ -1,125 +1,135 @@
 /* #region * HTML, BODY, WRAPPER */
+
 * {
     font-family: 'Roboto Condensed', serif;
+    color: white;
     /* box-sizing: inherit; */
 }
+
+.blackBody {
+    background-color: black;
+}
+
+.glow {
+    font-family: "Vibur", cursive;
+    text-align: center;
+    line-height: 1;
+    color: #c6e2ff;
+    animation: neon .08s ease-in-out infinite alternate;
+}
+
+@keyframes neon {
+    from {
+        text-shadow: 0 0 6px rgba(202, 228, 225, 0.92), 0 0 30px rgba(202, 228, 225, 0.34), 0 0 12px rgba(30, 132, 242, 0.52), 0 0 21px rgba(30, 132, 242, 0.92), 0 0 34px rgba(30, 132, 242, 0.78), 0 0 54px rgba(30, 132, 242, 0.92);
+    }
+    to {
+        text-shadow: 0 0 6px rgba(202, 228, 225, 0.98), 0 0 30px rgba(202, 228, 225, 0.42), 0 0 12px rgba(30, 132, 242, 0.58), 0 0 22px rgba(30, 132, 242, 0.84), 0 0 38px rgba(30, 132, 242, 0.88), 0 0 60px rgba(30, 132, 242, 1);
+    }
+}
+
 /* #endregion */
 
-
-
 /* #region OTHER GLOBAL FORMATTING */
-.LineBreakBlack {
-    border: 1.5px solid black;
-}
-.LineBreakWhite {
-    border: 2px solid white;
-}
-.linebreak2 {
-    border: 1px solid slateblue;
-}
-.linebreak3 {
-    border: .5px solid lightgray;
-}
-.TByellow {
-    border: 1px solid #ffd700;
-}
-.TBblue {
-    border: 1px solid blue;
-}
-.TBred {
-    border: 1px solid red;
-}
-.TBpurple {
-    border: 1px solid purple;
-}
-.TBgreen {
-    border: 1px solid green;
-}
-.TBbrown {
-    border: 1px solid brown;
-}
-.TB3blue {
-    border: 3px solid blue;
-}
+
 .BlueWords {
     color: #6492ed;
 }
+
 .RedWords {
     color: #ed647d;
 }
+
 .OrangeWords {
     color: #ed9d64;
 }
+
 .WhiteWords {
     color: white;
 }
+
 .RedDarken-1 {
     background-color: #e53935;
 }
+
 /* #endregion */
 
+.navbarHead {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
 
+.navbarHead li {
+    float: left;
+}
 
-/* #region INDEX */
-#topHeader {
-    color     : white;
+.navbarHead li a {
+    display: block;
+    color: white;
     text-align: center;
-    padding   : -20px;
+    padding: 14px 16px;
+    text-decoration: none;
 }
-#NameError {
-    color: red;
+
+/* Change the link color to #111 (black) on hover */
+
+.navbarHead li a:hover {
+    background-color: #111;
 }
-.leaderboard {
-    text-align: center;
-    width     : 100%;
-}
+
 /* #endregion */
-
-
-
-
 
 /* #region CLUES */
-.progBarOrange {
-    background-color: #ffa260;
-}
+
 .setRelative {
     position: relative;
 }
-.gameNumbers {
-    font-size: 15px;
-}
+
 #guessResponse {
-    color    : red;
+    color: red;
 }
+
+#getClueButton {
+    width: 100%;
+}
+
 .clueText {
-    display  : flex;
+    display: flex;
     flex-wrap: wrap;
-    opacity  : .6;
+    /* opacity: .6; */
 }
+
 ul.clueText li {
-    height        : 40px;
+    height: 40px;
     vertical-align: middle;
-    color         :#304ffe;
-    text-align   : center;
-    padding-top  : 10px;
-    margin-left  : 8px;
+    color: white;
+    text-align: center;
+    padding-top: 10px;
+    margin-left: 6.5px;
     margin-bottom: 8px;
-    display      : inline;
-    font-size    : 15px;
-    flex-basis   : 47%;
+    display: inline;
+    font-size: 15px;
+    flex-basis: 47%;
+    border: 1px solid white;
     /* opacity       : .5; */
 }
+
 .clueText li:nth-child(3n) {
-    flex-basis: 47%;}
+    flex-basis: 47%;
+}
+
+.clueText li:nth-child(2n) {
+    /* margin-right: 5px; */
+}
+
 /* #endregion */
 
-
-
-
 /* #region GUESS MOVIE */
+
 .searchResContainer {
-    border-radius : 3px;
+    border-radius: 3px;
     letter-spacing: 1px;
 }
 
@@ -131,168 +141,53 @@ ul.clueText li {
     list-style: none;
 }
 
-#searchResult li{
-    padding      : 5px;
-    margin-bottom: 1px;}
+#searchResult li {
+    padding: 5px;
+    margin-bottom: 1px;
+}
 
-#searchResult li:hover{
+#searchResult li:hover {
     cursor: pointer;
 }
 
 .clear {
-    clear     : both;
+    clear: both;
     margin-top: 20px;
 }
 
 .endGameMessage {
-    margin-top    : 15%;
-    margin-right  : 5%;
-    margin-left   : 5%;
-    padding-top   : 2%;
+    margin-top: 15%;
+    margin-right: 5%;
+    margin-left: 5%;
+    padding-top: 2%;
     padding-bottom: 2%;
-    text-align    : center;
+    text-align: center;
 }
 
 .endWin {
-    color    : green;
+    color: green;
     font-size: 15px;
 }
 
 .endLoss {
-    color    : red;
+    color: red;
     font-size: 25px;
 }
 
 .endButton {
     width: 50%;
 }
-/* #endregion GUESS MOVIE */
-
-
-
-
-/* #region NO MORE GAMES */
-#noGameHeader {
-    position        : absolute;
-    z-index         : 2;
-    padding         : 10px;
-    background-color: #ffffff;
-    opacity         : .6;
-    font-size       : xx-large;
-}
-
-#noGameHeader span {
-    font-size: medium;
-    color    : black;
-}
-
-#deuce {
-    position: relative;
-    z-index : 1;
-}
 
 #pi {
     position: fixed;
-    bottom  : 0;
-    left    : 0;
+    bottom: 0;
+    left: 0;
+    color: white;
 }
 
 .theNet {
     background: transparent url("https://image.tmdb.org/t/p/w92/gKDNaAFzT21cSVeKQop7d1uhoSp.jpg") repeat 0% 0%;
-    width     : 100%;
-    height    : 100%;
-    position  : absolute;
-}
-
-
-
-
-
-/*-- Sign Styles --*/
-
-.blackBody {
-    background-color: black;
-}
-
-.glow {
-    font-family: "Vibur", cursive;
-    text-align : center;
-    line-height: 1;
-    color      : #c6e2ff;
-    animation  : neon .08s ease-in-out infinite alternate;
-}
-
-.GameTitle {
-    font-size: 3.0rem;
-}
-
-@keyframes neon {
-  from {
-    text-shadow:
-    0 0 6px rgba(202,228,225,0.92),
-    0 0 30px rgba(202,228,225,0.34),
-    0 0 12px rgba(30,132,242,0.52),
-    0 0 21px rgba(30,132,242,0.92),
-    0 0 34px rgba(30,132,242,0.78),
-    0 0 54px rgba(30,132,242,0.92);
-  }
-  to {
-    text-shadow:
-    0 0 6px rgba(202,228,225,0.98),
-    0 0 30px rgba(202,228,225,0.42),
-    0 0 12px rgba(30,132,242,0.58),
-    0 0 22px rgba(30,132,242,0.84),
-    0 0 38px rgba(30,132,242,0.88),
-    0 0 60px rgba(30,132,242,1);
-  }
-}
-
-
-
-.bgBlue {
-    background-color: lightblue;
-}
-.swing-in-top-fwd {
-	animation: swing-in-top-fwd 0.5s cubic-bezier(0.175, 0.885, 0.320, 1.275) both;
-}
-
- @keyframes swing-in-top-fwd {
-    0% {
-      transform       : rotateX(-100deg);
-      transform-origin: top;
-      opacity         : 0;
-    }
-    100% {
-      transform       : rotateX(0deg);
-      transform-origin: top;
-      opacity         : 1;
-    }
-  }
-
-
-
-
-  #BodyColor {
-    background-color: white;
-}
-
-
-
-#GroupPlayer_Container {
-    height: 100px;
     width: 100%;
+    height: 100%;
+    position: absolute;
 }
-
-  #GroupPlay_Clues div {
-      background-color: green;
-      color: white;
-  }
-
-
-  .height {
-      height: 1000px;
-  }
-
-  .txt {
-      font-size: 2em;
-  }

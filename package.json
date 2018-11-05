@@ -1,0 +1,32 @@
+{
+    "name": "movieGame",
+    "version": "1.0.0",
+    "description": "The Awesome and/or Amazing Movie Game",
+    "main": "gulpfile.js",
+    "dependencies": {
+        "@types/jquery": "^3.3.22",
+        "aspnet-prerendering": "^3.0.1",
+        "bootbox": "^4.4.0",
+        "gulp": "^3.9.1",
+        "gulp-less": "^3.5.0",
+        "gulp-sass": "^4.0.1",
+        "materialize-css": "^1.0.0-rc.2"
+    },
+    "devDependencies": {
+        "@angular/cli": "^6.0.8"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/djbinder/Movie-Game.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/djbinder/Movie-Game/issues"
+    },
+    "homepage": "https://github.com/djbinder/Movie-Game#readme"
+}

@@ -7,7 +7,7 @@
 <form asp-controller="ManageUsers" asp-action="loguserin" method="POST">
     <div class="form-group">
         <label asp-for="LoginViewModel.UserEmail" class="control-label"></label>
-        <input asp-for="LoginViewModel.UserEmail" class="form-control" placeholder="Enter Email Address" value="djbinder@test.com">
+        <input asp-for="LoginViewModel.UserEmail" class="form-control" placeholder="Enter Email Address" value="d@test.com">
         <span class="error text-danger" asp-validation-for="LoginViewModel.UserEmail"></span>
     </div>
     <div class="form-group">
@@ -22,31 +22,31 @@
 
 <hr class="linebreak2">
 
-<form action="register" method="POST">
+<form asp-controller="ManageUsers" asp-action="registeruser" method="POST">
     <div class="form-group">
         <label asp-for="RegisterViewModel.UserFirstName" class="control-label"></label>
         <input asp-for="RegisterViewModel.UserFirstName" class="form-control" placeholder="Enter First Name">
-        <span class="error" asp-validation-for="RegisterViewModel.UserFirstName"></span>
+        <span class="error text-danger" asp-validation-for="RegisterViewModel.UserFirstName"></span>
     </div>
     <div class="form-group">
         <label asp-for="RegisterViewModel.UserLastName" class="control-label"></label>
         <input asp-for="RegisterViewModel.UserLastName" class="form-control" placeholder="Enter Last Name">
-        <span class="error" asp-validation-for="RegisterViewModel.UserLastName"></span>
+        <span class="error text-danger" asp-validation-for="RegisterViewModel.UserLastName"></span>
     </div>
     <div class="form-group">
         <label asp-for="RegisterViewModel.UserEmail" class="control-label"></label>
         <input asp-for="RegisterViewModel.UserEmail" class="form-control" placeholder="Enter Email Address">
-        <span class="error" asp-validation-for="RegisterViewModel.UserEmail"></span>
+        <span class="error text-danger" asp-validation-for="RegisterViewModel.UserEmail"></span>
     </div>
     <div class="form-group">
         <label asp-for="RegisterViewModel.UserPassword" class="control-label"></label>
         <input asp-for="RegisterViewModel.UserPassword" class="form-control" placeholder="Enter Password">
-        <span class="error" asp-validation-for="RegisterViewModel.UserPassword"></span>
+        <span class="error text-danger" asp-validation-for="RegisterViewModel.UserPassword"></span>
     </div>
     <div class="form-group">
         <label asp-for="RegisterViewModel.Confirm" class="control-label"></label>
         <input asp-for="RegisterViewModel.Confirm" class="form-control" placeholder="Enter Password Again">
-        <span class="error" asp-validation-for="RegisterViewModel.Confirm"></span>
+        <span class="error text-danger" asp-validation-for="RegisterViewModel.Confirm"></span>
     </div>
     <div class="form-group">
         <input type="submit" value="Register" class="btn btn-primary" />

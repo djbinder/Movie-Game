@@ -2,44 +2,31 @@
 ViewData["Title"] = "All Movies";
 }
 
-<div id="wrapper" class="container-fluid">
-    <br>
-    <table class="bg-pan-right">
+<table class="table">
+    <thead>
         <tr>
-            <td class="MovieGameHeaderTable"><h1><b>Movie Game</b></h1></td>
-            <td class="HeaderLinks"><a href="/">Home</a></td>
+            <th class="text-center" scope="col">Id</th>
+            <th class="text-center" scope="col">Title</th>
+            <th class="text-center" scope="col">Year</th>
+            <th class="text-center" scope="col">Clues</th>
         </tr>
-    </table>
-    <hr class="linebreak1">
-    <br>
+    </thead>
 
-    <table class="table">
-        <thead class="thead-light">
-            <tr class="allMovieTableHeader">
-                <th scope="col">Id</th>
-                <th scope="col">Title</th>
+    @foreach (var Movie in ViewBag.Movies)
+    {
+    <tr>
+        <th>@Movie.MovieId</th>
+        <td><a href="/movie/@Movie.MovieId">@Movie.Title</a></td>
 
-                <th scope="col">Year</th>
-                <th scope="col">Clues</th>
-            </tr>
-        </thead>
-
-        @foreach (var Movie in ViewBag.Movies)
-        {
-        <tr>
-            <th scope="row">@Movie.MovieId</th>
-            <td><a href="/getMovie/@Movie.MovieId">@Movie.Title</a></td>
-
-            <td>@Movie.Year</td>
-            <td>
-                <ul>
-                @foreach (var Clue in Movie.Clues)
-                {
-                    <li>@Clue.ClueId : @Clue.ClueText</li>
-                }
-                </ul>
-            </td>
-        </tr>
-        }
-    </table>
-</div>
+        <td>@Movie.Year</td>
+        <td>
+            <ul>
+            @foreach (var Clue in Movie.Clues)
+            {
+                <li>@Clue.ClueId : @Clue.ClueText</li>
+            }
+            </ul>
+        </td>
+    </tr>
+    }
+</table>

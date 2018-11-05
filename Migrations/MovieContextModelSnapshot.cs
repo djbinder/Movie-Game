@@ -147,9 +147,14 @@ namespace movieGame.Migrations
 
                     b.Property<string>("Genre");
 
+                    b.Property<int>("MovieId");
+
                     b.Property<string>("ReleaseYear");
 
                     b.HasKey("HintsId");
+
+                    b.HasIndex("MovieId")
+                        .IsUnique();
 
                     b.ToTable("Hints");
                 });
@@ -167,8 +172,6 @@ namespace movieGame.Migrations
 
                     b.Property<string>("Genre");
 
-                    b.Property<int?>("HintsId");
-
                     b.Property<string>("Poster");
 
                     b.Property<DateTime>("Released");
@@ -184,8 +187,6 @@ namespace movieGame.Migrations
                     b.Property<string>("imdbId");
 
                     b.HasKey("MovieId");
-
-                    b.HasIndex("HintsId");
 
                     b.ToTable("Movies");
                 });
@@ -429,11 +430,12 @@ namespace movieGame.Migrations
                         .HasForeignKey("MovieId");
                 });
 
-            modelBuilder.Entity("movieGame.Models.Movie", b =>
+            modelBuilder.Entity("movieGame.Models.Hints", b =>
                 {
-                    b.HasOne("movieGame.Models.Hints", "Hints")
-                        .WithMany()
-                        .HasForeignKey("HintsId");
+                    b.HasOne("movieGame.Models.Movie")
+                        .WithOne("Hints")
+                        .HasForeignKey("movieGame.Models.Hints", "MovieId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("movieGame.Models.MovieActorJoin", b =>
