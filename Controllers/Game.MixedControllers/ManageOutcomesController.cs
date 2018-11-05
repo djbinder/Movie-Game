@@ -18,8 +18,7 @@ namespace movieGame.Controllers.Game.MixedControllers
 
         List<Clue> _clueList = new List<Clue> ();
 
-        [HttpPost]
-        [Route ("CreateMovieUserJoin")]
+        [HttpPost("create_movie_user_join")]
         public JsonResult CreateMovieUserJoin (int GameOutcome)
         {
             int? playerId = HttpContext.Session.GetInt32 ("id");
@@ -50,13 +49,12 @@ namespace movieGame.Controllers.Game.MixedControllers
                 if (joinsList.Count > 0)
                 {
                     // this is not the first time the player has attempted to guess this movie
-                    ExtensionsD.Spotlight ("MPJ_A -- WIN _____ NOT FIRST JOIN");
+                    Console.WriteLine("MPJ_A -- WIN _____ NOT FIRST JOIN");
                     foreach (var item in joinsList)
                     {
                         // get current attempt count and count of joins
                         int currAttemptCount = item.AttemptCount;
                         maxes.Add (currAttemptCount);
-                        currAttemptCount.Intro ("curr attempts count");
                     }
 
                     // get current max attempt of player/movie combo
@@ -77,7 +75,7 @@ namespace movieGame.Controllers.Game.MixedControllers
                 // this is the first time this player has attempted to guess this movie
                 else
                 {
-                    ExtensionsD.Spotlight ("MPJ_B -- WIN _____ FIRST JOIN");
+                    Console.WriteLine("MPJ_B -- WIN _____ FIRST JOIN");
                     // MPJ --> create new many-to-many of player and movie
                     MovieUserJoin MPJ_B = new MovieUserJoin
                     {
@@ -96,13 +94,12 @@ namespace movieGame.Controllers.Game.MixedControllers
             {
                 // this is not the first time the player has attempted to guess this movie
                 if (joinsList.Count > 0) {
-                    ExtensionsD.Spotlight ("MPJ_C -- LOSS _____ NOT FIRST JOIN");
+                    Console.WriteLine("MPJ_C -- LOSS _____ NOT FIRST JOIN");
                     foreach (var item in joinsList)
                     {
                         // get current attempt count and count of joins
                         int currAttemptCount = item.AttemptCount;
                         maxes.Add (currAttemptCount);
-                        currAttemptCount.Intro ("curr attempts count");
                     }
 
                     var newAttemptsMax = maxes.Max () + 1;
@@ -120,7 +117,7 @@ namespace movieGame.Controllers.Game.MixedControllers
                 }
                 else
                 {
-                    ExtensionsD.Spotlight ("MPJ_D -- LOSS _____ FIRST JOIN");
+                    Console.WriteLine("MPJ_D -- LOSS _____ FIRST JOIN");
 
                     // MPJ --> create new many-to-many of player and movie
                     MovieUserJoin MPJ_D = new MovieUserJoin
@@ -140,18 +137,15 @@ namespace movieGame.Controllers.Game.MixedControllers
 
 
         [HttpPost]
-        [Route ("UpdatePlayerGames")]
+        [Route ("update_player_games")]
         public IActionResult UpdatePlayerGames (int gameOutcome, int playerId)
         {
-            gameOutcome.Intro ("this game outcome");
-
             User retrievedPlayer = _context.Users.SingleOrDefault (p => p.UserId == playerId);
             // var onePlayerId = retrievedPlayer.PlayerId;
 
             // update number of games attempted
             var currGamesAttempted = retrievedPlayer.GamesAttempted;
             int newGamesAttempted = currGamesAttempted + 1;
-            newGamesAttempted.Intro ("new games played");
             retrievedPlayer.GamesAttempted = newGamesAttempted;
 
             // if the player won, update games won
@@ -160,13 +154,10 @@ namespace movieGame.Controllers.Game.MixedControllers
                 var currGamesWon = retrievedPlayer.GamesWon;
                 int newGamesWon = currGamesWon + 1;
                 retrievedPlayer.GamesWon = newGamesWon;
-                newGamesWon.Intro ("new games won");
-                // Console.WriteLine("UP_GAMES  |  W  | send to C_MPJ");
                 CreateMovieUserJoin (1);
             }
             else
             {
-                // Console.WriteLine("UP_GAMES  |  L  | send to C_MPJ");
                 CreateMovieUserJoin (0);
             }
             retrievedPlayer.UpdatedAt = DateTime.Now;
@@ -175,6 +166,7 @@ namespace movieGame.Controllers.Game.MixedControllers
         }
 
 
+        [HttpPost("update_player_points")]
         public JsonResult UpdatePlayerPoints (Clue clueInfo)
         {
             // PLAYER ID ---> the PlayerId of the current player (e.g., 8 OR 4 OR 12 etc.)

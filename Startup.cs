@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace movieGame {
     public class Startup {
@@ -42,7 +44,11 @@ namespace movieGame {
 
             // changed for migraitons to 2.1
             // services.AddMvc ();
-            services.AddMvc ().SetCompatibilityVersion (CompatibilityVersion.Version_2_1);
+            services.AddMvc ().SetCompatibilityVersion (CompatibilityVersion.Version_2_1)
+                        .AddJsonOptions(options => {
+                            options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                            options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                        });
 
             services.AddSession ();
 
@@ -69,47 +75,47 @@ namespace movieGame {
             }
 
             // //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-2.0
-            #region
-            app.UseStatusCodePages (async context => {
-                ExtensionsD.Spotlight ("mark 1");
-                context.HttpContext.Response.ContentType = "text/plain";
+            // #region
+            // app.UseStatusCodePages (async context => {
+            //     ExtensionsD.Spotlight ("mark 1");
+            //     context.HttpContext.Response.ContentType = "text/plain";
 
-                await context.HttpContext.Response.WriteAsync (
-                    "Status code page, status code: " +
-                    context.HttpContext.Response.StatusCode);
-            });
+            //     await context.HttpContext.Response.WriteAsync (
+            //         "Status code page, status code: " +
+            //         context.HttpContext.Response.StatusCode);
+            // });
 
-            app.UseStatusCodePagesWithRedirects ("/error/{0}");
-            app.MapWhen (context => context.Request.Path == "/missingpage", builder => { });
-            app.Map ("/error", error => {
-                ExtensionsD.Spotlight ("mark 2");
-                error.Run (async context => {
-                    ExtensionsD.Spotlight ("mark 3");
-                    var builder = new StringBuilder ();
-                    builder.AppendLine ("<html><body>");
-                    builder.AppendLine ("An error occurred.<br />");
-                    var path = context.Request.Path.ToString ();
+            // app.UseStatusCodePagesWithRedirects ("/error/{0}");
+            // app.MapWhen (context => context.Request.Path == "/missingpage", builder => { });
+            // app.Map ("/error", error => {
+            //     ExtensionsD.Spotlight ("mark 2");
+            //     error.Run (async context => {
+            //         ExtensionsD.Spotlight ("mark 3");
+            //         var builder = new StringBuilder ();
+            //         builder.AppendLine ("<html><body>");
+            //         builder.AppendLine ("An error occurred.<br />");
+            //         var path = context.Request.Path.ToString ();
 
-                    if (path.Length > 1) {
-                        ExtensionsD.Spotlight ("mark 4");
-                        builder.AppendLine ("Status Code: " +
-                            HtmlEncoder.Default.Encode (path.Substring (1)) + "<br />");
-                    }
+            //         if (path.Length > 1) {
+            //             ExtensionsD.Spotlight ("mark 4");
+            //             builder.AppendLine ("Status Code: " +
+            //                 HtmlEncoder.Default.Encode (path.Substring (1)) + "<br />");
+            //         }
 
-                    var referrer = context.Request.Headers["referer"];
-                    if (!string.IsNullOrEmpty (referrer)) {
-                        ExtensionsD.Spotlight ("mark 5");
-                        builder.AppendLine ("Return to <a href=\"" +
-                            HtmlEncoder.Default.Encode (referrer) + "\">" +
-                            WebUtility.HtmlEncode (referrer) + "</a><br />");
-                    }
+            //         var referrer = context.Request.Headers["referer"];
+            //         if (!string.IsNullOrEmpty (referrer)) {
+            //             ExtensionsD.Spotlight ("mark 5");
+            //             builder.AppendLine ("Return to <a href=\"" +
+            //                 HtmlEncoder.Default.Encode (referrer) + "\">" +
+            //                 WebUtility.HtmlEncode (referrer) + "</a><br />");
+            //         }
 
-                    ExtensionsD.Spotlight ("mark 6");
-                    builder.AppendLine ("</body></html>");
-                    context.Response.ContentType = "text/html";
-                    await context.Response.WriteAsync (builder.ToString ());
-                });
-            });
+            //         ExtensionsD.Spotlight ("mark 6");
+            //         builder.AppendLine ("</body></html>");
+            //         context.Response.ContentType = "text/html";
+            //         await context.Response.WriteAsync (builder.ToString ());
+            //     });
+            // });
 
             // app.Run(async (context) =>
             // {
@@ -134,7 +140,7 @@ namespace movieGame {
             //     await context.Response.WriteAsync(builder.ToString());
             //     ExtensionsD.Spotlight("mark 10");
             // });
-            #endregion
+            // #endregion
 
             app.UseStaticFiles ();
             app.UseSession ();

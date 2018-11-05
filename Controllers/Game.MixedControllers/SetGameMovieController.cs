@@ -21,120 +21,117 @@ namespace movieGame.Controllers.Game.MixedControllers
             _context = context;
         }
 
-        private static GetMovieInfoController _getMovie = new GetMovieInfoController(context: _context);
+        // private static GetMovieInfoController _getMovie = new GetMovieInfoController(context: _context);
 
-        public static GetMovieInfoController GetMovie { get => _getMovie; set => _getMovie = value; }
+        // public static GetMovieInfoController GetMovie { get => _getMovie; set => _getMovie = value; }
 
-        public string Welcome()
-        {
-            return "this is the welcome action method";
-        }
 
-        public int GetCountOfMoviesInDb ()
-        {
-            int movieCount = _context.Movies.Count ();
-            Console.WriteLine($"there are {movieCount} movies in the database");
-            return movieCount;
-        }
+
+        // public int GetCountOfMoviesInDb ()
+        // {
+        //     int movieCount = _context.Movies.Count ();
+        //     Console.WriteLine($"there are {movieCount} movies in the database");
+        //     return movieCount;
+        // }
 
 
         // initiate game; select movie that will be guessed
-        [HttpGet]
-        [Route ("single")]
-        public IActionResult InitiateSinglePlayerGame ()
-        {
-            int currentMovieId = IdentifyThisGamesMovie();
-            SetThisGamesMovie (currentMovieId);
-            return View ("PlaySingle");
-        }
+        // [HttpGet]
+        // [Route ("single")]
+        // public IActionResult InitiateSinglePlayerGame ()
+        // {
+        //     int currentMovieId = IdentifyThisGamesMovie();
+        //     SetThisGamesMovie (currentMovieId);
+        //     return View ("PlaySingle");
+        // }
 
-        public int IdentifyThisGamesMovie()
-        {
-            Console.WriteLine("hit game/single action result");
-            int? playerId = HttpContext.Session.GetInt32 ("id");
+        // public int IdentifyThisGamesMovie()
+        // {
+        //     Console.WriteLine("hit game/single action result");
+        //     int? playerId = HttpContext.Session.GetInt32 ("id");
 
-            User player = _context.Users.Include (m => m.MovieUserJoin).SingleOrDefault (p => p.UserId == playerId);
+        //     User player = _context.Users.Include (m => m.MovieUserJoin).SingleOrDefault (p => p.UserId == playerId);
 
-            // GAMES WON --> how many games has the player won; the next movie served is based off of this
-            var playersGamesWon = ViewBag.GamesWon = player.GamesWon;
-            int currentMovieId = playersGamesWon + 1;
-            int numberOfMoviesInDatabase = GetCountOfMoviesInDb();
+        //     // GAMES WON --> how many games has the player won; the next movie served is based off of this
+        //     var playersGamesWon = ViewBag.GamesWon = player.GamesWon;
+        //     int currentMovieId = playersGamesWon + 1;
+        //     int numberOfMoviesInDatabase = GetCountOfMoviesInDb();
 
-            if (currentMovieId > numberOfMoviesInDatabase)
-                RedirectPlayersOutOfMovies(numberOfMoviesInDatabase);
+        //     if (currentMovieId > numberOfMoviesInDatabase)
+        //         RedirectPlayersOutOfMovies(numberOfMoviesInDatabase);
 
-            return currentMovieId;
-        }
+        //     return currentMovieId;
+        // }
 
-        public IActionResult RedirectPlayersOutOfMovies(int moviesInDb)
-        {
-            ExtensionsD.Spotlight ("user is caught up; no new movies to guess");
-            ViewBag.MovieCount = moviesInDb;
-            return View ("NoGame");
-        }
+        // public IActionResult RedirectPlayersOutOfMovies(int moviesInDb)
+        // {
+        //     ExtensionsD.Spotlight ("user is caught up; no new movies to guess");
+        //     ViewBag.MovieCount = moviesInDb;
+        //     return View ("NoGame");
+        // }
 
-        public void SetThisGamesMovie (int movieId)
-        {
-            int currentMovieId = movieId;
+        // public void SetThisGamesMovie (int movieId)
+        // {
+        //     int currentMovieId = movieId;
 
-            // var numberOfMoviesInDatabase = GetCountOfMoviesInDb();
+        //     // var numberOfMoviesInDatabase = GetCountOfMoviesInDb();
 
-            // ONE MOVIE ---> movieGame.Models.Movie
-            Movie thisGamesMovie = _context.Movies.Include (w => w.Clues).SingleOrDefault (x => x.MovieId == currentMovieId);
-            Console.WriteLine($"SetThisGamesMovie() : {thisGamesMovie.Title}");
+        //     // ONE MOVIE ---> movieGame.Models.Movie
+        //     Movie thisGamesMovie = _context.Movies.Include (w => w.Clues).SingleOrDefault (x => x.MovieId == currentMovieId);
+        //     Console.WriteLine($"SetThisGamesMovie() : {thisGamesMovie.Title}");
 
-            SetMovieInfoInSession(thisGamesMovie);
-            SetGameGuessCount ();
+        //     SetMovieInfoInSession(thisGamesMovie);
+        //     SetGameGuessCount ();
 
-            Hints thisMoviesHints = GetMovie.GetMoviesHints(thisGamesMovie);
+        //     Hints thisMoviesHints = GetMovie.GetMoviesHints(thisGamesMovie);
 
 
-            // HttpContext.Session.SetInt32 ("SessionMovieYear", thisGamesMovie.Year);
-            // HttpContext.Session.SetInt32 ("SessionMovieId", currentMovieId);
+        //     // HttpContext.Session.SetInt32 ("SessionMovieYear", thisGamesMovie.Year);
+        //     // HttpContext.Session.SetInt32 ("SessionMovieId", currentMovieId);
 
-            // Hashtable sessionMovieInfoTable = new Hashtable ();
-            // sessionMovieInfoTable.Add ("SessionMovieTitle", thisGamesMovie.Title);
-            // sessionMovieInfoTable.Add ("SessionMovieYear", thisGamesMovie.Year);
-            // HttpContext.Session.SetObjectAsJson ("SessionMovieInfo", sessionMovieInfoTable);
-        }
+        //     // Hashtable sessionMovieInfoTable = new Hashtable ();
+        //     // sessionMovieInfoTable.Add ("SessionMovieTitle", thisGamesMovie.Title);
+        //     // sessionMovieInfoTable.Add ("SessionMovieYear", thisGamesMovie.Year);
+        //     // HttpContext.Session.SetObjectAsJson ("SessionMovieInfo", sessionMovieInfoTable);
+        // }
 
-        public void SetMovieInfoInSession(Movie m)
-        {
-            SetMovieIdInSession(m);
-            SetMovieIdInSession(m);
-            SetMovieReleaseYearInSession(m);
-            SetMovieGenreInSession(m);
-            SetMovieDirectorInSession(m);
-        }
+        // public void SetMovieInfoInSession(Movie m)
+        // {
+        //     SetMovieIdInSession(m);
+        //     SetMovieIdInSession(m);
+        //     SetMovieReleaseYearInSession(m);
+        //     SetMovieGenreInSession(m);
+        //     SetMovieDirectorInSession(m);
+        // }
 
-        public void SetMovieIdInSession(Movie m)
-        {
-            HttpContext.Session.SetInt32("SessionMovieId", m.MovieId);
-        }
-        public void SetMovieTitleInSession(Movie m)
-        {
-            HttpContext.Session.SetString("SessionMovieTitle", m.Title);
-        }
-        public void SetMovieReleaseYearInSession(Movie m)
-        {
-            HttpContext.Session.SetInt32("SessionMovieReleaseYear", m.Year);
-        }
+        // public void SetMovieIdInSession(Movie m)
+        // {
+        //     HttpContext.Session.SetInt32("SessionMovieId", m.MovieId);
+        // }
+        // public void SetMovieTitleInSession(Movie m)
+        // {
+        //     HttpContext.Session.SetString("SessionMovieTitle", m.Title);
+        // }
+        // public void SetMovieReleaseYearInSession(Movie m)
+        // {
+        //     HttpContext.Session.SetInt32("SessionMovieReleaseYear", m.Year);
+        // }
 
-        public void SetMovieGenreInSession(Movie m)
-        {
-            HttpContext.Session.SetString("SessionMovieGenre", m.Genre);
-        }
+        // public void SetMovieGenreInSession(Movie m)
+        // {
+        //     HttpContext.Session.SetString("SessionMovieGenre", m.Genre);
+        // }
 
-        public void SetMovieDirectorInSession(Movie m)
-        {
-            HttpContext.Session.SetString("SessionMovieDirector", m.Director);
-        }
+        // public void SetMovieDirectorInSession(Movie m)
+        // {
+        //     HttpContext.Session.SetString("SessionMovieDirector", m.Director);
+        // }
 
-        public void SetGameGuessCount ()
-        {
-            HttpContext.Session.SetInt32 ("Guesscount", 3);
-            int? guessCount = HttpContext.Session.GetInt32 ("Guesscount");
-        }
+        // public void SetGameGuessCount ()
+        // {
+        //     HttpContext.Session.SetInt32 ("Guesscount", 3);
+        //     int? guessCount = HttpContext.Session.GetInt32 ("Guesscount");
+        // }
 
         // public void SetMoviesHints (Movie m)
         // {

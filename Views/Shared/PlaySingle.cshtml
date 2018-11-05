@@ -4,107 +4,111 @@
 ViewData["Title"] = "Single Play";
 }
 
-<!-- <div class="GroupNavbar">
-    <div class="GroupDropDown">
-        <div class="GroupDropDown-content">
-            <a href="/">Home</a>
-            <a href="/Instructions">Instructions</a>
-            <a href="/InitiateSinglePlayerGame">Start Over</a>
-        </div>
-    </div>
-</div> -->
+<hr class="linebreak3">
 
-<div>
-    <a href="/GetClue">
-        <button class="btn btn-primary" type="button" id="getClueButton">
-            <span id="clueButtonText">Begin Game</span>
-        </button>
-    </a>
-</div>
-
-
-<br>
-
-
-<div>
-    <div>
-        <span id="cluePoints" class="text-info">Current Clue Point Value:</span>
-        <span class="gameNumbers" id="justPoints"></span>
-    </div>
-    <div class="progress" id="progressBar">
-        <div class="progress-bar progBarOrange" role="progressbar" style="width: 0%" aria-valuenow="1" aria-valuemin="0" aria-valuemax="10">
-        </div>
-    </div>
-</div>
-
-
-<div id="MovieHints" class="setRelative">
-    <div id="GetMovieDecade">
-        <button id="GetMovieDecadeButton" style="background: none; border: none">
-            <span style="font-size: 14px; color:#304ffe;">
-                <i class="fas fa-calendar-alt"></i>
-                <span>Year</span>
-            </span>
-        </button>
-    </div>
-
-    <div id="GetMovieGenre">
-        <button id="GetMovieGenreButton" style="background: none; border: none">
-            <span style="font-size: 14px; color:#304ffe;">
-                <i class="fas fa-tasks"></i>
-                <span>Genre</span>
-            </span>
-        </button>
-    </div>
-
-    <div id="GetMovieDirector">
-        <button id="GetMovieDirectorButton" style="background: none; border: none">
-            <span style="font-size: 14px; color:#304ffe;">
-                <i class="fas fa-user-circle"></i>
-                <span>Director</span>
-            </span>
-        </button>
-    </div>
-</div>
-
-<br>
-
-<div class="row" id="formContainer">
-    <div class="subscribe subscribe-1" id="guessMovieForm">
-        <form action="guessMovie" method="GET" id="guessMovie">
-            <a href="#" class="subscribe__toggle" id="toggle">
-                Click to Guess |
-                <span class="testText">Remaining Guesses: <span id="remainingGuesses"></span></span>
-            </a>
-            <span class="subscribe__success">
-                <ul id="guessResponse"></ul>
-            </span>
-            <div class="subscribe__wrapper">
-                <input class="SuccessInput" id="movieGuessInput" name="movieGuessInput" type="text" />
-                <button id="submit" class="btn btn-warning">Guess</button>
+<table>
+    <tr>
+        <td style="padding-right: 20px" class="text-center">
+            <div>
+                <span id="cluePoints" class="text-info" style="padding-right: 5px">Clue Value:</span>
+                <span id="justPoints"></span>
             </div>
+        </td>
+        <td style="padding-right: 20px" class="text-center">
+            <span class="text-info" style="padding-right: 5px"> Guesses:
+                <span id="remainingGuesses"></span>
+            </span>
+        </td>
+    </tr>
+</table>
+
+
+<br>
+
+
+<ul id="guessResponse"></ul>
+
+<div style="border: 1px solid slateblue; height: 260px; padding: 0px; margin: 0px; padding-top: 10px">
+        <ul id="clueText" class="clueText" style="padding: 0px; margin: 0px"></ul>
+</div>
+
+<hr class="linebreak3">
+
+<table id="MovieHints" class="table text-center">
+    <tr>
+        <td style="border: none; background: white; color: black">
+            <button id="GetMovieDecadeButton" class="text-center" style="background: none; border: none">
+                Year
+            </button>
+        </td>
+        <td style="border: none; background: white; color: black">
+            <button id="GetMovieGenreButton" class="text-center" style="background: none; border: none">
+                Genre
+            </button>
+        </td>
+        <td style="border: none; background: white; color: black">
+            <button id="GetMovieDirectorButton" class="text-center" style="background: none; border: none">
+                Director
+            </button>
+        </td>
+    </tr>
+</table>
+
+
+
+<div id="formContainer">
+    <div id="guessMovieForm" >
+        <form action="GuessMovie" method="GET" id="guessMovie">
+            <input id="movieGuessInput" class="text-danger" style="width: 70%; height: 30px"/>
+            <button id="submit" class="btn btn-danger" style="width: 28%">Guess</button>
         </form>
     </div>
 </div>
 
-<br>
-
-<div class="row searchResContainer">
-    <div class="col-sm-6" id="div_content">
+<div class="searchResContainer">
+    <div id="div_content">
         <ul id="searchResult"></ul>
         <div class="clear"></div>
     </div>
-    <div class="col-1 ml-2"></div>
+    <div></div>
 </div>
 
-<br>
+<button class="btn btn-primary" type="button" id="getClueButton">
+    <span id="clueButtonText">Begin Game</span>
+</button>
 
-<div class="row">
+
+<p class="hiddenDiv" id="hiddenDiv" style="color: black"></p>
+
+
+
+
+
+
+<!-- <div id="MovieHints">
+
+    <button id="GetMovieDecadeButton" style="background: none; border: none">
+            <span>Year</span>
+    </button>
+
+    <button id="GetMovieGenreButton" style="background: none; border: none">
+            <span>Genre</span>
+    </button>
+
+    <button id="GetMovieDirectorButton" style="background: none; border: none">
+            <span>Director</span>
+    </button>
+
+</div> -->
+
+<!-- <a href="#">
+    <button class="btn btn-primary" type="button" id="getClueButton">
+        <span id="clueButtonText">Begin Game</span>
+    </button>
+</a> -->
+
+<!-- <div class="row">
     <div class="col">
         <ul id="clueText" class="clueText pl-0 ml-0"></ul>
     </div>
-</div>
-
-<p class="hiddenDiv" id="hiddenDiv"></p>
-<!-- <p class="testDiv" id="testDiv"></p> -->
-
+</div> -->

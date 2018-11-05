@@ -30,7 +30,7 @@ namespace movieGame.Controllers.PlayerControllers
         }
 
         [HttpPost]
-        [Route ("register")]
+        [Route ("registeruser")]
         public IActionResult RegisterUser (UserViewModel model) {
             Console.WriteLine ("lets try to register a new user");
             // string NameEntered = "dan binder";
@@ -64,14 +64,14 @@ namespace movieGame.Controllers.PlayerControllers
                     };
                     _context.Add (newUser);
                     _context.SaveChanges ();
-                }
-                int id = _context.Users.Where (u => u.UserEmail == model.RegisterViewModel.UserEmail).Select (p => p.UserId).SingleOrDefault ();
-                Console.WriteLine ($"the player id for this session is {id}");
-                HttpContext.Session.SetInt32 ("id", id);
-                return RedirectToAction ("ViewGameListPage", "ShowViews");
-            }
 
-            return RedirectToAction ("ViewHomePage", "ShowViews");
+                    int id = _context.Users.Where (u => u.UserEmail == model.RegisterViewModel.UserEmail).Select (p => p.UserId).SingleOrDefault ();
+                    Console.WriteLine ($"the player id for this session is {id}");
+                    HttpContext.Session.SetInt32 ("id", id);
+                    return RedirectToAction ("ViewGameListPage", "ShowViews");
+                }
+            }
+            return View ("Index");
         }
 
         [HttpPost]

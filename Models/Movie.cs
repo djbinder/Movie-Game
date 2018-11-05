@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;   // this allows you to use 'List< >'
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
-using movieGame.Serializers;
+using movieGame.Infrastructure;
 using System.ComponentModel.DataAnnotations;
 
 namespace movieGame.Models
@@ -93,6 +93,7 @@ namespace movieGame.Models
             MovieUserJoin = new List<MovieUserJoin>();
             MovieGenreJoin = new List<MovieGenreJoin>();
             MovieActorJoin = new List<MovieActorJoin>();
+            Hints = new Hints();
         }
 
     }

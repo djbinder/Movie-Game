@@ -168,8 +168,7 @@ namespace movieGame.Controllers.Game.MixedControllers
 
 
 
-        [HttpGet]
-        [Route ("Movie/{id}")]
+        [HttpGet("movie/{id}")]
         public IActionResult ShowMovie (int id)
         {
 
@@ -191,7 +190,6 @@ namespace movieGame.Controllers.Game.MixedControllers
             // movieJObject.Intro("movie object");
 
             string movieTitle = movieJObject["Title"].ToString ();
-            movieTitle.Intro ("getting profile for movie");
             string movieRating = (string) movieJObject["Rated"];
             string movieYear = (string) movieJObject["Year"];
 
@@ -210,42 +208,38 @@ namespace movieGame.Controllers.Game.MixedControllers
         public JsonResult GetActorImage (string actorName)
         {
             #region API REQUEST INFO
-            // var APIkey = "4cbdf8913d9628d339184a127d136d68";
-            var personsName = actorName;
-            var client = new RestClient ("https://api.themoviedb.org/3/search/person?api_key=1a1ef1aa4b51f19d38e4a7cb134a5699&language=en-US&query=" + personsName + "&page=1&include_adult=false");
-            var request = new RestRequest (Method.GET);
-            request.AddHeader ("Postman-Token", "dbfd1014-ebcb-4c79-80eb-1b0eac81a888");
-            request.AddHeader ("Cache-Control", "no-cache");
-            IRestResponse response = client.Execute (request);
+                // var APIkey = "4cbdf8913d9628d339184a127d136d68";
+                var personsName = actorName;
+                var client = new RestClient ("https://api.themoviedb.org/3/search/person?api_key=1a1ef1aa4b51f19d38e4a7cb134a5699&language=en-US&query=" + personsName + "&page=1&include_adult=false");
+                var request = new RestRequest (Method.GET);
+                request.AddHeader ("Postman-Token", "dbfd1014-ebcb-4c79-80eb-1b0eac81a888");
+                request.AddHeader ("Cache-Control", "no-cache");
+                IRestResponse response = client.Execute (request);
             #endregion
 
             #region JSON
-            var responseJSON = response.Content;
-            JObject actorJSON = JObject.Parse (responseJSON);
-            #endregion
+                var responseJSON = response.Content;
+                JObject actorJSON = JObject.Parse (responseJSON);
+                #endregion
 
-            #region QUERIES
-            actorName = ViewBag.ActorName = (string) actorJSON["results"][0]["name"];
-            int actorId = ViewBag.ActorId = (int) actorJSON["results"][0]["id"];
-            actorName.Intro ("actor name");
-            // ActorId.Intro("actor id");
+                #region QUERIES
+                actorName = ViewBag.ActorName = (string) actorJSON["results"][0]["name"];
+                int actorId = ViewBag.ActorId = (int) actorJSON["results"][0]["id"];
 
-            string pictureBaseURL = "https://image.tmdb.org/t/p/w";
+                string pictureBaseURL = "https://image.tmdb.org/t/p/w";
 
-            // these are picture sizes
-            int pictureSizeLarge = 400;
-            int pictureSizeMedium = 300;
-            int pictureSizeSmall = 200;
-            int pictureSizeSmallest = 92;
+                // these are picture sizes
+                int pictureSizeLarge = 400;
+                int pictureSizeMedium = 300;
+                int pictureSizeSmall = 200;
+                int pictureSizeSmallest = 92;
 
-            string actorPictureURL = (string) actorJSON["results"][0]["profile_path"];
+                string actorPictureURL = (string) actorJSON["results"][0]["profile_path"];
 
-            string actorPicLarge = ViewBag.ActorPicLarge = pictureBaseURL + pictureSizeLarge + actorPictureURL;
-            string actorPicMedium = ViewBag.ActorPicMedium = pictureBaseURL + pictureSizeMedium + actorPictureURL;
-            string actorPicSmall = ViewBag.ActorPicSmall = pictureBaseURL + pictureSizeSmall + actorPictureURL;
-            string actorPicSmallest = ViewBag.ActorPicSmallest = pictureBaseURL + pictureSizeSmallest + actorPictureURL;
-
-            actorPicSmallest.Intro ("smallest");
+                string actorPicLarge = ViewBag.ActorPicLarge = pictureBaseURL + pictureSizeLarge + actorPictureURL;
+                string actorPicMedium = ViewBag.ActorPicMedium = pictureBaseURL + pictureSizeMedium + actorPictureURL;
+                string actorPicSmall = ViewBag.ActorPicSmall = pictureBaseURL + pictureSizeSmall + actorPictureURL;
+                string actorPicSmallest = ViewBag.ActorPicSmallest = pictureBaseURL + pictureSizeSmallest + actorPictureURL;
             #endregion
 
             return Json (actorJSON);

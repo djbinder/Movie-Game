@@ -120,21 +120,16 @@ namespace movieGame.Controllers {
         }
 
 
-        [HttpGet]
-        [Route("single")]
-        public IActionResult ViewSinglePlayPage()
-        {
-            return View("PlaySingle");
-        }
 
 
-        [HttpGet]
-        [Route("movie/{id}")]
-        public IActionResult ViewSingleMoviePage ()
-        {
-            Console.WriteLine("trying to view 1 movies details");
-            return View("SingleMovie");
-        }
+
+        // [HttpGet]
+        // [Route("movie/{id}")]
+        // public IActionResult ViewSingleMoviePage ()
+        // {
+        //     Console.WriteLine("trying to view 1 movies details");
+        //     return View("SingleMovie");
+        // }
 
 
         [HttpGet]

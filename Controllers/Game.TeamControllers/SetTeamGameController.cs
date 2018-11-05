@@ -59,7 +59,6 @@ namespace movieGame.Controllers.Game.TeamControllers
         public async Task<IActionResult> JoinTeam (int id)
         {
             int? playerId = HttpContext.Session.GetInt32 ("id");
-            playerId.Intro ("player id");
 
             UserTeamJoin PTJ = new UserTeamJoin
             {
