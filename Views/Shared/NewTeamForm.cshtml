@@ -4,20 +4,13 @@
 ViewData["Title"] = "New Team";
 }
 
-<form asp-controller="SetTeams" asp-action="CreateNewTeam" method="POST">
-    <div class="col p-3 m-4">
-        <label for="TeamName" class="row text-white">Team Name: </label>
-        <input class="row mb-3" type="text" id="SubmittedTeamName" name="SubmittedTeamName" placeholder="Enter team name"/>
-        <button class="row btn btn-primary">Create Team</button>
-    </div>
+<h4 class="text-center">Enter team names for this game</h4>
+<form action="set_team_names" method="POST">
+        <input style="width: 100%; color: black" type="text" id="firstTeamName" name="firstTeamName" placeholder="Enter first team's name" value="TeamA" />
+        <br>
+        <br>
+        <input style="width: 100%; color: black"  type="text" id="secondTeamname" name="secondTeamname" placeholder="Enter second team's name" value="TeamB" />
+        <br>
+        <br>
+        <button class="btn btn-primary" style="width: 100%">Begin Game</button>
 </form>
-
-<br>
-
-<table class="table">
-    <tr>
-        <th scope="col">#</th>
-        <th scope="col">Team</th>
-        <th scope="col">Actions</th>
-    </tr>
-</table>

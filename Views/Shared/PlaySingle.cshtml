@@ -4,7 +4,7 @@
 ViewData["Title"] = "Single Play";
 }
 
-<hr class="linebreak3">
+
 
 <table>
     <tr>
@@ -26,7 +26,7 @@ ViewData["Title"] = "Single Play";
 <br>
 
 
-<ul id="guessResponse"></ul>
+<ul id="guessResponse" style="color:red"></ul>
 
 <div style="border: 1px solid slateblue; height: 260px; padding: 0px; margin: 0px; padding-top: 10px">
         <ul id="clueText" class="clueText" style="padding: 0px; margin: 0px"></ul>
@@ -57,12 +57,10 @@ ViewData["Title"] = "Single Play";
 
 
 <div id="formContainer">
-    <div id="guessMovieForm" >
-        <form action="GuessMovie" method="GET" id="guessMovie">
-            <input id="movieGuessInput" class="text-danger" style="width: 70%; height: 30px"/>
-            <button id="submit" class="btn btn-danger" style="width: 28%">Guess</button>
-        </form>
-    </div>
+    <input id="movieGuessInput" class="text-danger" style="width: 70%; height: 30px"/>
+    <button id="guessButton" class="btn btn-danger" style="width: 28%">
+        Guess
+    </button>
 </div>
 
 <div class="searchResContainer">
@@ -110,5 +108,16 @@ ViewData["Title"] = "Single Play";
 <!-- <div class="row">
     <div class="col">
         <ul id="clueText" class="clueText pl-0 ml-0"></ul>
+    </div>
+</div> -->
+
+<!--
+<div id="formContainer">
+    <div id="guessMovieForm" >
+        <form action="GuessMovie" method="GET" id="guessMovie">
+            <input id="movieGuessInput" class="text-danger" style="width: 70%; height: 30px"/>
+            <button id="guessButton" class="btn btn-danger" style="width: 28%">Guess</button> -->
+            <!-- <button id="submit" class="btn btn-danger" style="width: 28%">Guess</button> -->
+        <!-- </form>
     </div>
 </div> -->

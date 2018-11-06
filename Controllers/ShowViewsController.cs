@@ -83,13 +83,6 @@ namespace movieGame.Controllers {
         }
 
 
-        [HttpGet]
-        [Route("addteam")]
-        public IActionResult ViewAddTeamPage()
-        {
-            Console.WriteLine("viewing new team form");
-            return View("newteamform");
-        }
 
 
         [HttpGet]
@@ -112,12 +105,7 @@ namespace movieGame.Controllers {
         }
 
 
-        [HttpGet]
-        [Route("group")]
-        public IActionResult ViewGroupPlayPage()
-        {
-            return View("playgroup");
-        }
+
 
 
 

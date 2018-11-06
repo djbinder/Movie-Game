@@ -18,18 +18,18 @@ namespace movieGame.Controllers.Game.MixedControllers
 
         List<Clue> _clueList = new List<Clue> ();
 
-        [HttpPost("create_movie_user_join")]
-        public JsonResult CreateMovieUserJoin (int GameOutcome)
+
+        // [HttpPost("create_movie_user_join")]
+        public void CreateMovieUserJoin (int GameOutcome)
         {
             int? playerId = HttpContext.Session.GetInt32 ("id");
-            // playerId.Intro("player id");
+
             User retrievedUser = _context.Users.SingleOrDefault (p => p.UserId == playerId);
 
-            // SESSION MOVIE ID --> id of current movie user was guessing
             var sessionMovieId = HttpContext.Session.GetInt32 ("SessionMovieId");
 
             // EXISTING JOINS --> System.Collections.Generic.List`1[movieGame.Models.MovieUserJoin]
-            // JOINS LIST --> check if a join of player and movie already exists
+            // check if a join of player and movie already exists
             var playerJoins = _context.MovieUserJoin.Where (p => p.MovieId == sessionMovieId).Where (t => t.UserId == playerId);
             var joinsList = playerJoins.ToList ();
 
@@ -37,18 +37,16 @@ namespace movieGame.Controllers.Game.MixedControllers
 
             // check the game outcome - 1 is a win, 0 is a loss
             int oneGameOutcome = GameOutcome;
-            // oneGameOutcome.Intro("one game outcome");
 
-            // the player won, the join needs to reflect that
+            // the player won, go this way
             if (oneGameOutcome == 1)
             {
                 // since the player won, check if any joins with player/movie combo already exists
-                int? newPoints = HttpContext.Session.GetInt32 ("newPoints");
-                // newPoints.Intro("new points");
+                int? newPoints = HttpContext.Session.GetInt32 ("NewPoints");
 
                 if (joinsList.Count > 0)
                 {
-                    // this is not the first time the player has attempted to guess this movie
+                    // not first time the player attempted this movie
                     Console.WriteLine("MPJ_A -- WIN _____ NOT FIRST JOIN");
                     foreach (var item in joinsList)
                     {
@@ -72,11 +70,11 @@ namespace movieGame.Controllers.Game.MixedControllers
                     _context.Add (MPJ_A);
                 }
 
-                // this is the first time this player has attempted to guess this movie
+                // first time player attempted this movie
                 else
                 {
                     Console.WriteLine("MPJ_B -- WIN _____ FIRST JOIN");
-                    // MPJ --> create new many-to-many of player and movie
+
                     MovieUserJoin MPJ_B = new MovieUserJoin
                     {
                         UserId = (int) playerId,
@@ -132,16 +130,15 @@ namespace movieGame.Controllers.Game.MixedControllers
                 }
             }
             _context.SaveChanges ();
-            return Json (playerJoins);
+            // return Json (playerJoins);
         }
 
 
-        [HttpPost]
-        [Route ("update_player_games")]
-        public IActionResult UpdatePlayerGames (int gameOutcome, int playerId)
+        // [Route ("update_player_games")]
+        // [HttpPost("update_player_games")]
+        public void UpdatePlayerGames (int gameOutcome, int playerId)
         {
             User retrievedPlayer = _context.Users.SingleOrDefault (p => p.UserId == playerId);
-            // var onePlayerId = retrievedPlayer.PlayerId;
 
             // update number of games attempted
             var currGamesAttempted = retrievedPlayer.GamesAttempted;
@@ -162,36 +159,31 @@ namespace movieGame.Controllers.Game.MixedControllers
             }
             retrievedPlayer.UpdatedAt = DateTime.Now;
             _context.SaveChanges ();
-            return View ();
         }
 
 
         [HttpPost("update_player_points")]
-        public JsonResult UpdatePlayerPoints (Clue clueInfo)
+        public void UpdatePlayerPoints (Clue clueInfo)
         {
-            // PLAYER ID ---> the PlayerId of the current player (e.g., 8 OR 4 OR 12 etc.)
             var playerId = HttpContext.Session.GetInt32 ("id");
+            // Console.WriteLine($"UpdatePlayerPoints() --> {clueInfo.CluePoints}");
 
-            // MOVIE LIST ---> System.Collections.Generic.List`1[movieGame.Models.Movie]
             _clueList.Add (clueInfo);
 
-            // ONE GAME OUTCOME --> 1 means the player won, 0 means the player lost
+            // 1 means the player won, 0 means the player lost
             int oneGameOutcome = clueInfo.MovieId;
 
-            if (oneGameOutcome > 0) {
-                // RETRIEVED PLAYER ---> movieGame.Models.Player
+            if (oneGameOutcome > 0)
+            {
                 User retrievedPlayer = _context.Users.FirstOrDefault (p => p.UserId == playerId);
 
-                // CURRENT POINTS --> players current points pulled from the database
+                // CURRENT POINTS --> players current points from DB
+                // NEW POINTS --> value of clue movie was correctly guessed on; from 'UpdatePlayerPoints' js func.
                 var currentPoints = retrievedPlayer.Points;
-                // currentPoints.Intro("current points");
-
-                // NEW POINTS ---> the value of the clue the movie was correctly guessed on; retrieved from 'UpdatePlayerPoints' javascript function
                 int newPoints = clueInfo.CluePoints;
-                HttpContext.Session.SetInt32 ("newPoints", newPoints);
-                // newPoints.Intro("new points to add");
+                HttpContext.Session.SetInt32 ("NewPoints", newPoints);
 
-                // RETRIEVED PLAYER POINT --> adds current points and new points; then saves them to the database
+                // adds current points and new points; then saves them to the database
                 retrievedPlayer.Points = newPoints + currentPoints;
 
                 UpdatePlayerGames (1, (int) playerId);
@@ -200,7 +192,9 @@ namespace movieGame.Controllers.Game.MixedControllers
             {
                 UpdatePlayerGames (0, (int) playerId);
             }
-            return Json (clueInfo);
+            // return Json (clueInfo);
+            // Console.WriteLine("UpdatePlayerPoints() --> redirecting to ViewSingleGameOverWinPage");
+            // return RedirectToAction("ViewSingleGameOverWinPage", "PlaySingle");
         }
     }
 }

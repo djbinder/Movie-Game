@@ -52,6 +52,7 @@ namespace movieGame.Controllers.Game.MixedControllers
             return movieId;
 
         }
+
         public string GetMovieTitle(Movie movie)
         {
             string movieTitle = movie.Title;
@@ -131,40 +132,6 @@ namespace movieGame.Controllers.Game.MixedControllers
             Console.WriteLine($"HINTS: Genre = {h.Genre}  |  ReleaseYear = {h.ReleaseYear}  |  Director = {h.Director}");
         }
 
-
-        // public Hashtable GetMovieInfoHashTable (JObject movieJObject)
-        // {
-        //     string movieTitle = (string) movieJObject["Title"];
-        //     string movieReleaseYear = (string) movieJObject["Year"];
-        //     string movieGenre = (string) movieJObject["Genre"];
-        //     string movieDirector = (string) movieJObject["Director"];
-
-        //     // System.Collections.Hashtable
-        //     Hashtable movieInfo = new Hashtable ();
-        //     movieInfo.Add ("MovieTitle", movieTitle);
-        //     movieInfo.Add ("MovieReleaseYear", movieReleaseYear);
-        //     movieInfo.Add ("MovieGenre", movieGenre);
-        //     movieInfo.Add ("MovieDirector", movieDirector);
-
-        //     // set if you want the below to print to console
-        //     bool executeWriteLines = false;
-
-        //     if (executeWriteLines == true)
-        //     {
-        //         IDictionaryEnumerator _enumerator = movieInfo.GetEnumerator ();
-        //         int _enumeratorCount = 1;
-        //         while (_enumerator.MoveNext ())
-        //         {
-        //             Console.WriteLine ();
-        //             Console.WriteLine (_enumeratorCount);
-        //             Console.WriteLine ("Key   | " + _enumerator.Key.ToString ());
-        //             Console.WriteLine ("Value | " + _enumerator.Value.ToString ());
-        //             Console.WriteLine ();
-        //             _enumeratorCount++;
-        //         }
-        //     };
-        //     return movieInfo;
-        // }
 
 
 
