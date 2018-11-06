@@ -79,9 +79,20 @@
     background-color: #111;
 }
 
-/* #endregion */
+/*  */
 
-/* #region CLUES */
+/* Game List */
+
+/*  */
+
+.gameBox {
+    border: 1px solid white;
+    height: 50px;
+    margin-bottom: 20px;
+    padding: 15px 0;
+}
+
+/* CLUES */
 
 .setRelative {
     position: relative;
@@ -190,4 +201,8 @@ ul.clueText li {
     width: 100%;
     height: 100%;
     position: absolute;
+}
+
+.this_teams_turn {
+    background-color: green;
 }

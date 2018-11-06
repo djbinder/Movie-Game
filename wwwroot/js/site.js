@@ -37,84 +37,19 @@ function CloneDiv()
 
 
 
-
-// ----------------------------------------------
-// ----------------------------------------------
-// ----------------------------------------------
-
-
-// ----------------------------------------------
-// -----> REGION : BOOTBOX MESSAGES <-----
-
-function ShowBootBoxResponse(int)
-{
-  var dialog = bootbox.dialog(
-    {
-      message: PlayerWonBootBoxMessage(int),
-      buttons: {
-        cancel: {
-          label: bootboxQuitButtonLabel,
-          className: bootboxQuitButtonStyle,
-          callback: function ()
-          {
-            window.location.href = "/";
-          }
-        },
-
-        playagain:
-        {
-          label: bootboxPlayAgainButtonLabel,
-          className: bootboxPlayAgainButtonStyle,
-          callback: function ()
-          {
-            // console.log("PLAY AGAIN");
-            window.location.href = "InitiateSinglePlayerGame";
-          }
-        }
-      }
-    });
-  return dialog;
-}
-
-function PlayerWonBootBoxMessage(string)
-{
-  var message = '<br><div class="endGameMessage row border border-dark"><div class="col"><span class="align-middle"><b class="endWin align-middle">Correct. You win.</b> <br> Points received: ' +
-    string +
-    '</span></div><br><div class="col"><img class="align-middle" src="https://image.tmdb.org/t/p/w92/gKDNaAFzT21cSVeKQop7d1uhoSp.jpg" alt="ASP.NET" class="img-responsive"></div></div>'
-
-  return message;
-}
-
-function PlayerLostBootBoxMessage()
-{
-  var message = '<p class="endGameMessage"><b class="endLoss">You lost</b> <br> Please take some time to reflect on your failure. </p>';
-  return message;
-}
-
-let bootboxQuitButtonLabel = "Quit (I'm a loser)";
-let bootboxPlayAgainButtonLabel = "Play again (I'm a nerd)";
-
-let bootboxQuitButtonStyle = "btn-danger endButton";
-let bootboxPlayAgainButtonStyle = "btn-success endButton";
-
-
-// -----> ENDREGION : BOOTBOX MESSAGES <-----
-// ----------------------------------------------
-
-
-
-
 // ----------------------------------------------
 // -----> REGION : GUESSING <-----
 
-$("#guessMovie").submit(function (event)
+$("#guessButton").click(function ()
 {
+  console.log('clicked #guessButton');
   var playersGuess = $("input:first")
     .val()
     .toString()
     .toUpperCase();
 
   console.log("Players guess: ", playersGuess);
+
 
   $.get("single/guess_movie", function (res)
   {
@@ -124,50 +59,34 @@ $("#guessMovie").submit(function (event)
 
     console.log("Movie title: ", thisGamesMovieTitle);
 
-    if (guessCount > 0)
+    // the player WON
+    if (playersGuess == thisGamesMovieTitle)
     {
-      UpdateMovieGuessInput();
-      if (playersGuess == thisGamesMovieTitle)
-      {
-        // guesses remaining; the player WON
-        EmptyRemainingGuesses();
-        DisableGuessButton();
-        UpdatePlayerPoints("#guessMovieForm", currentPoints);
-        ShowBootBoxResponse(currentPoints);
-      }
-      else
-      {
-        // guesses remaining; the player's guess was WRONG
-        EmptyAndAppendRemainingGuesses(guessCount);
-        $(".hiddenDiv").empty().append(guessCount);
-        SendGuessAgainMessage(playersGuess);
-      }
+      console.log("OUTCOME: the player WON");
+      UpdatePlayerPoints(currentPoints);
+      ViewSingleGameOverWinPage();
     }
 
-    if (guessCount == 0)
+    // wrong guess
+    else
     {
-      DisableGetNextClueButton();
-      UpdateMovieGuessInput();
-
-      if (playersGuess == thisGamesMovieTitle)
+      // wrong guess; player still has guesses
+      if (guessCount > 0)
       {
-        // out of guesses and the player won
-        EmptyAndAppendRemainingGuesses("0");
-        EmptyGuessResponseList();
-        UpdatePlayerPoints("#guessMovieForm", currentPoints);
-        ShowBootBoxResponse(currentPoints);
+        console.log("OUTCOME: WRONG guess; guesses remaining");
+        UpdateMovieGuessInput();
+        RespondToWrongGuessContinueGame(guessCount, playersGuess);
       }
 
-      else
+      // out of guesses and the player lost
+      if (guessCount == 0)
       {
-        // out of guesses and the player lost
-        EmptyRemainingGuesses();
-        UpdatePlayerPoints("#guessMovieForm", 0);
-        ShowBootBoxResponse(currentPoints);
+        console.log("OUTCOME: player lost");
+        UpdatePlayerPoints(0);
+        ViewSingleGameOverLossPage();
       }
     }
   });
-  event.preventDefault();
 });
 
 
@@ -223,7 +142,7 @@ function SetGuessText(element)
   var searchText = $("#movieGuessInput").val();
   console.log("searchText is: ", searchText);
 
-  // VALUE --> the movie title you select from the dropdown
+  // movie title selected from dropdown
   var value = $(element).text();
 
   $("#movieGuessInput").val(value);
@@ -283,7 +202,25 @@ function SendGuessAgainMessage(str)
 // ----------------------------------------------
 
 
+// function RespondToCorrectGuess(currentPoints)
+// {
+//   console.log('RespondToCorrectGuess');
+//   UpdatePlayerPoints("#guessMovieForm", currentPoints);
 
+//   $.get("single/game_over_win", function (res)
+//   {
+//     console.log("single/game_over_win");
+//     // console.log(res);
+//   })
+// }
+
+
+function RespondToWrongGuessContinueGame(guessCount, playersGuess)
+{
+  EmptyAndAppendRemainingGuesses(guessCount);
+  $(".hiddenDiv").empty().append(guessCount);
+  SendGuessAgainMessage(playersGuess);
+}
 
 // ----------------------------------------------
 // -----> REGION : CLUES <-----
@@ -313,8 +250,6 @@ $("#getClueButton").click(function ()
     var contentLength = $("ul#clueText > li").length - 1;
     var clueDifficulty = res.clues[contentLength + 1].clueDifficulty;
     var cluePoints = res.clues[contentLength + 1].cluePoints;
-    // console.log("CONTENT LENGTH: ", contentLength);
-    // console.log("CLUE POINTS: ", cluePoints);
 
     if (clueDifficulty == 1)
     {
@@ -325,7 +260,7 @@ $("#getClueButton").click(function ()
 
     new SendClueToController(currentClue);
 
-    // CLUE ---> lists off each clue  after each click; e.g., '<li>School bus</li>' etc.
+    // lists off each clue  after each click; e.g., '<li>School bus</li>' etc.
     var clueListItem = "<li>" + allMovieClues[contentLength + 1].clueText + "</li>";
 
     $("ul#clueText").append(clueListItem);
@@ -351,7 +286,7 @@ function SendClueToController(element)
       },
       success: function (data)
       {
-        console.log(element);
+        console.log("SendClueToController(element): ", element);
         // console.log("TO CONTROLLER: " + element);
       },
       error: function (jqXHR, textStatus, errorThrown)
@@ -418,7 +353,8 @@ function AppendHint(string)
 // ----------------------------------------------
 // -----> REGION : SEND POINTS TO CONTROLLER <-----
 
-function UpdatePlayerPoints(formContainer, element)
+// function UpdatePlayerPoints(formContainer, element)
+function UpdatePlayerPoints(element)
 {
   $.ajax(
     {
@@ -431,10 +367,46 @@ function UpdatePlayerPoints(formContainer, element)
       success: function (data)
       {
         console.log("PLAYER POINTS SUCCESSFULLY UPDATED");
-        console.log(data.cluePoints);
-        console.log(element);
+        console.log(" -- element: ", element);
+        // console.log(" -- data.cluePoints: ", data.cluePoints);
       },
       error: function (jqXHR, textStatus, errorThrown) { }
+    });
+}
+
+
+function ViewSingleGameOverWinPage()
+{
+  $.ajax(
+    {
+      type: "GET",
+      url: "single/game_over_win",
+      success: function ()
+      {
+        window.location.href = "single/game_over_win";
+      },
+      error: function ()
+      {
+        console.log('failed directing to game_over_win');
+      }
+    });
+}
+
+
+function ViewSingleGameOverLossPage()
+{
+  $.ajax(
+    {
+      type: "GET",
+      url: "single/game_over_loss",
+      success: function ()
+      {
+        window.location.href = "single/game_over_loss";
+      },
+      error: function ()
+      {
+        console.log('failed directing to game_over_loss');
+      }
     });
 }
 
@@ -445,8 +417,44 @@ function UpdatePlayerPoints(formContainer, element)
 
 
 
+// ----------------------------------------------
+// ----------------------------------------------
+// ----------------------------------------------
 
 
+
+$("#change_team_button").click(function (selector)
+{
+  console.log(firstTeamDiv);
+  console.log(secondTeamDiv);
+  $(firstTeamDiv).toggleClass("this_teams_turn");
+  $(secondTeamDiv).toggleClass("this_teams_turn");
+
+})
+
+
+let firstTeamDiv = $("#firstTeam").get();
+let secondTeamDiv = $("#secondTeam").get();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ----------------------------------------------
+// ----------------------------------------------
+// ----------------------------------------------
 
 // function ResetForm()
 // {
@@ -491,4 +499,191 @@ function UpdatePlayerPoints(formContainer, element)
 // $(function ()
 // {
 //   $('[data-toggle="tooltip"]').tooltip();
+// });
+
+
+
+// if (guessCount > 0)
+// {
+//   UpdateMovieGuessInput();
+
+//   // guesses remaining; the player WON
+//   if (playersGuess == thisGamesMovieTitle)
+//   {
+//     RespondToCorrectGuess(currentPoints);
+//     // EmptyRemainingGuesses();
+//     // DisableGuessButton();
+//     // UpdatePlayerPoints("#guessMovieForm", currentPoints);
+//     // ShowBootBoxResponse(currentPoints);
+//   }
+//   // guesses remaining; the player's guess was WRONG
+//   else
+//   {
+//     RespondToWrongGuessContinueGame(guessCount, playersGuess);
+//     // EmptyAndAppendRemainingGuesses(guessCount);
+//     // $(".hiddenDiv").empty().append(guessCount);
+//     // SendGuessAgainMessage(playersGuess);
+//   }
+// }
+
+
+// if (guessCount == 0)
+// {
+//   DisableGetNextClueButton();
+//   UpdateMovieGuessInput();
+
+//   if (playersGuess == thisGamesMovieTitle)
+//   {
+//     // out of guesses and the player won
+//     EmptyAndAppendRemainingGuesses("0");
+//     EmptyGuessResponseList();
+//     UpdatePlayerPoints("#guessMovieForm", currentPoints);
+//     ShowBootBoxResponse(currentPoints);
+//   }
+
+//   else
+//   {
+//     // out of guesses and the player lost
+//     EmptyRemainingGuesses();
+//     UpdatePlayerPoints("#guessMovieForm", 0);
+//     ShowBootBoxResponse(currentPoints);
+//   }
+// }
+
+
+
+
+// function RespondToCorrectGuess(currentPoints)
+// {
+//   // EmptyRemainingGuesses();
+//   // DisableGuessButton();
+//   UpdatePlayerPoints("#guessMovieForm", currentPoints);
+//   // ShowBootBoxResponse(currentPoints);
+
+// }
+
+
+
+
+// // ----------------------------------------------
+// // -----> REGION : BOOTBOX MESSAGES <-----
+
+// function ShowBootBoxResponse(int)
+// {
+//   var dialog = bootbox.dialog(
+//     {
+//       message: PlayerWonBootBoxMessage(int),
+//       buttons: {
+//         cancel: {
+//           label: bootboxQuitButtonLabel,
+//           className: bootboxQuitButtonStyle,
+//           callback: function ()
+//           {
+//             window.location.href = "/";
+//           }
+//         },
+
+//         playagain:
+//         {
+//           label: bootboxPlayAgainButtonLabel,
+//           className: bootboxPlayAgainButtonStyle,
+//           callback: function ()
+//           {
+//             // console.log("PLAY AGAIN");
+//             window.location.href = "InitiateSinglePlayerGame";
+//           }
+//         }
+//       }
+//     });
+//   return dialog;
+// }
+
+// function PlayerWonBootBoxMessage(string)
+// {
+//   var message = '<br><div class="endGameMessage row border border-dark"><div class="col"><span class="align-middle"><b class="endWin align-middle">Correct. You win.</b> <br> Points received: ' +
+//     string +
+//     '</span></div><br><div class="col"><img class="align-middle" src="https://image.tmdb.org/t/p/w92/gKDNaAFzT21cSVeKQop7d1uhoSp.jpg" alt="ASP.NET" class="img-responsive"></div></div>'
+
+//   return message;
+// }
+
+// function PlayerLostBootBoxMessage()
+// {
+//   var message = '<p class="endGameMessage"><b class="endLoss">You lost</b> <br> Please take some time to reflect on your failure. </p>';
+//   return message;
+// }
+
+// let bootboxQuitButtonLabel = "Quit (I'm a loser)";
+// let bootboxPlayAgainButtonLabel = "Play again (I'm a nerd)";
+
+// let bootboxQuitButtonStyle = "btn-danger endButton";
+// let bootboxPlayAgainButtonStyle = "btn-success endButton";
+
+
+// // -----> ENDREGION : BOOTBOX MESSAGES <-----
+// // ----------------------------------------------
+
+
+
+
+
+
+
+
+// $("#guessMovie").submit(function (event)
+// {
+//   var playersGuess = $("input:first")
+//     .val()
+//     .toString()
+//     .toUpperCase();
+
+//   console.log("Players guess: ", playersGuess);
+
+//   $.get("single/guess_movie", function (res)
+//   {
+//     var currentPoints = Number($("#justPoints").html());
+//     var thisGamesMovieTitle = res[0].toUpperCase();
+//     var guessCount = res[1];
+
+//     console.log("Movie title: ", thisGamesMovieTitle);
+
+//     if (guessCount > 0)
+//     {
+//       UpdateMovieGuessInput();
+
+//       // guesses remaining; the player WON
+//       if (playersGuess == thisGamesMovieTitle)
+//       {
+//         UpdatePlayerPoints("#guessMovieForm", currentPoints);
+//         ViewSingleGameOverWinPage();
+//       }
+//       // guesses remaining; the player's guess was WRONG
+//       else
+//       {
+//         RespondToWrongGuessContinueGame(guessCount, playersGuess);
+//       }
+//     }
+
+//     if (guessCount == 0)
+//     {
+//       // DisableGetNextClueButton();
+//       // UpdateMovieGuessInput();
+
+//       if (playersGuess == thisGamesMovieTitle)
+//       {
+//         // out of guesses and the player won
+//         RespondToCorrectGuess(currentPoints);
+//         ViewSingleGameOverWinPage();
+//       }
+
+//       else
+//       {
+//         // out of guesses and the player lost
+//         // EmptyRemainingGuesses();
+//         UpdatePlayerPoints("#guessMovieForm", 0);
+//         // ShowBootBoxResponse(currentPoints);
+//       }
+//     }
+//   });
+//   event.preventDefault();
 // });

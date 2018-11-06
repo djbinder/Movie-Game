@@ -32,6 +32,9 @@ namespace movieGame.Controllers.Game.SingleControllers
             [Route ("")]
             public IActionResult PlaySinglePlayerGame ()
             {
+                Console.WriteLine();
+                Console.WriteLine("BEGINING NEW GAME");
+                Console.WriteLine("--------------------");
                 SetThisGamesMovie();
                 return View ("PlaySingle");
             }
@@ -41,6 +44,35 @@ namespace movieGame.Controllers.Game.SingleControllers
                 Console.WriteLine("user is caught up; no new movies to guess");
                 ViewBag.MovieCount = moviesInDb;
                 return View ("NoGame");
+            }
+
+            [HttpGet("game_over_win")]
+            public IActionResult ViewSingleGameOverWinPage()
+            {
+                // Console.WriteLine("ViewSingleGameOverWinPage()");
+                string movieTitle = ViewBag.MovieTitle = GetMovieTitleFromSession();
+
+                int? releaseYear = GetMovieReleaseYearFromSession();
+
+                var movie = GetMovie.GetMovieJSON(movieTitle, (int)releaseYear);
+
+                var moviePoster = ViewBag.MoviePoster = movie["Poster"];
+                Console.WriteLine($"Poster: {moviePoster}");
+
+                return View("SingleGameOverWin");
+            }
+
+
+
+            [HttpGet("game_over_loss")]
+            public IActionResult ViewSingleGameOverLossPage()
+            {
+                return View("SingleGameOverLoss");
+            }
+
+            public void PrintFromJavaScript()
+            {
+
             }
 
         #endregion MANAGE ROUTING ------------------------------------------------------------
@@ -58,7 +90,6 @@ namespace movieGame.Controllers.Game.SingleControllers
 
             public int IdentifyThisGamesMovieId()
             {
-                Console.WriteLine("identifying this games movie id");
                 int? playerId = HttpContext.Session.GetInt32 ("id");
                 User player = _context.Users.Include (m => m.MovieUserJoin).SingleOrDefault (p => p.UserId == playerId);
 
@@ -77,12 +108,11 @@ namespace movieGame.Controllers.Game.SingleControllers
 
             public Movie SetThisGamesMovie ()
             {
-                // Console.WriteLine("setting this games movie");
                 int currentMovieId = IdentifyThisGamesMovieId();
 
                 // ONE MOVIE ---> movieGame.Models.Movie
                 Movie thisGamesMovie = _context.Movies.Include(c => c.Clues).Include(h => h.Hints).SingleOrDefault(i => i.MovieId == currentMovieId);
-                // Console.WriteLine($"SetThisGamesMovie() : movie is {thisGamesMovie.Title}");
+                Console.WriteLine($"SetThisGamesMovie() --> {thisGamesMovie.MovieId}. {thisGamesMovie.Title}");
 
                 SetMovieInfoInSession(thisGamesMovie);
                 SetGameGuessCountInSession ();
@@ -107,11 +137,6 @@ namespace movieGame.Controllers.Game.SingleControllers
                 SetMovieDirectorInSession(m);
             }
 
-            // public JsonResult SetMovieInfoJObject(List<object> movieInfoList, string key)
-            // {
-            //     JsonResult movieJsonResult = _h.SetObjectAsJson(session: _session, key: key, value: movieInfoList);
-            // }
-
             public void GetMovieInfoFromSession()
             {
                 int? movieId = GetMovieIdFromSession();
@@ -121,7 +146,6 @@ namespace movieGame.Controllers.Game.SingleControllers
                 string movieDirector = GetMovieDirectorFromSession();
                 int? guessCount = GetGuessCountFromSession();
             }
-
 
             public Movie GetThisGamesMovieFromSession ()
             {
@@ -256,37 +280,25 @@ namespace movieGame.Controllers.Game.SingleControllers
 
 
             [HttpGet("guess_movie")]
-            public IActionResult GuessMovie ()
+            public JsonResult GuessMovie ()
             {
-                Console.WriteLine("CLICKED GUESS MOVIE BUTTON");
                 // if previous guesses, it's guess number; if not, it's blank
                 int? currentGuessCount = GetGuessCountFromSession();
-                Console.WriteLine($"GuessMovie() : Current guess count is {currentGuessCount}");
 
                 currentGuessCount = currentGuessCount - 1;
                 HttpContext.Session.SetInt32 ("GuessCount", (int) currentGuessCount);
+                // Console.WriteLine($"GuessMovie() : new guess count: {currentGuessCount}");
 
-                // retrieves the title of current movie being guessed
                 string thisGamesMovieTitle = GetMovieTitleFromSession();
-                Console.WriteLine($"guess_movie Movie Title: {thisGamesMovieTitle}");
 
-                // System.Collections.ArrayList
                 ArrayList movieGuessItems = new ArrayList ();
                 movieGuessItems.Add (thisGamesMovieTitle);
                 movieGuessItems.Add (currentGuessCount);
 
                 return Json (movieGuessItems);
+                // return RedirectToAction("ViewSingleGameOverWinPage");
             }
 
-
-            // [HttpGet("get_movie_hint")]
-            // // [Route ("get_movie_hint")]
-            // public JsonResult GetMovieHint ()
-            // {
-            //     Console.WriteLine($"GetMovieHint()");
-            //     List<object> movieHints = HttpContext.Session.GetObjectFromJson<List<object>> ("MovieHints");
-            //     return Json (movieHints);
-            // }
 
 
             [HttpGet("get_clue_from_javascript")]
