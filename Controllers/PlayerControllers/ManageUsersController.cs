@@ -5,144 +5,245 @@ using movieGame.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
+using movieGame.Controllers.MixedControllers;
+using Microsoft.EntityFrameworkCore;
 
 namespace movieGame.Controllers.PlayerControllers
 {
     public class ManageUsersController : Controller
     {
-        private MovieContext _context;
+        private static MovieContext _context;
+
+        private static GetMovieInfoController _getMovie = new GetMovieInfoController(context: _context);
+
+        public static GetMovieInfoController GetMovie { get => _getMovie; set => _getMovie = value; }
 
         public ManageUsersController (MovieContext context)
         {
             _context = context;
         }
 
-        [HttpGet]
-        [Route("allplayers")]
-        public void ListAllPlayers()
-        {
-            var allPlayers = _context.Users.ToList();
-            foreach(var player in allPlayers)
+
+
+        #region MANAGE ROUTING ------------------------------------------------------------
+
+            [HttpGet("")]
+            public IActionResult ViewHomePage () { return View ("Index"); }
+
+            [HttpGet("user/{id}")]
+            public IActionResult ViewUserProfilePage (int id)
             {
-                Console.WriteLine(player.UserEmail);
-                Console.WriteLine(player.UserId);
+                Console.WriteLine($"users id: {id}");
+
+                User thisUser = ViewBag.User = GetUser(1);
+
+                var moviesInDatabase = ViewBag.MovieCount = _context.Movies.Count ();
+
+                List<MovieUserJoin> usersMovieJoinList = GetMovieUserJoinList (id);
+                ViewBag.MovieUserJoinList = usersMovieJoinList;
+
+                List<Movie> usersMoviesList = GetListOfUsersMovies(id);
+                ViewBag.UsersMoviesList = usersMoviesList;
+
+                return View("Userprofile");
             }
-        }
 
-        [HttpPost]
-        [Route ("registeruser")]
-        public IActionResult RegisterUser (UserViewModel model) {
-            Console.WriteLine ("lets try to register a new user");
-            // string NameEntered = "dan binder";
-            var firstName = model.RegisterViewModel.UserFirstName;
-            var lastName = model.RegisterViewModel.UserLastName;
-            var email = model.RegisterViewModel.UserEmail;
-            var password = model.RegisterViewModel.UserPassword;
-            var confirmPassword = model.RegisterViewModel.Confirm;
+        #endregion MANAGE ROUTING ------------------------------------------------------------
 
-            if (ModelState.IsValid)
+
+
+        #region LOGIN AND REGISTER ------------------------------------------------------------
+
+            [HttpPost("registeruser")]
+            public IActionResult RegisterUser (UserViewModel model)
             {
-                User existingUser = _context.Users.FirstOrDefault (p => p.UserEmail == email);
-                if (existingUser != null)
-                {
-                    Console.WriteLine ("this user already exists");
-                    ModelState.AddModelError ("RegisterViewModel.Email", "This is email is already registered!");
-                    return View ("index");
-                }
+                var firstName = model.RegisterViewModel.UserFirstName;
+                var lastName = model.RegisterViewModel.UserLastName;
+                var email = model.RegisterViewModel.UserEmail;
+                var password = model.RegisterViewModel.UserPassword;
+                var confirmPassword = model.RegisterViewModel.Confirm;
 
-                else
+                if (ModelState.IsValid)
                 {
-                    PasswordHasher<UserViewModel> hasher = new PasswordHasher<UserViewModel> ();
-                    string hashedPassword = hasher.HashPassword (model, model.RegisterViewModel.UserPassword);
-
-                    User newUser = new User ()
+                    User existingUser = _context.Users.FirstOrDefault (p => p.UserEmail == email);
+                    if (existingUser != null)
                     {
-                        UserFirstName = firstName,
-                        UserLastName = lastName,
-                        UserPassword = hashedPassword,
-                        UserEmail = email,
-                    };
-                    _context.Add (newUser);
-                    _context.SaveChanges ();
+                        Console.WriteLine ("this user already exists");
+                        ModelState.AddModelError ("RegisterViewModel.Email", "This is email is already registered!");
+                        return View ("index");
+                    }
 
-                    int id = _context.Users.Where (u => u.UserEmail == model.RegisterViewModel.UserEmail).Select (p => p.UserId).SingleOrDefault ();
-                    Console.WriteLine ($"the player id for this session is {id}");
-                    HttpContext.Session.SetInt32 ("id", id);
-                    return RedirectToAction ("ViewGameListPage", "ShowViews");
+                    else
+                    {
+                        PasswordHasher<UserViewModel> hasher = new PasswordHasher<UserViewModel> ();
+                        string hashedPassword = hasher.HashPassword (model, model.RegisterViewModel.UserPassword);
+
+                        User newUser = new User ()
+                        {
+                            UserFirstName = firstName,
+                            UserLastName = lastName,
+                            UserPassword = hashedPassword,
+                            UserEmail = email,
+                        };
+                        _context.Add (newUser);
+                        _context.SaveChanges ();
+
+                        int userId = _context.Users.Where (u => u.UserEmail == model.RegisterViewModel.UserEmail).Select (p => p.UserId).SingleOrDefault ();
+
+                        SetUserIdInSession(userId);
+                        return RedirectToAction ("ViewGameListPage", "ShowViews");
+                    }
                 }
+                return View ("Index");
             }
-            return View ("Index");
-        }
 
-        [HttpPost]
-        [Route ("login")]
-        public IActionResult LogUserIn (UserViewModel model)
-        {
-            var email = model.LoginViewModel.UserEmail;
-            var password = model.LoginViewModel.UserPassword;
-            // Console.WriteLine($"EMAIL IS: {email}");
-            // Console.WriteLine($"PASSWORD IS: {password}");
-
-            if (ModelState.IsValid)
+            [HttpPost("login")]
+            public IActionResult LogUserIn (UserViewModel model)
             {
-                User existingUser = _context.Users.FirstOrDefault (p => p.UserEmail == email);
-                if (existingUser == null)
-                {
-                    Console.WriteLine ("this email does not exist; please enter register");
-                    ModelState.AddModelError ("LoginViewModel.UserEmail", "Email not found. Please register!");
-                    return View ("Index");
-                }
-                else
-                {
-                    PasswordHasher<User> hasher = new PasswordHasher<User> ();
+                var email = model.LoginViewModel.UserEmail;
+                var password = model.LoginViewModel.UserPassword;
 
-                    if (hasher.VerifyHashedPassword (existingUser, existingUser.UserPassword, model.LoginViewModel.UserPassword) == 0)
+                if (ModelState.IsValid)
+                {
+                    User existingUser = _context.Users.FirstOrDefault (p => p.UserEmail == email);
+                    if (existingUser == null)
                     {
-                        Console.WriteLine("user exists but password is wrong");
-                        ModelState.AddModelError ("LoginViewModel.UserPassword", "Incorrect password. Please try again!");
+                        Console.WriteLine ("this email does not exist; please enter register");
+                        ModelState.AddModelError ("LoginViewModel.UserEmail", "Email not found. Please register!");
                         return View ("Index");
                     }
-                    HttpContext.Session.SetInt32 ("id", existingUser.UserId);
-                    HttpContext.Session.SetString("playername", existingUser.UserFirstName);
-                    return RedirectToAction("ViewGameListPage", "ShowViews");
+                    else
+                    {
+                        PasswordHasher<User> hasher = new PasswordHasher<User> ();
+
+                        if (hasher.VerifyHashedPassword (existingUser, existingUser.UserPassword, model.LoginViewModel.UserPassword) == 0)
+                        {
+                            Console.WriteLine("user exists but password is wrong");
+                            ModelState.AddModelError ("LoginViewModel.UserPassword", "Incorrect password. Please try again!");
+                            return View ("Index");
+                        }
+                        SetUserIdInSession(existingUser.UserId);
+                        SetUserNameInSession(existingUser.UserFirstName);
+
+                        return RedirectToAction("ViewGameListPage", "ShowViews");
+                    }
                 }
-            }
-            return View ("Index");
-        }
-
-
-        [HttpGet]
-        [Route ("LogPlayerOut")]
-        public IActionResult LogPlayerOut ()
-        {
-            HttpContext.Session.Clear ();
-            return RedirectToAction ("Index");
-        }
-
-
-        public int CheckSession ()
-        {
-            int? id = HttpContext.Session.GetInt32 ("id");
-
-            if (id == null) {
-                Console.WriteLine ($"start new session with id {id}");
-                return 0;
+                return View ("Index");
             }
 
-            HttpContext.Session.SetInt32 ("id", (int) id);
-            Console.WriteLine ($"continuing session with id {id}");
+            public void SetUserIdInSession(int userId)
+            {
+                Console.WriteLine ($"user id for this session: {userId}");
+                HttpContext.Session.SetInt32 ("UserId", userId);
+            }
 
-            return (int) id;
-        }
+            public void SetUserNameInSession(string firstName)
+            {
+                HttpContext.Session.SetString("UserName", firstName);
+            }
+
+            [HttpGet("log_player_out")]
+            public IActionResult LogPlayerOut ()
+            {
+                HttpContext.Session.Clear ();
+                return RedirectToAction ("Index");
+            }
+
+            public int CheckSession ()
+            {
+                int? id = HttpContext.Session.GetInt32 ("id");
+
+                if (id == null) {
+                    Console.WriteLine ($"start new session with id {id}");
+                    return 0;
+                }
+
+                HttpContext.Session.SetInt32 ("id", (int) id);
+                Console.WriteLine ($"continuing session with id {id}");
+
+                return (int) id;
+            }
+
+            [HttpGet("clear_session")]
+            public IActionResult ClearSession ()
+            {
+                HttpContext.Session.Clear ();
+                return RedirectToAction ("Index");
+            }
+
+        #endregion LOGIN AND REGISTER ------------------------------------------------------------
 
 
-        [HttpGet]
-        [Route ("ClearSession")]
-        public IActionResult ClearSession ()
-        {
-            HttpContext.Session.Clear ();
-            return RedirectToAction ("Index");
-        }
+
+        #region GET USER INFO ------------------------------------------------------------
+
+            public User GetUser (int id)
+            {
+                User thisUser = _context.Users
+                    .Include (m => m.MovieUserJoin)
+                    .ThenInclude (n => n.Movie)
+                    .SingleOrDefault (p => p.UserId == 1);
+                return thisUser;
+            }
+
+            public List<MovieUserJoin> GetMovieUserJoinList (int id)
+            {
+                User thisUser = GetUser (id);
+                var userMovieList = thisUser.MovieUserJoin.ToList ();
+                return userMovieList;
+            }
+
+            public List<Movie> GetListOfUsersMovies (int id)
+            {
+                User thisUser = GetUser (id);
+                MovieUserJoin newMovieUserJoin = new MovieUserJoin();
+                List<MovieUserJoin> movieUserJoinList = thisUser.MovieUserJoin.ToList ();
+                List<Movie> usersMovies = new List<Movie> ();
+
+                foreach (var movie in movieUserJoinList)
+                {
+                    Movie _movie = new Movie
+                    {
+                        MovieId = movie.MovieId,
+                        Title = movie.Movie.Title,
+                        Year = movie.Movie.Year,
+                        Poster = movie.Movie.Poster
+                    };
+
+                    GetMoviePosters (_movie.Title, _movie.Year);
+
+                    int gamesWon = thisUser.GamesWon;
+                    if (movie.MovieId <= gamesWon)
+                    {
+                        usersMovies.Add (_movie);
+                    }
+                }
+                return usersMovies;
+            }
+
+            public List<string> GetMoviePosters (string title, int year)
+            {
+                List<string> usersMoviesPosters = new List<string> ();
+                JObject UserMoviesJObject = GetMovie.GetMovieJSON (title, year);
+                string moviePoster = UserMoviesJObject["Poster"].ToString ();
+                usersMoviesPosters.Add (moviePoster);
+
+                return usersMoviesPosters;
+            }
+
+            public IList<User> GetTopTenLeaders ()
+            {
+                var topTenLeaders = _context.Users.OrderByDescending (t => t.Points).Take (10).ToList ();
+                return topTenLeaders;
+            }
+
+        #endregion GET USER INFO ------------------------------------------------------------
+
+
+
+
     }
 }
 
@@ -168,3 +269,16 @@ namespace movieGame.Controllers.PlayerControllers
             // Console.WriteLine (model.RegisterViewModel.UserEmail);
             // Console.WriteLine (model.RegisterViewModel.UserPassword);
             // Console.WriteLine (model.RegisterViewModel.Confirm);
+
+
+// [HttpGet]
+// [Route("allplayers")]
+// public void ListAllPlayers()
+// {
+//     var allPlayers = _context.Users.ToList();
+//     foreach(var player in allPlayers)
+//     {
+//         Console.WriteLine(player.UserEmail);
+//         Console.WriteLine(player.UserId);
+//     }
+// }

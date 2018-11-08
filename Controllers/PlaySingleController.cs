@@ -6,16 +6,18 @@ using movieGame.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using movieGame.Controllers.Game.MixedControllers;
+using movieGame.Controllers.MixedControllers;
 using movieGame.Infrastructure;
 
-namespace movieGame.Controllers.Game.SingleControllers
+
+namespace movieGame.Controllers.PlaySingleController
 {
     [Route("single")]
     public class PlaySingleController : Controller
     {
         private static MovieContext _context;
         private Helpers _h = new Helpers();
+
 
         private static GetMovieInfoController _getMovie = new GetMovieInfoController(context: _context);
 
@@ -28,8 +30,7 @@ namespace movieGame.Controllers.Game.SingleControllers
 
         #region MANAGE ROUTING ------------------------------------------------------------
 
-            [HttpGet]
-            [Route ("")]
+            [HttpGet("")]
             public IActionResult PlaySinglePlayerGame ()
             {
                 Console.WriteLine();
@@ -63,7 +64,6 @@ namespace movieGame.Controllers.Game.SingleControllers
             }
 
 
-
             [HttpGet("game_over_loss")]
             public IActionResult ViewSingleGameOverLossPage()
             {
@@ -84,7 +84,6 @@ namespace movieGame.Controllers.Game.SingleControllers
             public int GetCountOfMoviesInDb ()
             {
                 int movieCount = _context.Movies.Count ();
-                // Console.WriteLine($"GetCountOfMoviesInDb() : {movieCount} movies database");
                 return movieCount;
             }
 
@@ -150,13 +149,9 @@ namespace movieGame.Controllers.Game.SingleControllers
             public Movie GetThisGamesMovieFromSession ()
             {
                 int? movieId = GetMovieIdFromSession();
-
                 Movie thisGamesMovie = _context.Movies.Include(c => c.Clues).Include(h => h.Hints).SingleOrDefault(i => i.MovieId == movieId);
-
                 return thisGamesMovie;
-
             }
-
 
             public void SetMovieIdInSession(Movie m)
             {
@@ -170,7 +165,6 @@ namespace movieGame.Controllers.Game.SingleControllers
                 return movieId;
             }
 
-
             public void SetMovieTitleInSession(Movie m)
             {
                 HttpContext.Session.SetString("SessionMovieTitle", m.Title);
@@ -183,7 +177,6 @@ namespace movieGame.Controllers.Game.SingleControllers
                 return movieTitle;
             }
 
-
             public void SetMovieReleaseYearInSession(Movie m)
             {
                 HttpContext.Session.SetInt32("SessionMovieReleaseYear", m.Year);
@@ -195,7 +188,6 @@ namespace movieGame.Controllers.Game.SingleControllers
                 int? releaseYear = HttpContext.Session.GetInt32("SessionMovieReleaseYear");
                 return releaseYear;
             }
-
 
             public void SetMovieGenreInSession(Movie m)
             {
@@ -210,7 +202,6 @@ namespace movieGame.Controllers.Game.SingleControllers
                 return genre;
             }
 
-
             public void SetMovieDirectorInSession(Movie m)
             {
                 HttpContext.Session.SetString("SessionMovieDirector", m.Director);
@@ -223,7 +214,6 @@ namespace movieGame.Controllers.Game.SingleControllers
                 Console.WriteLine($"GetMovieDirector() : {director}");
                 return director;
             }
-
 
             public void SetGameGuessCountInSession ()
             {
@@ -300,7 +290,6 @@ namespace movieGame.Controllers.Game.SingleControllers
             }
 
 
-
             [HttpGet("get_clue_from_javascript")]
             public JsonResult GetClueFromJavaScript (Clue clueInfo)
             {
@@ -313,24 +302,3 @@ namespace movieGame.Controllers.Game.SingleControllers
 
     }
 }
-
-
-
-// public Movie GetSessionMovie ()
-// {
-//     int? thisGamesMovieId = HttpContext.Session.GetInt32 ("SessionMovieId");
-//     Movie thisGamesMovie = _context.Movies.Include (w => w.Clues).SingleOrDefault (x => x.MovieId == thisGamesMovieId);
-//     Console.WriteLine($"GetSessionMovie() : {thisGamesMovie.Title}");
-
-//     Movie movie = new Movie ()
-//     {
-//         Title = thisGamesMovie.Title,
-//         Year = thisGamesMovie.Year,
-//         Clues = new List<Clue> ()
-//     };
-
-//     foreach(var clue in thisGamesMovie.Clues)
-//     {
-//         Console.WriteLine($"Clue: {clue.ClueText}");
-//     }
-//     return movie;

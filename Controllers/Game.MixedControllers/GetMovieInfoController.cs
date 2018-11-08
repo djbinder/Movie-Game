@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 using RestSharp;
 using System.Collections.Generic;
 
-namespace movieGame.Controllers.Game.MixedControllers
+namespace movieGame.Controllers.MixedControllers
 {
     public class GetMovieInfoController : Controller
     {
@@ -20,6 +20,12 @@ namespace movieGame.Controllers.Game.MixedControllers
             _context = context;
         }
 
+        [HttpGet("movies")]
+        public IActionResult ViewAllMovies ()
+        {
+            ViewBag.Movies = _context.Movies.Include (w => w.Clues).OrderBy (d => d.MovieId).ToList ();
+            return View ("AllMovies");
+        }
 
         public Movie GetAllMovieInfo(int movieId)
         {

@@ -4,49 +4,36 @@ ViewData["Title"] = "Movie Details";
 
 
 
-<div class="row rounded-0 text-white">
-    <span class="col text-center"><h4><b>@ViewBag.Movies.Title</b></h4></span>
-    <span class="col text-center"><h4><b>@ViewBag.Movies.Year</b></h4></span>
+<div class="text-white">
+    <h4 class="text-center"><b>@ViewBag.Movies.Title</b></h4>
+    <h4 class="text-center"><b class="text-center">@ViewBag.Movies.Year</b></h4>
 </div>
 
-<div class="row">
 
-    <div class="col-sm-12 col-md-4 mb-5" style="padding: 0px;">
-        <img src="@ViewBag.MoviePoster" class="rounded mx-auto d-block">
-    </div>
+<img src="@ViewBag.MoviePoster" style="display: block; margin-left: auto; margin-right: auto">
 
-    <div class="col ml-2 text-white">
+<br>
+<b>Genre </b><br>
+<span>@ViewBag.MovieGenre</span>
+<br><br>
 
-        <div class="mb-4">
-            <b>Genre </b><br>
-            <span>@ViewBag.MovieGenre</span>
-        </div>
+<b>Actors </b><br>
+<span>@ViewBag.Actors</span>
+<br><br>
 
-        <div class="mb-4">
-            <b>Actors </b><br>
-            <span>@ViewBag.Actors</span>
-        </div>
+<b>Director </b><br>
+<span>@ViewBag.MovieDirector</span>
+<br><br>
 
-        <div class="mb-4">
-            <b>Director </b><br>
-            <span>@ViewBag.MovieDirector</span>
-        </div>
+<b>Writer(s) </b><br>
+<span>@ViewBag.MovieWriter</span>
+<br><br>
 
-        <div class="mb-4">
-            <b>Writer(s) </b><br>
-            <span>@ViewBag.MovieWriter</span>
-        </div>
-
-    </div>
-
-    <div class="col mr-2 text-center text-white">
-        <b>Clues</b>
-        <ul class="list-group clueText">
-            @foreach (var Clue in ViewBag.Movies.Clues)
-            {
-                <li class="list-group-item text-center bg-light mb-2 py-2 rounded-0">@Clue.ClueText</li>
-            }
-        </ul>
-    </div>
-
-</div>
+<b>Clues</b>
+<br><br>
+<ul class="clueText" style="padding: 0px; margin: 0px">
+    @foreach (var Clue in ViewBag.Movies.Clues)
+    {
+        <li>@Clue.ClueText</li>
+    }
+</ul>

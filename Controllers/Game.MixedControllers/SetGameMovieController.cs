@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using System;
-using movieGame.Controllers.Game.MixedControllers;
+// using movieGame.Controllers.Game.MixedControllers;
 
-namespace movieGame.Controllers.Game.MixedControllers
+namespace movieGame.Controllers.MixedControllers
 {
     [Route("game")]
     public class SetGameMovieController : Controller
