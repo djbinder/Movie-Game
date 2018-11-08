@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
 
 namespace movieGame.Models
 {
@@ -13,33 +14,21 @@ namespace movieGame.Models
         [Display(Name="Team Name")]
         public string TeamName { get; set; }
 
-
-        [Display(Name="# of Players on Team")]
-        public int NumberOfPlayersOnTeam { get; set; }
-
-
         [Display(Name="Team Points")]
         public int TeamPoints { get; set; }
-
 
         [Display(Name="Games Played")]
         public int GamesPlayed { get; set; }
 
-
         [Display(Name="Number of Movies Guessed Correctly")]
         public int CountOfMoviesGuessedCorrectly { get; set; }
-
 
         [Display(Name="Number of Movies Guessed Incorrectly")]
         public int CountOfMoviesGuessedIncorrectly { get; set; }
 
-
-
         public IList<MovieTeamJoin> MovieTeamJoin { get; set; }
 
         public IList<GameTeamJoin> GameTeamJoin { get; set; }
-
-        public IList<UserTeamJoin> UserTeamJoin { get; set; }
 
 
         public Team ()
@@ -48,7 +37,11 @@ namespace movieGame.Models
             UpdatedAt = DateTime.Now;
             MovieTeamJoin = new List<MovieTeamJoin>();
             GameTeamJoin = new List<GameTeamJoin>();
-            UserTeamJoin = new List<UserTeamJoin>();
+        }
+
+        public static implicit operator Team(ActionResult<Team> v)
+        {
+            throw new NotImplementedException();
         }
     }
 }

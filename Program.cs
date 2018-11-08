@@ -2,12 +2,14 @@ using System;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
+
 namespace movieGame {
 
     public class Program {
 
         public static void Main (string[] args) {
             Console.WriteLine ($"Version: {Environment.Version}");
+
             CreateWebHostBuilder (args).Build ().Run ();
         }
 

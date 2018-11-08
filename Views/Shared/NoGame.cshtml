@@ -3,18 +3,20 @@ ViewData["Title"] = "No Game";
 }
 
 
-<b>You are all caught up. No more movies to guess at this time</b>
+<p class="text-center" style="color:red">You are all caught up. No more movies to guess.</p>
 <br>
 
 <span>
-    There are currently @ViewBag.MovieCount movies in the database. You have completed all of them because you are a nerd. Thank you for taking the game seriously!
+    There are currently @ViewBag.MovieCount movies in the database and you have guessed them all because you are a nerd. Thank you for taking the game seriously!
 </span>
+
+<br><br>
 
 <div id="deuce">
     <img src="~/images/2deuce1.jpg" alt="ASP.NET" class="img-responsive">
 </div>
 
 
-<div class="row" id="pi">
-    <div class="col"><a href="/theNet">π</a></div>
+<div id="pi">
+    <a href="/the_net" style="color:white">π</a>
 </div>

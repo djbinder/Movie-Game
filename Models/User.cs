@@ -30,12 +30,10 @@ namespace movieGame.Models
 
             public IList<MovieUserJoin> MovieUserJoin { get; set; }
 
-            public IList<UserTeamJoin> UserTeamJoin { get; set; }
 
             public User()
             {
                 MovieUserJoin = new List<MovieUserJoin>();
-                UserTeamJoin = new List<UserTeamJoin>();
             }
     }
 }

@@ -5,7 +5,7 @@ using movieGame.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace movieGame.Controllers.Game.MixedControllers
+namespace movieGame.Controllers.MixedControllers
 {
     public class ManageOutcomesController : Controller
     {
@@ -28,7 +28,6 @@ namespace movieGame.Controllers.Game.MixedControllers
 
             var sessionMovieId = HttpContext.Session.GetInt32 ("SessionMovieId");
 
-            // EXISTING JOINS --> System.Collections.Generic.List`1[movieGame.Models.MovieUserJoin]
             // check if a join of player and movie already exists
             var playerJoins = _context.MovieUserJoin.Where (p => p.MovieId == sessionMovieId).Where (t => t.UserId == playerId);
             var joinsList = playerJoins.ToList ();

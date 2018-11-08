@@ -2,12 +2,10 @@ using System.Linq;
 using movieGame.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using movieGame.Controllers.Game.MixedControllers;
-using movieGame.Controllers.PlayerControllers;
-using System;
 
-namespace movieGame.Controllers {
+
+namespace movieGame.Controllers
+{
     public class ShowViewsController : Controller {
         private static MovieContext _context;
 
@@ -15,125 +13,44 @@ namespace movieGame.Controllers {
         {
             _context = context;
         }
-        private static GetMovieInfoController _getMovie = new GetMovieInfoController(context: _context);
-        private static GetPlayerInfoController _getPlayer = new GetPlayerInfoController(context: _context);
 
 
-        [HttpGet]
-        [Route("links")]
-        public IActionResult ViewAllLinksPage()
-        {
-            Console.WriteLine("viewing all links");
-            return View("AllLinks");
-        }
-
-
-        [HttpGet]
-        [Route ("movies")]
-        public IActionResult ViewAllMovies ()
-        {
-            ViewBag.Movies = _context.Movies.Include (w => w.Clues).OrderBy (d => d.MovieId).ToList ();
-            return View ("AllMovies");
-        }
-
-
-        [HttpGet]
-        [Route ("error")]
-        public IActionResult ViewErrorPage ()
-        {
-            Console.WriteLine("viewing error page");
-            return View ("Error");
-        }
-
-
-        [HttpGet]
-        [Route ("games")]
+        [HttpGet("games")]
         public IActionResult ViewGameListPage ()
         {
-            string thisGamesPlayersName = ViewBag.PlayerName = HttpContext.Session.GetString ("playername");
+            string thisGamesPlayersName = ViewBag.PlayerName = HttpContext.Session.GetString ("PlayerName");
             return View ("GameList");
         }
 
-
-        [HttpGet]
-        [Route ("")]
-        public IActionResult ViewHomePage ()
-        {
-            ViewBag.ErrorMessage = HttpContext.Session.GetString ("message");
-            return View ("Index");
-        }
-
-
-        [HttpGet]
-        [Route ("instructions")]
-        public IActionResult ViewInstructions ()
-        {
-            return View ("instructions");
-        }
-
-
-        [HttpGet]
-        [Route ("leaderboard")]
+        [HttpGet("leaderboard")]
         public IActionResult ViewLeaderBoard ()
         {
-            // LEADERS ---> System.Collections.Generic.List`1[movieGame.Models.Player]
             var leaders = ViewBag.Leaders = _context.Users.OrderByDescending (t => t.Points).ToList ();
             // ViewBag.Leaders = Leaders;
             return View ("leaderboard");
         }
 
 
+        [HttpGet("links")]
+        public IActionResult ViewAllLinksPage() { return View("AllLinks"); }
 
+        [HttpGet("error")]
+        public IActionResult ViewErrorPage () { return View ("Error"); }
 
-        [HttpGet]
-        [Route("nogame")]
-        public IActionResult ViewNoGamePage()
-        {
-            Console.WriteLine("viewing all links");
-            return View("nogame");
-        }
+        // [HttpGet("")]
+        // public IActionResult ViewHomePage () { return View ("Index"); }
 
+        [HttpGet("instructions")]
+        public IActionResult ViewInstructions () { return View ("instructions"); }
 
-        [HttpGet]
-        [Route ("player/{id}")]
-        public IActionResult ViewPlayerProfilePage (int id)
-        {
-            Console.WriteLine("trying to view 1 players profile");
-            var playersMovies = ViewBag.PlayerMovies = _getPlayer.UsersMovies (id);
-            var moviesInDatabase = ViewBag.MovieCount = _context.Movies.Count ();
-            return View ("PlayerProfile");
-        }
+        [HttpGet("nogame")]
+        public IActionResult ViewNoGamePage() { return View("nogame"); }
 
+        [HttpGet("the_net")]
+        public IActionResult ViewTheNet () { return View ("thenet"); }
 
-
-
-
-
-
-
-        // [HttpGet]
-        // [Route("movie/{id}")]
-        // public IActionResult ViewSingleMoviePage ()
-        // {
-        //     Console.WriteLine("trying to view 1 movies details");
-        //     return View("SingleMovie");
-        // }
-
-
-        [HttpGet]
-        [Route ("net")]
-        public IActionResult ViewTheNet ()
-        {
-            return View ("thenet");
-        }
-
-
-        [HttpGet]
-        [Route ("test")]
-        public IActionResult ViewTestPage ()
-        {
-            return View ("test");
-        }
+        [HttpGet("test")]
+        public IActionResult ViewTestPage () { return View ("test"); }
 
     }
 }

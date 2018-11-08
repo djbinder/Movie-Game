@@ -1,0 +1,37 @@
+@model User
+
+@{
+ViewData["Title"] = "User Profile";
+}
+
+<table class="table">
+    <tr>
+        <th class="text-center">User</th>
+        <th class="text-center">Points</th>
+        <th class="text-center">Games</th>
+        <th class="text-center">Wins</th>
+    </tr>
+    <tr>
+        <td class="text-center">@ViewBag.User.UserFirstName</td>
+        <td class="text-center">@ViewBag.User.GamesWon</td>
+        <td class="text-center">@ViewBag.User.GamesAttempted</td>
+        <td class="text-center">@ViewBag.User.Points</td>
+    </tr>
+</table>
+<br>
+
+
+<h4 class="text-center text-info">@ViewBag.User.UserFirstName has correctly guessed @ViewBag.User.GamesWon/@ViewBag.MovieCount movies.</h4>
+<br>
+
+<div>
+    @{@foreach (var Movie in ViewBag.UsersMoviesList)
+        {
+            <div>
+                <hr style="border: .5px solid lightgray; width: 80%">
+                <h5 class="text-center">@Movie.Title</h5>
+                <img src="@Movie.Poster" alt="Movie Poster" style="display: block; margin-left: auto; margin-right: auto"/>
+                <p class="text-center"><a href="/Movie/@Movie.MovieId" class="text-center">View Movie </a></p>
+            </div>
+        }}
+</div>

@@ -2,7 +2,29 @@
 ViewData["Title"] = "Group Play";
 }
 
-<div id="firstTeam" class="this_teams_turn">@ViewBag.TeamName1 Score: </div>
-<div id="secondTeam">@ViewBag.TeamName2 Score: </div>
+
+
+<h3 class="text-center" style="color: darkred">Scoreboard</h3>
+<table class="table" id="scoreboard">
+    <tr>
+        <td id="first_team_name" class="first_team_name_and_score text-center">
+            @ViewBag.FirstTeamName
+        </td>
+        <td id="first_team_score" class="first_team_name_and_score text-center">
+            1
+        </td>
+        <td id="second_team_name" class="second_team_name_and_score text-center">
+            @ViewBag.SecondTeamName
+        </td>
+        <td id="second_team_score" class="second_team_name_and_score text-center">
+            2
+        </td>
+    </tr>
+</table>
+
+
+<br>
 
 <button class="btn btn-primary" id="change_team_button">Change Team</button>
+<div id="counter_div"></div><br>
+

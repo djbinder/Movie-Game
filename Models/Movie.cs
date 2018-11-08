@@ -52,17 +52,11 @@ namespace movieGame.Models
         [DataMember]
         public string Decade { get; set; }
 
-        [Display(Name="List Movie Genres")]
-        [DataMember]
-        public IList<Genre> Genres { get; set; }
 
         [Display(Name="List Movie Clues")]
         [DataMember]
         public IList<Clue> Clues { get; set; }
 
-        [Display(Name="List Movie Actors")]
-        [DataMember]
-        public IList<Actor> Actors { get; set; }
 
         [Display(Name="List Movie Posters")]
         [DataMember]
@@ -74,25 +68,15 @@ namespace movieGame.Models
         [DataMember]
         public IList<MovieUserJoin> MovieUserJoin { get; set; }
 
-        [DataMember]
-        public IList<MovieGenreJoin> MovieGenreJoin { get; set; }
-
-        [DataMember]
-        public IList<MovieActorJoin> MovieActorJoin { get; set; }
-
         public Hints Hints { get; set; }
 
 
         public Movie ()
         {
-            Genres = new List<Genre>();
             Clues = new List<Clue>();
-            Actors = new List<Actor>();
             Posters = new List<Poster>();
             MovieTeamJoin = new List<MovieTeamJoin>();
             MovieUserJoin = new List<MovieUserJoin>();
-            MovieGenreJoin = new List<MovieGenreJoin>();
-            MovieActorJoin = new List<MovieActorJoin>();
             Hints = new Hints();
         }
 
