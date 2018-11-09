@@ -27,6 +27,12 @@ namespace movieGame.Controllers.MixedControllers
             return View ("AllMovies");
         }
 
+        public int GetCountOfMoviesInDb ()
+        {
+            int movieCount = _context.Movies.Count ();
+            return movieCount;
+        }
+
         public Movie GetAllMovieInfo(int movieId)
         {
             Movie movie = _context.Movies.Include (w => w.Clues).SingleOrDefault (x => x.MovieId == movieId);

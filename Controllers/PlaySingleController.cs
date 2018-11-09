@@ -81,12 +81,6 @@ namespace movieGame.Controllers.PlaySingleController
 
         #region SET MOVIE ------------------------------------------------------------
 
-            public int GetCountOfMoviesInDb ()
-            {
-                int movieCount = _context.Movies.Count ();
-                return movieCount;
-            }
-
             public int IdentifyThisGamesMovieId()
             {
                 int? playerId = HttpContext.Session.GetInt32 ("id");
@@ -95,7 +89,7 @@ namespace movieGame.Controllers.PlaySingleController
                 // GAMES WON --> how many games has the player won; the next movie served is based off of this
                 var playersGamesWon = ViewBag.GamesWon = player.GamesWon;
                 int currentMovieId = playersGamesWon + 1;
-                int numberOfMoviesInDatabase = GetCountOfMoviesInDb();
+                int numberOfMoviesInDatabase = GetMovie.GetCountOfMoviesInDb();
 
                 // Console.WriteLine($"IdentifyThisGamesMovie() : player has won {playersGamesWon} games");
 
