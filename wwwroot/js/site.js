@@ -445,10 +445,42 @@ let secondTeamNameAndScore = $(".second_team_name_and_score").get();
 let counterDiv = $("#counter_div").get();
 
 
+let index = 0;
 
+$("#get_team_clue_button").click(function ()
+{
+  console.log("----------------------------------------");
+  console.log("NEW CLUE");
+  console.log("----------------------------------------");
+  console.log();
+  $.get("group/get_movie_clues_object", function (res)
+  {
+    let allClues = res.clues;
+    let lengthOfAllClues = allClues.length;
+    // console.log("LENGTH: ", lengthOfAllClues);
 
+    let oneClue = allClues[index];
 
+    let clueText = oneClue.clueText;
+    console.log("CLUE: ", clueText);
 
+    let clueDifficulty = oneClue.clueDifficulty;
+    console.log("DIFFICULTY: ", clueDifficulty);
+
+    let cluePoints = oneClue.cluePoints;
+    console.log("POINTS: ", cluePoints);
+
+    SendClueNumberToController(cluePoints);
+
+    index++;
+    console.log("----------------------------------------");
+    console.log("----------------------------------------");
+    console.log();
+
+    // var movieId = res.MovieId;
+    // console.log(movieId);
+  })
+})
 
 
 

@@ -15,17 +15,15 @@ namespace movieGame.Controllers.PlaySingleController
     [Route("single")]
     public class PlaySingleController : Controller
     {
-        private static MovieContext _context;
+        private MovieContext _context;
         private Helpers _h = new Helpers();
 
+        private readonly GetMovieInfoController _getMovieInfo;
 
-        private static GetMovieInfoController _getMovie = new GetMovieInfoController(context: _context);
-
-        public static GetMovieInfoController GetMovie { get => _getMovie; set => _getMovie = value; }
-
-        public PlaySingleController (MovieContext context)
+        public PlaySingleController (MovieContext context, GetMovieInfoController getMovieInfo)
         {
             _context = context;
+            _getMovieInfo = getMovieInfo;
         }
 
         #region MANAGE ROUTING ------------------------------------------------------------
@@ -55,7 +53,7 @@ namespace movieGame.Controllers.PlaySingleController
 
                 int? releaseYear = GetMovieReleaseYearFromSession();
 
-                var movie = GetMovie.GetMovieJSON(movieTitle, (int)releaseYear);
+                var movie = _getMovieInfo.GetMovieJSON(movieTitle, (int)releaseYear);
 
                 var moviePoster = ViewBag.MoviePoster = movie["Poster"];
                 Console.WriteLine($"Poster: {moviePoster}");
@@ -89,7 +87,7 @@ namespace movieGame.Controllers.PlaySingleController
                 // GAMES WON --> how many games has the player won; the next movie served is based off of this
                 var playersGamesWon = ViewBag.GamesWon = player.GamesWon;
                 int currentMovieId = playersGamesWon + 1;
-                int numberOfMoviesInDatabase = GetMovie.GetCountOfMoviesInDb();
+                int numberOfMoviesInDatabase = _getMovieInfo.GetCountOfMoviesInDb();
 
                 // Console.WriteLine($"IdentifyThisGamesMovie() : player has won {playersGamesWon} games");
 
@@ -103,14 +101,13 @@ namespace movieGame.Controllers.PlaySingleController
             {
                 int currentMovieId = IdentifyThisGamesMovieId();
 
-                // ONE MOVIE ---> movieGame.Models.Movie
                 Movie thisGamesMovie = _context.Movies.Include(c => c.Clues).Include(h => h.Hints).SingleOrDefault(i => i.MovieId == currentMovieId);
                 Console.WriteLine($"SetThisGamesMovie() --> {thisGamesMovie.MovieId}. {thisGamesMovie.Title}");
 
                 SetMovieInfoInSession(thisGamesMovie);
                 SetGameGuessCountInSession ();
 
-                Hints thisMoviesHints = GetMovie.GetMoviesHints(thisGamesMovie);
+                Hints thisMoviesHints = _getMovieInfo.GetMoviesHints(thisGamesMovie);
 
                 return thisGamesMovie;
             }

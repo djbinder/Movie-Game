@@ -29,7 +29,8 @@ namespace movieGame.Controllers.MixedControllers
 
         public int GetCountOfMoviesInDb ()
         {
-            int movieCount = _context.Movies.Count ();
+            int movieCount = _context.Movies.Count();
+            // Console.WriteLine($"GetCountOfMoviesInDb() : 'movieCount' = {movieCount}");
             return movieCount;
         }
 
@@ -58,6 +59,7 @@ namespace movieGame.Controllers.MixedControllers
             return movieJObject;
         }
 
+
         public int? GetMovieId(Movie movie)
         {
             int? movieId = movie.MovieId;
@@ -65,11 +67,13 @@ namespace movieGame.Controllers.MixedControllers
 
         }
 
+
         public string GetMovieTitle(Movie movie)
         {
             string movieTitle = movie.Title;
             return movieTitle;
         }
+
 
         public string GetMovieTitle(JObject movieJObject)
         {
@@ -77,11 +81,13 @@ namespace movieGame.Controllers.MixedControllers
             return movieTitle;
         }
 
+
         public int? GetMovieReleaseYear(Movie movie)
         {
             int? movieReleaseYear = movie.Year;
             return movieReleaseYear;
         }
+
 
         public string GetMovieReleaseYear(JObject movieJObject)
         {
@@ -89,11 +95,13 @@ namespace movieGame.Controllers.MixedControllers
             return movieReleaseYear;
         }
 
+
         public string GetMovieGenre(Movie movie)
         {
             string movieGenre = movie.Genre;
             return movieGenre;
         }
+
 
         public string GetMovieGenre(JObject movieJObject)
         {
@@ -101,11 +109,13 @@ namespace movieGame.Controllers.MixedControllers
             return movieGenre;
         }
 
+
         public string GetMovieDirector(Movie movie)
         {
             string movieDirector = movie.Director;
             return movieDirector;
         }
+
 
         public string GetMovieDirector(JObject movieJObject)
         {
@@ -113,11 +123,13 @@ namespace movieGame.Controllers.MixedControllers
             return movieDirector;
         }
 
+
         public List<Clue> GetMovieClues(Movie movie)
         {
             List<Clue> clues = movie.Clues.ToList();
             return clues;
         }
+
 
         public Hints GetMoviesHints(Movie movie)
         {
@@ -127,6 +139,7 @@ namespace movieGame.Controllers.MixedControllers
             thisMoviesHints.ReleaseYear = GetMovieReleaseYear(movie).ToString();
             return thisMoviesHints;
         }
+
 
         public Hints GetMoviesHints(JObject movieJObject)
         {
@@ -145,28 +158,16 @@ namespace movieGame.Controllers.MixedControllers
         }
 
 
-
-
         [HttpGet("movie/{id}")]
         public IActionResult ShowMovie (int id)
         {
-
-            #region DATABASE QUERIES
             ViewBag.Movies = _context.Movies.Include (w => w.Clues).SingleOrDefault (x => x.MovieId == id);
 
-            // CURRENT MOVIE ---> movieGame.Models.Movie
             var currentMovie = _context.Movies.Include (w => w.Clues).SingleOrDefault (x => x.MovieId == id);
-
-            // CURRENT MOVIE TITLE ---> the title of the movie pulled from the database
             var currentMovieTitle = currentMovie.Title;
-            // CurrentMovieTitle.Intro("current movie title");
-
-            // CURRENT MOVIE YEAR ---> the release year of the movie pulled from the database
             var currentMovieYear = currentMovie.Year;
-            #endregion DATABASE QUERIES
 
             JObject movieJObject = GetMovieJSON (currentMovieTitle, currentMovieYear);
-            // movieJObject.Intro("movie object");
 
             string movieTitle = movieJObject["Title"].ToString ();
             string movieRating = (string) movieJObject["Rated"];
@@ -179,100 +180,43 @@ namespace movieGame.Controllers.MixedControllers
             string moviePoster = ViewBag.MoviePoster = (string) movieJObject["Poster"];
 
             return View ("SingleMovie");
-            // return RedirectToAction("ViewSingleMovie", "ShowViews");
         }
-
 
 
         public JsonResult GetActorImage (string actorName)
         {
-            #region API REQUEST INFO
-                // var APIkey = "4cbdf8913d9628d339184a127d136d68";
-                var personsName = actorName;
-                var client = new RestClient ("https://api.themoviedb.org/3/search/person?api_key=1a1ef1aa4b51f19d38e4a7cb134a5699&language=en-US&query=" + personsName + "&page=1&include_adult=false");
-                var request = new RestRequest (Method.GET);
-                request.AddHeader ("Postman-Token", "dbfd1014-ebcb-4c79-80eb-1b0eac81a888");
-                request.AddHeader ("Cache-Control", "no-cache");
-                IRestResponse response = client.Execute (request);
-            #endregion
+            var client = new RestClient ("https://api.themoviedb.org/3/search/person?api_key=1a1ef1aa4b51f19d38e4a7cb134a5699&language=en-US&query=" + actorName + "&page=1&include_adult=false");
 
-            #region JSON
-                var responseJSON = response.Content;
-                JObject actorJSON = JObject.Parse (responseJSON);
-                #endregion
+            var request = new RestRequest (Method.GET);
+            request.AddHeader ("Postman-Token", "dbfd1014-ebcb-4c79-80eb-1b0eac81a888")
+                    .AddHeader ("Cache-Control", "no-cache");
 
-                #region QUERIES
-                actorName = ViewBag.ActorName = (string) actorJSON["results"][0]["name"];
-                int actorId = ViewBag.ActorId = (int) actorJSON["results"][0]["id"];
+            IRestResponse response = client.Execute (request);
 
-                string pictureBaseURL = "https://image.tmdb.org/t/p/w";
+            JObject actorJSON = JObject.Parse (response.Content);
 
-                // these are picture sizes
-                int pictureSizeLarge = 400;
-                int pictureSizeMedium = 300;
-                int pictureSizeSmall = 200;
-                int pictureSizeSmallest = 92;
+            ViewBag.ActorName = (string) actorJSON["results"][0]["name"];
+            // int actorId = ViewBag.ActorId = (int) actorJSON["results"][0]["id"];
 
-                string actorPictureURL = (string) actorJSON["results"][0]["profile_path"];
+            string pictureBaseURL = "https://image.tmdb.org/t/p/w";
 
-                string actorPicLarge = ViewBag.ActorPicLarge = pictureBaseURL + pictureSizeLarge + actorPictureURL;
-                string actorPicMedium = ViewBag.ActorPicMedium = pictureBaseURL + pictureSizeMedium + actorPictureURL;
-                string actorPicSmall = ViewBag.ActorPicSmall = pictureBaseURL + pictureSizeSmall + actorPictureURL;
-                string actorPicSmallest = ViewBag.ActorPicSmallest = pictureBaseURL + pictureSizeSmallest + actorPictureURL;
-            #endregion
+            // these are picture sizes
+            int pictureSizeLarge = 400;
+            int pictureSizeMedium = 300;
+            int pictureSizeSmall = 200;
+            int pictureSizeSmallest = 92;
+
+            string actorPictureURL = (string) actorJSON["results"][0]["profile_path"];
+
+            string actorPicLarge = ViewBag.ActorPicLarge = pictureBaseURL + pictureSizeLarge + actorPictureURL;
+            string actorPicMedium = ViewBag.ActorPicMedium = pictureBaseURL + pictureSizeMedium + actorPictureURL;
+            string actorPicSmall = ViewBag.ActorPicSmall = pictureBaseURL + pictureSizeSmall + actorPictureURL;
+            string actorPicSmallest = ViewBag.ActorPicSmallest = pictureBaseURL + pictureSizeSmallest + actorPictureURL;
 
             return Json (actorJSON);
         }
 
 
 
-        // public JsonResult GetBackgroundPosters ()
-        // {
-        //     // MOVIE DB PAGES --> set the number of api pages you want to query; 20 posters per page
-        //     int movieDbPages = 2;
-
-        //     // TOP MOVIE POSTERS ---> System.Collections.ArrayList
-        //     ArrayList topMoviePosters = new ArrayList ();
-
-        //     ArrayList allPosterURLs = new ArrayList ();
-
-        //     for (var x = 1; x <= movieDbPages; x++)
-        //     {
-        //         var client = new RestClient ("https://api.themoviedb.org/3/movie/popular?api_key=1a1ef1aa4b51f19d38e4a7cb134a5699&language=en-US&page=" + x + "&region=us");
-
-        //         var request = new RestRequest (Method.GET);
-
-        //         request.AddHeader ("Postman-Token", "1348f187-6d98-4453-ad72-0f795b433479");
-        //         request.AddHeader ("Cache-Control", "no-cache");
-
-        //         // RESPONSE ---> 'RestSharp.RestResponse'
-        //         IRestResponse response = client.Execute (request);
-
-        //         var responseJSON = response.Content;
-
-        //         // BACKGROUND JSON ---> all movie JSON presented more cleanly (i.e., it has been parsed)
-        //         JObject backgroundJSON = JObject.Parse (responseJSON);
-
-        //         // BACKGROUND COUNT --> 20 (i.e., the number of posters on each api page)
-        //         var backgroundCount = backgroundJSON["results"].Count ();
-
-        //         for (var i = 0; i <= backgroundCount - 1; i++)
-        //         {
-        //             // ONE POSTER ---> '/inVq3FRqcYIRl2la8iZikYYxFNR.jpg' etc.
-        //             var onePoster = (string) backgroundJSON["results"][i]["poster_path"];
-
-        //             // POSTER URL ---> e.g., https://image.tmdb.org/t/p/w200/wridRvGxDqGldhzAIh3IcZhHT5F.jpg
-        //             var posterURL = "https://image.tmdb.org/t/p/w200" + onePoster;
-
-        //             // ONE TITLE ---> 'Deadpool' OR 'Justice League' etc.
-        //             var oneTitle = (string) backgroundJSON["results"][i]["title"];
-
-        //             topMoviePosters.Add (onePoster);
-        //             allPosterURLs.Add (posterURL);
-        //         };
-        //         ViewBag.TopMoviePosters = topMoviePosters;
-        //     }
-        //     return Json (topMoviePosters);
-        // }
     }
 }

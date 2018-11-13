@@ -1,11 +1,6 @@
-using System.Net;
-using System.Text;
-using System.Text.Encodings.Web;
 using movieGame.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -13,8 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
+using movieGame.Controllers.MixedControllers;
 
-namespace movieGame {
+namespace movieGame
+{
     public class Startup {
         public Startup (IConfiguration configuration) {
             this.Configuration = configuration;
@@ -37,19 +34,16 @@ namespace movieGame {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // reference: https://github.com/aspnet/Security/issues/1310
-        public void ConfigureServices (IServiceCollection services) {
-            // services.AddIdentity<User, IdentityRole> ()
-            //     .AddEntityFrameworkStores<MovieContext> ()
-            //     .AddDefaultTokenProviders ();
-
-            // changed for migraitons to 2.1
-            // services.AddMvc ();
+        public void ConfigureServices (IServiceCollection services)
+        {
             services.AddMvc ().SetCompatibilityVersion (CompatibilityVersion.Version_2_1)
                         .AddJsonOptions(options => {
                             options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                             options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                         });
 
+            services.AddMvc().AddControllersAsServices();
+            services.AddTransient<GetMovieInfoController>();
             services.AddSession ();
 
             services.AddDbContext<MovieContext> (options => options.UseNpgsql (Configuration["DBInfo:ConnectionString"]));
