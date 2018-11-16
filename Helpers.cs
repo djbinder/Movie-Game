@@ -185,6 +185,7 @@ namespace movieGame.Infrastructure
 
 
 
+
         #region GETTERS ------------------------------------------------------------
 
             // STATUS: //TODO: need to be able to pass a model in as a parameter; it's currently hardcoded into the function
@@ -222,6 +223,7 @@ namespace movieGame.Infrastructure
 
 
 
+
         #region ITERATORS ------------------------------------------------------------
 
             public void IterateForEach(List<dynamic> list)
@@ -244,11 +246,9 @@ namespace movieGame.Infrastructure
 
 
 
+
         #region MARKERS ------------------------------------------------------------
 
-            // set color of console message
-            // example ---> valueX.WriteColor(ConsoleColor.Red)
-            // public static void Spotlight<T>(this T x, string Message)
             public void Spotlight (String message)
             {
                 string fullMessage = JsonConvert.SerializeObject(message, Formatting.Indented).ToUpper();
@@ -334,9 +334,9 @@ namespace movieGame.Infrastructure
 
 
 
+
         #region PROBES ------------------------------------------------------------
 
-            // retrieve high-level info about x
             public void Dig<T>(T x)
             {
                 Console.ForegroundColor = ConsoleColor.DarkCyan;
@@ -348,7 +348,6 @@ namespace movieGame.Infrastructure
                 Console.ResetColor();
             }
 
-            // retrieve detailed info about x
             public void DigDeep<T>(T x)
             {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
@@ -366,6 +365,7 @@ namespace movieGame.Infrastructure
 
 
 
+
         #region CONVERTERS ------------------------------------------------------------
 
             public string ConvertJTokenToString(JToken valueJToken)
@@ -373,6 +373,7 @@ namespace movieGame.Infrastructure
                 string valueString = valueJToken.ToObject<string>();
                 return valueString;
             }
+
             public int ConvertStringToInt(string valueString)
             {
                 int valueInt = Int32.Parse(valueString);
@@ -393,6 +394,7 @@ namespace movieGame.Infrastructure
             }
 
         #endregion CONVERTERS ------------------------------------------------------------
+
 
 
 
@@ -433,6 +435,7 @@ namespace movieGame.Infrastructure
             }
 
         #endregion ENUMERATORS ------------------------------------------------------------
+
 
 
 
@@ -514,7 +517,6 @@ namespace movieGame.Infrastructure
 
         public IEnumerable<KeyValuePair<string, JValue>> GetAllFields () => fields;
     }
-
 
 
     public class RunTimeSerializer : JsonConverter

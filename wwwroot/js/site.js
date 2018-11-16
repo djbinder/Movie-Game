@@ -343,7 +343,7 @@ function AppendHint(string)
 // ----------------------------------------------
 // -----> REGION : SEND POINTS TO CONTROLLER <-----
 
-// function UpdatePlayerPoints(formContainer, element)
+
 function UpdatePlayerPoints(element)
 {
   $.ajax(
@@ -401,31 +401,42 @@ function ViewSingleGameOverLossPage()
 // ----------------------------------------------
 // -----> ENDREGION : SEND POINTS TO CONTROLLER <-----
 
-// ----------------------------------------------
-// ----------------------------------------------
-// ----------------------------------------------
 
-var clueNumber = 1;
 
-$("#change_team_button").click(function (selector)
+
+
+
+// ------------------------------------------------------------------
+// ------------------------------------------------------------------
+// GROUP PLAY SECTION
+// ------------------------------------------------------------------
+// ------------------------------------------------------------------
+
+let firstTeamName = $("#first_team_name").get();
+let firstTeamScore = $("#first_team_score").get();
+let firstTeamNameAndScore = $(".first_team_name_and_score").get();
+let secondTeamName = $("#second_team_name").get();
+let secondTeamScore = $("#second_team_score").get();
+let secondTeamNameAndScore = $(".second_team_name_and_score").get();
+let counterDiv = $("#counter_div").get();
+let groupCluesList = $("#group_clues_list").get();
+
+let movieObject = $.get("group/get_movie_info_object", function (res) { });
+
+
+
+
+$(document).ready(function ()
 {
-  $(counterDiv).empty().append('<div>' + 'Clue: ' + clueNumber.toString() + '</div>');
-
-  if (clueNumber == 1)
-    $(firstTeamNameAndScore).toggleClass("this_teams_turn");
-
-  if (clueNumber % 2 == 0)
-  {
-    $(firstTeamNameAndScore).toggleClass("this_teams_turn");
-    $(secondTeamNameAndScore).toggleClass("this_teams_turn");
-  }
-  SendClueNumberToController(clueNumber);
-  clueNumber++;
+  new GetNextGroupClue();
+  new GuessGroupMovie();
 })
+
+
 
 function SendClueNumberToController(element)
 {
-  console.log('SendClueNumberToController');
+  // console.log('SendClueNumberToController');
   $.ajax({
     type: "GET",
     url: "group/get_clue_number_from_javascript",
@@ -436,54 +447,214 @@ function SendClueNumberToController(element)
 }
 
 
-let firstTeamName = $("#first_team_name").get();
-let firstTeamScore = $("#first_team_score").get();
-let firstTeamNameAndScore = $(".first_team_name_and_score").get();
-let secondTeamName = $("#second_team_name").get();
-let secondTeamScore = $("#second_team_score").get();
-let secondTeamNameAndScore = $(".second_team_name_and_score").get();
-let counterDiv = $("#counter_div").get();
-
-
+let clueNumber = 1;
 let index = 0;
 
-$("#get_team_clue_button").click(function ()
+function GetNextGroupClue()
 {
-  console.log("----------------------------------------");
-  console.log("NEW CLUE");
-  console.log("----------------------------------------");
-  console.log();
-  $.get("group/get_movie_clues_object", function (res)
+  $("#group_clues_list").click(function ()
   {
-    let allClues = res.clues;
-    let lengthOfAllClues = allClues.length;
-    // console.log("LENGTH: ", lengthOfAllClues);
+    // console.log("clicked group clues list");
 
-    let oneClue = allClues[index];
+    $.get("group/get_movie_clues_object", function (res)
+    {
+      new GetTextFromGroupGuessBox();
 
-    let clueText = oneClue.clueText;
-    console.log("CLUE: ", clueText);
+      let allClues = res.clues;
+      let oneClue = allClues[index];
+      let clueText = oneClue.clueText;
+      let clueDifficulty = oneClue.clueDifficulty;
+      let cluePoints = oneClue.cluePoints;
 
-    let clueDifficulty = oneClue.clueDifficulty;
-    console.log("DIFFICULTY: ", clueDifficulty);
+      // $(counterDiv).empty().append('<div>' + 'Clue: ' + clueNumber.toString() + '</div>');
 
-    let cluePoints = oneClue.cluePoints;
-    console.log("POINTS: ", cluePoints);
+      if (clueNumber == 1)
+      {
+        $(firstTeamNameAndScore).toggleClass("this_teams_turn");
+        $(groupCluesList).empty();
+      }
 
-    SendClueNumberToController(cluePoints);
+      if (clueNumber % 2 == 0)
+      {
+        $(firstTeamNameAndScore).toggleClass("this_teams_turn");
+        $(secondTeamNameAndScore).toggleClass("this_teams_turn");
+      }
 
-    index++;
-    console.log("----------------------------------------");
-    console.log("----------------------------------------");
-    console.log();
+      clueNumber++;
 
-    // var movieId = res.MovieId;
-    // console.log(movieId);
+      let logClue = 0;
+      if (logClue == 1)
+      {
+        console.log("----------------------------------------");
+        console.log("NEW CLUE");
+        console.log("----------------------------------------");
+        console.log();
+        console.log("CLUE: ", clueText);
+        console.log("DIFFICULTY: ", clueDifficulty);
+        console.log("POINTS: ", cluePoints);
+        console.log("----------------------------------------");
+        console.log("----------------------------------------");
+        console.log();
+      }
+
+      AppendClueToList(clueText);
+      SendClueNumberToController(clueDifficulty);
+      index++;
+    })
   })
-})
+}
+
+
+function AppendClueToList(element)
+{
+  var clueHtml = '<div class="group_clue">' + element + '</div>';
+  $(groupCluesList).append(clueHtml);
+}
 
 
 
-// ----------------------------------------------
-// ----------------------------------------------
-// ----------------------------------------------
+function GetTextFromGroupGuessBox()
+{
+  $("#group_guess_input").keyup(function (event)
+  {
+    var searchText = $("#group_guess_input").val();
+    // console.log("Search text: ", searchText);
+
+    $("#group_search_res_list").html("");
+
+    $.ajax(
+      {
+        url: "https://www.omdbapi.com/?s=" + searchText + "&apikey=4514dc2d",
+        method: "GET",
+        success: function (serverResponse)
+        {
+          var imdbMovieInfo = serverResponse["Search"];
+          // console.log("GetTextFromGroupGuessBox() : 'imdbMovieInfo' --> ", imdbMovieInfo);
+
+          if (imdbMovieInfo.length > 0)
+          {
+            $("#group_search_res_list").empty();
+
+            for (var h = 0; h < imdbMovieInfo.length; h++)
+            {
+              // returns any movie with search term in it (e.g., 'good' leads to 'good will hunting' AND 'a few good men')
+              var oneResult = imdbMovieInfo[h]["Title"];
+              $("#group_search_res_list").append(
+                '<li class="text-danger">' + oneResult + "</li>"
+              );
+
+              // console.log("GetTextFromGroupGuessBox() : 'oneResult' --> ", oneResult);
+            }
+
+            // when you click the movie title in the drop-down list, it populates the text box
+            $("#group_search_res_list li").bind("click", function ()
+            {
+              SetGroupGuessText(this);
+              console.log("this = ", this);
+            });
+          }
+        }
+      });
+  });
+}
+
+
+
+function SetGroupGuessText(element)
+{
+  var searchText = $("#group_guess_input").val();
+  console.log("SetGroupGuessText() : 'searchText' --> ", searchText);
+
+  var value = $(element).text();
+  console.log("SetGroupGuessText() : 'value' --> ", value);
+
+  $("#group_guess_input").val(value);
+  $("#group_search_res_list").empty();
+
+  $.ajax(
+    {
+      url: "https://www.omdbapi.com/?s=" + searchText + "&apikey=4514dc2d",
+      method: "GET",
+      success: function (serverResponse)
+      {
+        var imdbMovieInfo = serverResponse["Search"];
+        console.log("SetGroupGuessText() : 'imdbMovieInfo' --> ", imdbMovieInfo);
+      }
+    });
+}
+
+
+function GuessGroupMovie()
+{
+  console.log("GuessGroupMovie()");
+  $("#group_guess_button").click(function ()
+  {
+    console.log('clicked #group_guess_button');
+
+    // gets text entered in html input
+    // 'replace' finds any double spaces between words and trims to one space
+    // 'trim' removes spaces at the end of the guess
+    let movieTitleGuessed = $("#group_guess_input:first")
+      .val()
+      .toString()
+      .replace(/\s+/g, ' ')
+      .trim()
+      .toUpperCase();
+
+    console.log("movieTitleGuessed: ", movieTitleGuessed);
+
+    // gets movie from the controller
+    $.get("group/get_movie_info", function (res)
+    {
+      // 'replace' finds any double spaces between words and trims to one space
+      // 'trim' removes spaces at the end of the guess
+      let movieTitleActual = res["title"].replace(/\s+/g, ' ').trim().toUpperCase();
+      console.log("movieTitleActual: ", movieTitleActual);
+
+      if (movieTitleGuessed == movieTitleActual)
+      {
+        console.log("you win the game");
+      }
+
+      else
+      {
+        console.log("you lose the game");
+      }
+
+    })
+  })
+}
+
+
+
+
+
+
+function CheckIfGuessIsCorrect()
+{
+  let testString = "test";
+  return testString;
+}
+
+
+
+
+
+
+
+
+// $("#change_team_button").click(function (selector)
+// {
+//   $(counterDiv).empty().append('<div>' + 'Clue: ' + clueNumber.toString() + '</div>');
+
+//   if (clueNumber == 1)
+//     $(firstTeamNameAndScore).toggleClass("this_teams_turn");
+
+//   if (clueNumber % 2 == 0)
+//   {
+//     $(firstTeamNameAndScore).toggleClass("this_teams_turn");
+//     $(secondTeamNameAndScore).toggleClass("this_teams_turn");
+//   }
+//   SendClueNumberToController(clueNumber);
+//   clueNumber++;
+// })

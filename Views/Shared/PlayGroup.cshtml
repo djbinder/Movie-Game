@@ -4,8 +4,8 @@ ViewData["Title"] = "Group Play";
 
 
 
-<h3 class="text-center" style="color: darkred">Scoreboard</h3>
-<table class="table" id="scoreboard">
+<h3 class="text-center font-weight: bold" style="font-weight: bold">Scoreboard</h3>
+<table class="table group_play_sections" id="scoreboard">
     <tr>
         <td id="first_team_name" class="first_team_name_and_score text-center">
             @ViewBag.FirstTeamName
@@ -23,11 +23,35 @@ ViewData["Title"] = "Group Play";
 </table>
 
 
-<br>
 
-<button class="btn btn-primary" id="change_team_button">Change Team</button>
-<br>
-<button class="btn btn-danger" id="get_team_clue_button">Get Clue</button>
 
-<div id="counter_div"></div><br>
 
+
+<div id="group_clues_list" class="group_play_sections" style="height: 705px">
+    <!-- <li>clue item test</li> -->
+    <h2 id="instructions_div" class="text-center">
+        Touch anywhere in this box to begin the game and for each additional clue
+    </h2>
+</div>
+
+<br><br>
+
+<div id="group_guess_section" class="group_play_sections">
+    <input id="group_guess_input" type="text">
+    <ul id="group_search_res_list"></ul>
+    <br>
+    <button id="group_guess_button" class="btn" style="width: 100%">Click to Guess</button>
+</div>
+
+<div id="group_search_res_container">
+    <div id="group_search_res_content">
+        <div id="group_clear"></div>
+        <div></div>
+    </div>
+</div>
+
+
+
+
+<!-- <button class="btn btn-danger" id="get_team_clue_button">Get Clue</button> -->
+<!-- <div id="counter_div"></div><br> -->

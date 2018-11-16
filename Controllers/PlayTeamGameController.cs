@@ -343,15 +343,21 @@ namespace movieGame.Controllers.PlayTeamGameController
             [HttpGet("get_movie_info")]
             public Movie GetMovieInfo(int movieId)
             {
-                Movie thisGamesMovie = _getMovieInfo.GetAllMovieInfo(movieId);
+                Movie thisGamesMovie = _getMovieInfo.GetAllMovieInfo(GetMovieIdFromSession());
                 return thisGamesMovie;
+            }
+
+            [HttpGet("get_movie_info_object")]
+            public JsonResult GetMovieInfoObject(int movieId)
+            {
+                Movie thisGamesMovie = _getMovieInfo.GetAllMovieInfo(GetMovieIdFromSession());
+                return Json(thisGamesMovie);
             }
 
 
             [HttpGet("get_movie_clues_list")]
             public List<Clue> GetMoviesCluesInfo(Movie movie)
             {
-                Console.WriteLine("get_movie_clues_info");
                 List<Clue> thisMoviesClues = _getMovieInfo.GetMovieClues(movie);
                 return thisMoviesClues;
             }
@@ -370,22 +376,15 @@ namespace movieGame.Controllers.PlayTeamGameController
 
 
 
-
-
-
-
-
         #region CONNECT WITH JAVASCRIPT ------------------------------------------------------------
 
             [HttpGet("get_clue_number_from_javascript")]
             public JsonResult GetClueNumberFromJavaScript(int clueNumber)
             {
-                Console.WriteLine($"get_clue_number_from_javascript --> {clueNumber}");
-
                 List<Clue> thisMoviesClues = GetMoviesCluesInfo(GetMovieInfo(GetMovieIdFromSession()));
 
-                var thisClue = thisMoviesClues[clueNumber];
-                Console.WriteLine($"This clue: {thisClue}");
+                var thisClue = thisMoviesClues[clueNumber - 1];
+                Console.WriteLine($"Clue#: {thisClue.ClueDifficulty}. {thisClue.ClueText}");
 
                 return Json(clueNumber);
             }
@@ -442,6 +441,7 @@ namespace movieGame.Controllers.PlayTeamGameController
                 Console.WriteLine("--------------------------------------------------");
                 Console.WriteLine();
             }
+
 
             public void PrintNumbersInList(List<int> thisList, string methodName, string itemName)
             {

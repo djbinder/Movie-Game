@@ -204,11 +204,80 @@ ul.clueText li {
     position: absolute;
 }
 
+/* ------------------------------------------------------------- */
+
+/* ------------------------------------------------------------- */
+
+/* GROUP PLAY SECTION */
+
+/* ------------------------------------------------------------- */
+
+/* ------------------------------------------------------------- */
+
 .this_teams_turn {
     background-color: darkred;
 }
 
 #scoreboard {
     font-size: 2em;
+}
+
+.group_play_sections {
     border: 2px solid white;
+}
+
+.group_clue {
+    color: white;
+    background-color: green;
+    font-size: 2em;
+    text-align: center;
+    padding-top: 5px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    height: 52px;
+}
+
+#group_guess_section {
+    padding: 10px;
+}
+
+#group_guess_button {
+    font-size: 2em;
+    background: blue;
+}
+
+#group_guess_input {
+    font-size: 1.5em;
+    color: blue;
+    width: 100%;
+    line-height: 2em;
+}
+
+#group_search_res_container {
+    border-radius: 3px;
+    letter-spacing: 1px;
+}
+
+#group_search_res_content {
+    height: auto;
+}
+
+#group_search_res_list {
+    list-style: none;
+}
+
+#group_search_res_list li {
+    padding: 5px;
+    margin-bottom: 1px;
+    font-size: 1.5em;
+    border: 1px solid lightslategray;
+}
+
+#group_search_res_list li:hover {
+    cursor: pointer;
+}
+
+#group_clear {
+    clear: both;
+    margin-top: 20px;
 }
