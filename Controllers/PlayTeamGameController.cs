@@ -1,38 +1,38 @@
 ﻿using System;
-using movieGame.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+using System.Collections;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using movieGame.Infrastructure;
 using movieGame.Controllers.MixedControllers;
-using System.Collections;
+using movieGame.Models;
 
 namespace movieGame.Controllers.PlayTeamGameController
 {
+    #pragma warning disable CS1998
     [Route("group")]
     public class PlayTeamGameController : Controller
     {
         private MovieContext _context;
-
         public Helpers _h = new Helpers();
-
         public string firstTeamNameKey = "FirstTeamName";
         public string firstTeamIdKey = "FirstTeamId";
         public string secondTeamNameKey = "SecondTeamName";
         public string secondTeamIdKey = "SecondTeamId";
         public string gameIdKey = "GameId";
         public string movieIdKey = "MovieId";
+        private readonly GetMovieInfoController _getMovieInfoFromDatabase;
 
-        private readonly GetMovieInfoController _getMovieInfo;
-
-        public PlayTeamGameController (MovieContext context, GetMovieInfoController getMovieInfo)
+        public PlayTeamGameController (MovieContext context, GetMovieInfoController getMovieInfoFromDatabase)
         {
             _context = context;
-            _getMovieInfo = getMovieInfo;
+            _getMovieInfoFromDatabase = getMovieInfoFromDatabase;
         }
+
+
 
 
         #region MANAGE ROUTING ------------------------------------------------------------
@@ -42,23 +42,14 @@ namespace movieGame.Controllers.PlayTeamGameController
             {
                 ViewBag.FirstTeamName = GetTeamNameFromSession(firstTeamNameKey);
                 ViewBag.SecondTeamName = GetTeamNameFromSession(secondTeamNameKey);
-
-                // GetGameIdFromSession();
-                // ListAllSessionVariables();
-                // GetMoviesGuessedAlready();
-                // GetAllMovieIdsInDatabase();
-                // GetMovieIdsNotGuessed();
                 SetThisGamesMovie(SetThisGamesMovieId());
-
                 return View("playgroup");
             }
+
 
             [HttpGet("add_teams")]
             public IActionResult ViewAddTeamPage()
             {
-                // Console.WriteLine();
-                // Console.WriteLine("BEGINING NEW GAME");
-                // Console.WriteLine("--------------------");
                 return View("newteamform");
             }
 
@@ -66,8 +57,10 @@ namespace movieGame.Controllers.PlayTeamGameController
 
 
 
+
         #region SET TEAMS ------------------------------------------------------------
 
+            // this is triggered in the 'NewTeamForm' html when the form is submitted
             [HttpPost("set_group_game")]
             public async Task<IActionResult> SetGroupGame (string firstTeamName, string secondTeamName)
             {
@@ -87,12 +80,13 @@ namespace movieGame.Controllers.PlayTeamGameController
 
 
 
+
         #region SET MOVIE ------------------------------------------------------------
 
             public List<int> GetMovieIdsGuessedAlready()
             {
-                var firstTeam = GetTeamInfo(GetTeamIdFromSession(firstTeamIdKey));
-                var secondTeam = GetTeamInfo(GetTeamIdFromSession(secondTeamIdKey));
+                var firstTeam = GetTeamInfoFromDatabase(GetTeamIdFromSession(firstTeamIdKey));
+                var secondTeam = GetTeamInfoFromDatabase(GetTeamIdFromSession(secondTeamIdKey));
 
                 List<int> movieIdsGuessed = new List<int>();
 
@@ -112,23 +106,23 @@ namespace movieGame.Controllers.PlayTeamGameController
             }
 
 
-            public List<int> GetAllMovieIdsInDatabase()
+            public List<int> GetListOfAllMovieIdsInDatabase()
             {
-                int numberOfMoviesInDatabase = _getMovieInfo.GetCountOfMoviesInDb();
+                int numberOfMoviesInDatabase = _getMovieInfoFromDatabase.GetCountOfMoviesInDb();
                 List<int> movieIdsInDatabase = new List<int>();
                 for(var movieId = 1; movieId <= numberOfMoviesInDatabase; movieId++)
                 {
                     movieIdsInDatabase.Add(movieId);
                 }
-                // PrintNumbersInList(movieIdsInDatabase, "GetAllMovieIdsInDatabase()", "movieIdsInDatabase");
+                // PrintNumbersInList(movieIdsInDatabase, "GetListOfAllMovieIdsInDatabase()", "movieIdsInDatabase");
                 return movieIdsInDatabase;
             }
 
 
-            public List<int> GetMovieIdsNotGuessed()
+            public List<int> GetListOfMovieIdsNotGuessed()
             {
                 List<int> movieIdsGuessedList = GetMovieIdsGuessedAlready();
-                List<int> movieIdsFromDatabase = GetAllMovieIdsInDatabase();
+                List<int> movieIdsFromDatabase = GetListOfAllMovieIdsInDatabase();
                 List<int> eligibleMovieIds = new List<int>();
 
                 for(var databaseId = 1; databaseId <= movieIdsFromDatabase.Count(); databaseId++)
@@ -141,7 +135,7 @@ namespace movieGame.Controllers.PlayTeamGameController
 
             public int PickRandomMovieIdFromList()
             {
-                List<int> movieIdsNotGuessed = GetMovieIdsNotGuessed();
+                List<int> movieIdsNotGuessed = GetListOfMovieIdsNotGuessed();
                 Random random = new Random();
                 int index = random.Next(movieIdsNotGuessed.Count);
                 int randomMovieId = movieIdsNotGuessed[index];
@@ -165,6 +159,7 @@ namespace movieGame.Controllers.PlayTeamGameController
             }
 
         #endregion SET MOVIE ------------------------------------------------------------
+
 
 
 
@@ -230,6 +225,7 @@ namespace movieGame.Controllers.PlayTeamGameController
 
 
 
+
         #region CREATE NEW DATABASE RECORD ------------------------------------------------------------
 
             public async Task<Team> CreateNewTeam (string teamName, string teamNameKey, string teamIdKey)
@@ -247,7 +243,7 @@ namespace movieGame.Controllers.PlayTeamGameController
 
                 await AddAndSaveChangesAsync(newTeam);
 
-                SetTeamNameInSession(teamNameKey, teamName);
+                SetTeamNameInSession(teamNameKey, newTeam.TeamName);
                 SetTeamIdInSession(teamIdKey, newTeam.TeamId);
 
                 return newTeam;
@@ -259,8 +255,8 @@ namespace movieGame.Controllers.PlayTeamGameController
                 Models.Game newGame = new Models.Game
                 {
                     NumberOfTeamsInGame = 2,
-                    FirstTeam = GetTeamInfo(GetTeamIdFromSession(firstTeamIdKey)),
-                    SecondTeam = GetTeamInfo(GetTeamIdFromSession(secondTeamIdKey)),
+                    FirstTeam = GetTeamInfoFromDatabase(GetTeamIdFromSession(firstTeamIdKey)),
+                    SecondTeam = GetTeamInfoFromDatabase(GetTeamIdFromSession(secondTeamIdKey)),
                     GameTeamJoin = new List<GameTeamJoin>()
                 };
 
@@ -310,6 +306,29 @@ namespace movieGame.Controllers.PlayTeamGameController
             }
 
 
+            [HttpPost("create_game_team_join")]
+            public async Task<GameTeamJoin> CreateGameTeamJoin(int teamId, bool winLoseBool, int pointsReceived, int clueGameWonAt)
+            {
+                Console.WriteLine($"Team Id: {teamId}");
+                Console.WriteLine($"Win?: {winLoseBool}");
+                Console.WriteLine($"Points Received: {pointsReceived}");
+                Console.WriteLine($"Game won at Clue #: {clueGameWonAt}");
+                Console.WriteLine();
+
+                GameTeamJoin newGameTeamJoin = new GameTeamJoin
+                {
+                    GameId = GetGameIdFromSession(),
+                    TeamId = teamId,
+                    WinFlag = winLoseBool,
+                    PointsReceived = pointsReceived,
+                    ClueGameWonAt = clueGameWonAt,
+                };
+
+                await AddAndSaveChangesAsync(newGameTeamJoin);
+                return newGameTeamJoin;
+            }
+
+
             public async Task AddAndSaveChangesAsync(object obj)
             {
                 _context.Add(obj);
@@ -320,10 +339,11 @@ namespace movieGame.Controllers.PlayTeamGameController
 
 
 
+
         #region GET INFO FROM DATABASE ------------------------------------------------------------
 
             [HttpGet("get_team_info")]
-            public Team GetTeamInfo(int teamId)
+            public Team GetTeamInfoFromDatabase(int teamId)
             {
                 Team thisTeam = _context.Teams.Include(gtj => gtj.GameTeamJoin).ThenInclude(g => g.Game).Include(mtj => mtj.MovieTeamJoin).ThenInclude(m => m.Movie).SingleOrDefault(team => team.TeamId == teamId);
                 return thisTeam;
@@ -331,7 +351,7 @@ namespace movieGame.Controllers.PlayTeamGameController
 
 
             [HttpGet("get_game_info")]
-            public Models.Game GetGameInfo()
+            public Models.Game GetGameInfoFromDatabase()
             {
                 int thisGamesId = (int)HttpContext.Session.GetInt32(gameIdKey);
                 Models.Game thisGame = _context.Games.Include(gtj => gtj.GameTeamJoin).ThenInclude(t => t.Team).SingleOrDefault(game => game.GameId == thisGamesId);
@@ -341,33 +361,44 @@ namespace movieGame.Controllers.PlayTeamGameController
 
 
             [HttpGet("get_movie_info")]
-            public Movie GetMovieInfo(int movieId)
+            public Movie GetMovieInfoFromDatabase(int movieId)
             {
-                Movie thisGamesMovie = _getMovieInfo.GetAllMovieInfo(GetMovieIdFromSession());
+                Movie thisGamesMovie = _getMovieInfoFromDatabase.GetAllMovieInfo(GetMovieIdFromSession());
                 return thisGamesMovie;
             }
 
+
             [HttpGet("get_movie_info_object")]
-            public JsonResult GetMovieInfoObject(int movieId)
+            public JsonResult GetMovieInfoObjectFromDatabase(int movieId)
             {
-                Movie thisGamesMovie = _getMovieInfo.GetAllMovieInfo(GetMovieIdFromSession());
-                return Json(thisGamesMovie);
+                var blank = "blank";
+
+                try {
+                    Movie thisGamesMovie = _getMovieInfoFromDatabase.GetAllMovieInfo(GetMovieIdFromSession());
+                    return Json(thisGamesMovie);
+                }
+
+                catch(Exception ex)
+                {
+                    Console.WriteLine($"EXCEPTION MESSAGE: {ex.Message}");
+                }
+                return Json(blank);
             }
 
 
             [HttpGet("get_movie_clues_list")]
-            public List<Clue> GetMoviesCluesInfo(Movie movie)
+            public List<Clue> GetMoviesCluesInfoFromDatabase(Movie movie)
             {
-                List<Clue> thisMoviesClues = _getMovieInfo.GetMovieClues(movie);
+                List<Clue> thisMoviesClues = _getMovieInfoFromDatabase.GetMovieClues(movie);
                 return thisMoviesClues;
             }
 
-            [HttpGet("get_movie_clues_object")]
-            public JsonResult GetMoviesClueObject()
-            {
-                Movie thisGamesMovie = GetMovieInfo(GetMovieIdFromSession());
-                List<Clue> thisMoviesClue = GetMoviesCluesInfo(thisGamesMovie);
 
+            [HttpGet("get_movie_clues_object")]
+            public JsonResult GetMoviesClueObjectFromDatabase()
+            {
+                Movie thisGamesMovie = GetMovieInfoFromDatabase(GetMovieIdFromSession());
+                List<Clue> thisMoviesClue = GetMoviesCluesInfoFromDatabase(thisGamesMovie);
                 return Json(thisGamesMovie);
             }
 
@@ -381,12 +412,48 @@ namespace movieGame.Controllers.PlayTeamGameController
             [HttpGet("get_clue_number_from_javascript")]
             public JsonResult GetClueNumberFromJavaScript(int clueNumber)
             {
-                List<Clue> thisMoviesClues = GetMoviesCluesInfo(GetMovieInfo(GetMovieIdFromSession()));
+                List<Clue> thisMoviesClues = GetMoviesCluesInfoFromDatabase(GetMovieInfoFromDatabase(GetMovieIdFromSession()));
 
                 var thisClue = thisMoviesClues[clueNumber - 1];
                 Console.WriteLine($"Clue#: {thisClue.ClueDifficulty}. {thisClue.ClueText}");
 
+                GetNameOfTeamGuessing(clueNumber);
+
                 return Json(clueNumber);
+            }
+
+
+            public string GetNameOfTeamGuessing(int clueNumber)
+            {
+                string guessingTeamName = "";
+
+                if(clueNumber == 1 || clueNumber == 4 || clueNumber == 5 || clueNumber == 8 || clueNumber == 9 )
+                    guessingTeamName = HttpContext.Session.GetString(firstTeamNameKey);
+
+                if (clueNumber == 2 || clueNumber == 3 || clueNumber == 6 || clueNumber == 7 || clueNumber == 10)
+                    guessingTeamName = HttpContext.Session.GetString(secondTeamNameKey);
+
+                Console.WriteLine($"Guessing team: {guessingTeamName}");
+                return guessingTeamName;
+            }
+
+
+            [HttpPost("get_winning_game_outcome_from_javascript")]
+            public void GetWinningGameOutcomeFromJavascript(int winningTeamId, int cluePoints, int movieId)
+            {
+                PrintGameOutcomeInformation(winningTeamId, cluePoints, movieId);
+            }
+
+
+            [HttpGet("send_team_ids_to_javascript")]
+            public JsonResult SendTeamIdsToJavaScript()
+            {
+                // var firstTeamId = GetTeamIdFromSession(firstTeamIdKey);
+                // var secondTeamId = GetTeamIdFromSession(secondTeamIdKey);
+                ArrayList teamIdsArrayList = new ArrayList();
+                teamIdsArrayList.Add(GetTeamIdFromSession(firstTeamIdKey));
+                teamIdsArrayList.Add(GetTeamIdFromSession(secondTeamIdKey));
+                return Json(teamIdsArrayList);
             }
 
         #endregion CONNECT WITH JAVASCRIPT ------------------------------------------------------------
@@ -398,22 +465,22 @@ namespace movieGame.Controllers.PlayTeamGameController
 
             public void PrintThisGamesDetails()
             {
-                Game thisGame = GetGameInfo();
+                Game thisGame = GetGameInfoFromDatabase();
                     var thisGamesId = thisGame.GameId;
                     DateTime thisGameStartedAt = thisGame.CreatedAt;
 
-                var thisGamesMovie = GetMovieInfo(GetMovieIdFromSession());
+                var thisGamesMovie = GetMovieInfoFromDatabase(GetMovieIdFromSession());
                     var thisGamesMovieId = thisGamesMovie.MovieId;
                     var thisGamesMovieTitle = thisGamesMovie.Title;
                     var thisGamesMovieYear = thisGamesMovie.Released;
                     var thisGamesMovieGenre = thisGamesMovie.Genre;
                     var thisGamesMovieDirector = thisGamesMovie.Director;
 
-                var firstTeam = GetTeamInfo(GetTeamIdFromSession(firstTeamIdKey));
+                var firstTeam = GetTeamInfoFromDatabase(GetTeamIdFromSession(firstTeamIdKey));
                     var firstTeamId = firstTeam.TeamId;
                     var firstTeamName = firstTeam.TeamName;
 
-                var secondTeam = GetTeamInfo(GetTeamIdFromSession(secondTeamIdKey));
+                var secondTeam = GetTeamInfoFromDatabase(GetTeamIdFromSession(secondTeamIdKey));
                     var secondTeamId = secondTeam.TeamId;
                     var secondTeamName = secondTeam.TeamName;
 
@@ -440,6 +507,25 @@ namespace movieGame.Controllers.PlayTeamGameController
                 Console.WriteLine("--------------------------------------------------");
                 Console.WriteLine("--------------------------------------------------");
                 Console.WriteLine();
+            }
+
+
+            public void PrintGameOutcomeInformation(int winningTeamId, int cluePoints, int movieId)
+            {
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine("--------------------------------------------------");
+                Console.WriteLine("--------------------------------------------------");
+                Console.WriteLine("GAME OVER");
+                Console.WriteLine("--------------------------------------------------");
+                Console.WriteLine();
+                Console.WriteLine($"GAME ID: {GetGameIdFromSession()}");
+                Console.WriteLine($"---> MOVIE ID: {movieId}");
+                Console.WriteLine($"---> WINNING TEAM ID: {winningTeamId}");
+                Console.WriteLine($"---> POINTS WON: {cluePoints}");
+                Console.WriteLine();
+                Console.WriteLine("--------------------------------------------------");
+                Console.WriteLine("--------------------------------------------------");
             }
 
 

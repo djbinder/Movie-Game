@@ -241,8 +241,11 @@ ul.clueText li {
     padding: 10px;
 }
 
-#group_guess_button {
+.group_guess_buttons {
     font-size: 2em;
+}
+
+#group_guess_button {
     background: blue;
 }
 
