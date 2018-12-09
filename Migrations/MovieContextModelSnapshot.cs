@@ -54,11 +54,7 @@ namespace movieGame.Migrations
 
                     b.Property<int?>("FirstTeamTeamId");
 
-                    b.Property<int>("NumberOfTeamsInGame");
-
                     b.Property<int?>("SecondTeamTeamId");
-
-                    b.Property<int>("ThisGamesMovieId");
 
                     b.Property<DateTime>("UpdatedAt");
 
@@ -76,17 +72,15 @@ namespace movieGame.Migrations
                     b.Property<int>("GameTeamJoinId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("ClueGameWonAt");
-
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<int>("GameId");
 
-                    b.Property<int>("PointsReceived");
+                    b.Property<int>("OpponentId");
 
                     b.Property<int>("TeamId");
 
-                    b.Property<int>("ThisTeamWonId");
+                    b.Property<int>("TotalPoints");
 
                     b.Property<TimeSpan>("TotalTimeTakenForGuesses");
 
@@ -135,6 +129,10 @@ namespace movieGame.Migrations
 
                     b.Property<string>("Director");
 
+                    b.Property<int?>("GameId");
+
+                    b.Property<int?>("GameTeamJoinId");
+
                     b.Property<string>("Genre");
 
                     b.Property<string>("Poster");
@@ -153,6 +151,10 @@ namespace movieGame.Migrations
 
                     b.HasKey("MovieId");
 
+                    b.HasIndex("GameId");
+
+                    b.HasIndex("GameTeamJoinId");
+
                     b.ToTable("Movies");
                 });
 
@@ -164,6 +166,8 @@ namespace movieGame.Migrations
                     b.Property<int>("ClueGameWonAt");
 
                     b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("GameId");
 
                     b.Property<int>("MovieId");
 
@@ -212,28 +216,6 @@ namespace movieGame.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("MovieUserJoin");
-                });
-
-            modelBuilder.Entity("movieGame.Models.Poster", b =>
-                {
-                    b.Property<int>("PosterId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<int?>("MovieId");
-
-                    b.Property<string>("Size");
-
-                    b.Property<string>("URL");
-
-                    b.Property<DateTime>("UpdatedAt");
-
-                    b.HasKey("PosterId");
-
-                    b.HasIndex("MovieId");
-
-                    b.ToTable("Posters");
                 });
 
             modelBuilder.Entity("movieGame.Models.Team", b =>
@@ -332,6 +314,17 @@ namespace movieGame.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("movieGame.Models.Movie", b =>
+                {
+                    b.HasOne("movieGame.Models.Game")
+                        .WithMany("MoviesGuessedCorrectly")
+                        .HasForeignKey("GameId");
+
+                    b.HasOne("movieGame.Models.GameTeamJoin")
+                        .WithMany("ListOfMoviesGuessedCorrectly")
+                        .HasForeignKey("GameTeamJoinId");
+                });
+
             modelBuilder.Entity("movieGame.Models.MovieTeamJoin", b =>
                 {
                     b.HasOne("movieGame.Models.Movie", "Movie")
@@ -356,13 +349,6 @@ namespace movieGame.Migrations
                         .WithMany("MovieUserJoin")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("movieGame.Models.Poster", b =>
-                {
-                    b.HasOne("movieGame.Models.Movie", "Movie")
-                        .WithMany("Posters")
-                        .HasForeignKey("MovieId");
                 });
 #pragma warning restore 612, 618
         }

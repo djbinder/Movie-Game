@@ -419,32 +419,59 @@ $(document).ready(function ()
 // ---------------------------------------------------------------------------------------
 
 
-
-
-let firstTeamNameHtml = $("#first_team_name").get();
-let firstTeamName = firstTeamNameHtml[0].innerText.trim();
-let firstTeamScoreHtml = $("#first_team_score").get();
-let firstTeamScoreString = firstTeamScoreHtml[0].innerText.trim();
-let firstTeamScore = Number(firstTeamScoreString);
-let firstTeamNameAndScoreHtml = $(".first_team_name_and_score").get();
-let firstTeamNameAndScore = firstTeamNameAndScoreHtml[0].innerText.trim();
+// ----- FIRST TEAM -----
 let firstTeamId;
 
-let secondTeamNameHtml = $("#second_team_name").get();
-let secondTeamName = secondTeamNameHtml[0].innerText.trim();
-let secondTeamScoreHtml = $("#second_team_score").get();
-let secondTeamScoreString = secondTeamScoreHtml[0].innerText.trim();
-let secondTeamScore = Number(secondTeamScoreString);
-let secondTeamNameAndScoreHtml = $(".second_team_name_and_score").get();
-let secondTeamNameAndScore = secondTeamNameAndScoreHtml[0].innerText.trim();
+let firstTeamNameHtml = $("#first_team_name").get();
+let firstTeamName;
+try { firstTeamName = firstTeamNameHtml[0].innerText.trim(); }
+catch (error) { }
+
+
+let firstTeamScoreHtml = $("#first_team_score").get();
+let firstTeamScoreString;
+try { firstTeamScoreString = firstTeamScoreHtml[0].innerText.trim(); }
+catch (error) { }
+let firstTeamScore = Number(firstTeamScoreString);
+
+
+let firstTeamNameAndScoreHtml = $(".first_team_name_and_score").get();
+let firstTeamNameAndScore;
+try { firstTeamNameAndScore = firstTeamNameAndScoreHtml[0].innerText.trim(); }
+catch (error) { }
+
+
+
+// ----- SECOND TEAM -----
 let secondTeamId;
+
+let secondTeamNameHtml = $("#second_team_name").get();
+let secondTeamName;
+try { secondTeamName = secondTeamNameHtml[0].innerText.trim(); }
+catch (error) { }
+
+
+let secondTeamScoreHtml = $("#second_team_score").get();
+let secondTeamScoreString;
+try { secondTeamScoreString = secondTeamScoreHtml[0].innerText.trim(); }
+catch (error) { }
+let secondTeamScore = Number(secondTeamScoreString);
+
+
+let secondTeamNameAndScoreHtml = $(".second_team_name_and_score").get();
+let secondTeamNameAndScore;
+try { secondTeamNameAndScore = secondTeamNameAndScoreHtml[0].innerText.trim(); }
+catch (error) { }
+
 
 let currentTeamName;
 let currentTeamId;
+let sittingTeamName;
+let sittingTeamId;
 let winningTeamName;
 let winningTeamId;
 
-let groupGuessButtons = $("#group_guess_buttons").get();
+let groupGuessButtons = $(".group_guess_buttons").get();
 let groupGuessButton = $("#group_guess_button").get();
 
 
@@ -464,6 +491,15 @@ function GetCurrentTeamGuessing()
     winningTeamId = currentTeamId;
   }
   return currentTeamName;
+}
+
+function GetSittingTeam()
+{
+  if (GetCurrentTeamGuessing() == firstTeamName) { sittingTeamName = secondTeamName }
+
+  if (GetCurrentTeamGuessing() == secondTeamName) { sittingTeamName = firstTeamName }
+
+  return sittingTeamName;
 }
 
 
@@ -490,7 +526,7 @@ function SendClueNumberToController(element)
 
 
 let clueNumber = 1;
-let index = 0;
+let clueIndex = 0;
 let cluePoints = 10;
 
 function GetNextGroupClue()
@@ -499,19 +535,7 @@ function GetNextGroupClue()
   {
     if (clueNumber >= 10)
     {
-
       ManageGameOutOfClues();
-      // console.log("disable clues list");
-      // console.log(clueNumber);
-      // $("#group_clues_list").prop("disabled", true);
-      // $(groupGuessButtons).empty();
-
-      // var newGroupGuessButton = '<button id="group_guess_button" class="btn group_guess_buttons" style="width: 50%">Click to Guess</button>';
-
-      // var groupQuitButton = '<button id="group_quit_button" class="btn btn-danger group_guess_buttons" style="width: 50%">Quit Game and Admit Failure</button>';
-
-      // $(groupGuessButtons).append(newGroupGuessButton);
-      // $(groupGuessButtons).append(groupQuitButton);
     }
 
     $.get("group/get_movie_clues_object", function (res)
@@ -519,33 +543,39 @@ function GetNextGroupClue()
       new GetTextFromGroupGuessBox();
 
       let allClues = res.clues;
-      let oneClue = allClues[index];
+      let oneClue = allClues[clueIndex];
       let clueText = oneClue.clueText;
       let clueDifficulty = oneClue.clueDifficulty;
       cluePoints = oneClue.cluePoints
 
-      if (clueNumber == 1)
-      {
-        // console.table(allClues);
-        $(firstTeamNameAndScoreHtml).toggleClass("this_teams_turn");
-        $(groupCluesList).empty();
-      }
-
-      if (clueNumber % 2 == 0)
-      {
-        $(firstTeamNameAndScoreHtml).toggleClass("this_teams_turn");
-        $(secondTeamNameAndScoreHtml).toggleClass("this_teams_turn");
-      }
+      ToggleScoreboardHighlighting();
 
       clueNumber++;
 
-      PrintClueDetails(clueText, clueDifficulty);
+      // PrintClueDetails(clueText, clueDifficulty);
       AppendClueToList(clueText);
       SendClueNumberToController(clueDifficulty);
 
-      index++;
+      clueIndex++;
     })
   })
+}
+
+
+function ToggleScoreboardHighlighting()
+{
+  if (clueNumber == 1)
+  {
+    // console.table(allClues);
+    $(firstTeamNameAndScoreHtml).toggleClass("this_teams_turn");
+    $(groupCluesList).empty();
+  }
+
+  if (clueNumber % 2 == 0)
+  {
+    $(firstTeamNameAndScoreHtml).toggleClass("this_teams_turn");
+    $(secondTeamNameAndScoreHtml).toggleClass("this_teams_turn");
+  }
 }
 
 
@@ -574,11 +604,24 @@ function AppendClueToList(element)
   $(groupCluesList).append(clueHtml);
 }
 
+
+
+// [ 1. ManageGameOutOfClues ]
 function ManageGameOutOfClues()
 {
-  console.log("disable clues list");
-  console.log(clueNumber);
+  TurnCluesListClickingOff();
+  SwapInNewGuessButtons();
+}
+
+// [ 1.1 ManageGameOutOfClues.TurnCluesListCLickingOff ]
+function TurnCluesListClickingOff()
+{
   $("#group_clues_list").prop("disabled", true);
+}
+
+// [ 1.2 ManageGameOutOfClues.SwapInNewGuessButtons ]
+function SwapInNewGuessButtons()
+{
   $(groupGuessButtons).empty();
 
   var newGroupGuessButton = '<button id="group_guess_button" class="btn group_guess_buttons" style="width: 50%">Click to Guess</button>';
@@ -598,7 +641,6 @@ function ManageGameOutOfClues()
 // #region [Purple] MANAGE GUESSES
 // ---------------------------------------------------------------------------------------
 
-// let movieObject = $.get("group/get_movie_info_object", function (res) { });
 
 let firstTeamGuesses = 0;
 let secondTeamGuesses = 0;
@@ -625,11 +667,9 @@ function GetTextFromGroupGuessBox()
 
             for (var h = 0; h < imdbMovieInfo.length; h++)
             {
-              // returns any movie with search term in it (e.g., 'good' leads to 'good will hunting' AND 'a few good men')
               var oneResult = imdbMovieInfo[h]["Title"];
-              $("#group_search_res_list").append(
-                '<li class="text-danger">' + oneResult + "</li>"
-              );
+              AppendListItemToList(oneResult);
+              // $("#group_search_res_list").append('<li class="text-danger">' + oneResult + "</li>");
             }
             // click movie title in drop-down list and it populates the input box
             $("#group_search_res_list li").bind("click", function ()
@@ -640,6 +680,13 @@ function GetTextFromGroupGuessBox()
         }
       });
   });
+}
+
+
+// returns any movie with search term in it (e.g., 'good' leads to 'good will hunting' AND 'a few good men')
+function AppendListItemToList(listItem)
+{
+  $("#group_search_res_list").append('<li class="text-danger">' + listItem + "</li>");
 }
 
 
@@ -667,14 +714,8 @@ function GuessGroupMovie()
     // gets text entered in html input
     // --- 'replace' finds any double spaces between words and trims to one space
     // --- 'trim' removes spaces at the end of the guess
-    let movieTitleGuessed = $("#group_guess_input:first")
-      .val()
-      .toString()
-      .replace(/\s+/g, ' ')
-      .trim()
-      .toUpperCase();
+    let movieTitleGuessed = $("#group_guess_input:first").val().toString().replace(/\s+/g, ' ').trim().toUpperCase();
 
-    // gets movie from the controller
     $.get("group/get_movie_info", function (res)
     {
       // 'replace' finds any double spaces between words and trims to one space
@@ -682,30 +723,35 @@ function GuessGroupMovie()
       let movieTitleActual = res["title"].replace(/\s+/g, ' ').trim().toUpperCase();
       let movieId = res["movieId"];
 
-      // the guess was correct
+      // If correct guess
       if (movieTitleGuessed == movieTitleActual)
-      {
-        ManageGameWonOutcome(movieId);
-        ResponseToCorrectGuess();
-      }
+        ManageCorrectGuessOutcome(movieId);
 
-      // the guess was wrong
+      // If wrong guess
       else
-      {
-        RespondToWrongGuess();
-      }
-
+        TriggerWrongGuessAlertBox();
     })
   })
 }
 
-function ResponseToCorrectGuess()
+
+function ManageCorrectGuessOutcome(movieId, pointsReceived, clueGameWonAt)
+{
+  TriggerCorrectGuessAlertBox();
+  UpdateHtmlWithNewScore();
+
+  SendMovieTeamJoinInfoToController(winningTeamId, true, movieId, pointsReceived, clueGameWonAt);
+  SendGameTeamJoinUpdatesToController(winningTeamId, true, pointsReceived, clueGameWonAt)
+}
+
+
+function TriggerCorrectGuessAlertBox()
 {
   alert("correct");
 }
 
 
-function RespondToWrongGuess()
+function TriggerWrongGuessAlertBox()
 {
   currentTeamName = GetCurrentTeamGuessing().trim();
 
@@ -717,10 +763,12 @@ function RespondToWrongGuess()
 
   let firstTeamGuessesResponse = firstTeamName + " has guessed " + firstTeamGuesses + " times";
   let secondTeamGuessesResponse = secondTeamName + " has guessed " + secondTeamGuesses + " times";
-  // console.log(firstTeamGuessesResponse);
 
   alert("That guess is WRONG (and embarrassing)\n" + firstTeamGuessesResponse + "\n" + secondTeamGuessesResponse);
 }
+
+
+
 
 // ---------------------------------------------------------------------------------------
 // #endregion MANAGE GUESSES
@@ -732,34 +780,63 @@ function RespondToWrongGuess()
 // ---------------------------------------------------------------------------------------
 
 
-function ManageGameWonOutcome(movieId)
+
+
+function SendMovieTeamJoinInfoToController(teamId, winLoseBool, movieId, pointsReceived, clueGameWonAt)
 {
-  // winningTeamName = GetCurrentTeamGuessing().trim();
-  SendWinningGameOutcomeToController(winningTeamId, cluePoints, movieId);
-  IdentifyWinningTeam();
-
-  SendGameTeamJoinInfoToController(winningTeamId, true, cluePoints, clueNumber);
-  // first team is the winner
-  // if (winningTeamName == firstTeamName)
-  // {
-  //   // console.log("FIRST TEAM WON --> ", winningTeamName, "[ ", winningTeamId, " ]", "WON", cluePoints, "points");
-  //   firstTeamScore = firstTeamScore + cluePoints;
-  //   $(firstTeamScoreHtml).empty().append(firstTeamScore.toString());
-  // }
-
-  // // second team is the winner
-  // if (winningTeamName == secondTeamName)
-  // {
-  //   // console.log("SECOND TEAM WON --> ", winningTeamName, "[ ", winningTeamId, " ]", "WON", cluePoints, "points");
-  //   secondTeamScore = secondTeamScore + cluePoints;
-  //   $(secondTeamScoreHtml).empty().append(secondTeamScore.toString());
-  // }
+  console.log("SENDING INFO FOR MOVIE TEAM JOIN");
+  $.ajax(
+    {
+      type: "POST",
+      url: "group/create_movie_team_join",
+      data: {
+        TeamId: teamId,
+        MovieId: movieId,
+        WinFlag: winLoseBool,
+        PointsReceived: pointsReceived,
+        ClueGameWonAt: clueGameWonAt,
+      },
+      success: function (data)
+      {
+        // console.log("SendWinningGuessInfoToController");
+        console.log(data);
+      }
+    }
+  )
 }
 
-function IdentifyWinningTeam()
+
+function SendGameTeamJoinUpdatesToController(teamId, winLoseBool, pointsReceived, clueGameWonAt)
+{
+  console.log("SENDING INFO FOR GAME TEAM JOIN");
+  $.ajax(
+    {
+      type: "POST",
+      url: "group/update_game_team_join",
+      data: {
+        TeamId: teamId,
+        WinLoss: winLoseBool,
+        PointsReceived: pointsReceived,
+        ClueGameWonAt: clueGameWonAt
+      },
+      success: function (data)
+      {
+        console.log(data);
+        // console.log(data.TeamId);
+        // console.log(data.WinLoss);
+        // console.log(data.PointsReceived);
+        // console.log(data.ClueGameWonAt);
+      }
+    }
+  )
+}
+
+
+
+function UpdateHtmlWithNewScore()
 {
   winningTeamName = GetCurrentTeamGuessing().trim();
-  // first team is the winner
+
   if (winningTeamName == firstTeamName)
   {
     // console.log("FIRST TEAM WON --> ", winningTeamName, "[ ", winningTeamId, " ]", "WON", cluePoints, "points");
@@ -767,7 +844,6 @@ function IdentifyWinningTeam()
     $(firstTeamScoreHtml).empty().append(firstTeamScore.toString());
   }
 
-  // second team is the winner
   if (winningTeamName == secondTeamName)
   {
     // console.log("SECOND TEAM WON --> ", winningTeamName, "[ ", winningTeamId, " ]", "WON", cluePoints, "points");
@@ -777,53 +853,27 @@ function IdentifyWinningTeam()
 }
 
 
-function SendGameTeamJoinInfoToController(teamId, winLoseBool, pointsReceived, clueGameWonAt)
-{
-  console.log("SENDING INFO FOR JOIN");
-  $.ajax(
-    {
-      type: "POST",
-      url: "group/create_game_team_join",
-      data: {
-        TeamId: teamId,
-        WinLoss: winLoseBool,
-        PointsReceived: pointsReceived,
-        ClueGameWonAt: clueGameWonAt
-      },
-      success: function (data)
-      {
-        console.log(data.TeamId);
-        console.log(data.WinLoss);
-        console.log(data.PointsReceived);
-        console.log(data.ClueGameWonAt);
-      }
-    }
-  )
-}
+// function SendWinningGameOutcomeToController(teamId, pointsReceived, movieId)
+// {
+//   // console.log("SendWinningGameOutcomeToController():", teamId, "", pointsWon);
 
-
-
-function SendWinningGameOutcomeToController(teamId, pointsWon, movieId)
-{
-  // console.log("SendWinningGameOutcomeToController():", teamId, "", pointsWon);
-
-  $.ajax(
-    {
-      type: "POST",
-      url: "group/get_winning_game_outcome_from_javascript",
-      data: {
-        cluePoints: pointsWon,
-        winningTeamId: teamId,
-        movieId: movieId
-      },
-      success: function (data)
-      {
-        // console.log("SENT WINNING OUTCOME TO CONTROLLER");
-        // console.log("DATA: ", data.cluePoints);
-      },
-      error: function (jqXHR, textStatus, errorThrown) { }
-    });
-}
+//   $.ajax(
+//     {
+//       type: "POST",
+//       url: "group/get_winning_game_outcome_from_javascript",
+//       data: {
+//         cluePoints: pointsReceived,
+//         winningTeamId: teamId,
+//         movieId: movieId
+//       },
+//       success: function (data)
+//       {
+//         // console.log("SENT WINNING OUTCOME TO CONTROLLER");
+//         // console.log("DATA: ", data.cluePoints);
+//       },
+//       error: function (jqXHR, textStatus, errorThrown) { }
+//     });
+// }
 
 
 
@@ -837,7 +887,20 @@ function SendWinningGameOutcomeToController(teamId, pointsWon, movieId)
 
 
 
-
+// function SendGamesUpdatedPointsTotalToController(teamId, movieId, pointsReceived)
+// {
+//   $.ajax(
+//     {
+//       type: "POST",
+//       url: "group/create_movie_team_join",
+//       data: {
+//         TeamId: teamId,
+//         MovieId: movieId,
+//         PointsReceived: pointsReceived,
+//       }
+//     }
+//   )
+// }
 
 
 
@@ -892,3 +955,20 @@ function SendWinningGameOutcomeToController(teamId, pointsWon, movieId)
 // {
 //   $("ul#guessResponse").empty();
 // }
+
+
+
+
+// -----------
+
+// console.log("disable clues list");
+// console.log(clueNumber);
+// $("#group_clues_list").prop("disabled", true);
+// $(groupGuessButtons).empty();
+
+// var newGroupGuessButton = '<button id="group_guess_button" class="btn group_guess_buttons" style="width: 50%">Click to Guess</button>';
+
+// var groupQuitButton = '<button id="group_quit_button" class="btn btn-danger group_guess_buttons" style="width: 50%">Quit Game and Admit Failure</button>';
+
+// $(groupGuessButtons).append(newGroupGuessButton);
+// $(groupGuessButtons).append(groupQuitButton);
