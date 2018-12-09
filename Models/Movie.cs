@@ -58,9 +58,9 @@ namespace movieGame.Models
         public IList<Clue> Clues { get; set; }
 
 
-        [Display(Name="List Movie Posters")]
-        [DataMember]
-        public IList<Poster> Posters { get; set; }
+        // [Display(Name="List Movie Posters")]
+        // [DataMember]
+        // public IList<Poster> Posters { get; set; }
 
         [DataMember]
         public IList<MovieTeamJoin> MovieTeamJoin { get; set; }
@@ -74,7 +74,7 @@ namespace movieGame.Models
         public Movie ()
         {
             Clues = new List<Clue>();
-            Posters = new List<Poster>();
+            // Posters = new List<Poster>();
             MovieTeamJoin = new List<MovieTeamJoin>();
             MovieUserJoin = new List<MovieUserJoin>();
             Hints = new Hints();

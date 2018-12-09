@@ -10,7 +10,7 @@ namespace movieGame.Models
         public DbSet<Clue> Clues {get;set;}
         public DbSet<Game> Games { get; set; }
         public DbSet<Movie> Movies {get;set;}
-        public DbSet<Poster> Posters { get; set; }
+        // public DbSet<Poster> Posters { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Hints> Hints { get; set; }
@@ -24,5 +24,6 @@ namespace movieGame.Models
 
 // Database Migrations
 // update appsettings.json first
+// delete old Migrations folder
 // dotnet ef migrations add YourMigrationName
 // dotnet ef database update

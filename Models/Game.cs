@@ -10,13 +10,11 @@ namespace movieGame.Models
 
         public long DurationOfGame { get; set; }
 
-        public int NumberOfTeamsInGame { get; set; }
-
-        public int ThisGamesMovieId { get; set; }
-
         public Team FirstTeam { get; set; } = new Team();
 
         public Team SecondTeam { get; set; } = new Team();
+
+        public List<Movie> MoviesGuessedCorrectly { get; set; } = new List<Movie>();
 
         public IList<GameTeamJoin> GameTeamJoin { get; set; }
 
