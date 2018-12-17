@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using movieGame.Infrastructure;
 using movieGame.Controllers.MixedControllers;
 using movieGame.Models;
+using Newtonsoft.Json.Linq;
 
 namespace movieGame.Controllers.PlayTeamGameController
 {
@@ -41,20 +42,52 @@ namespace movieGame.Controllers.PlayTeamGameController
         #region MANAGE ROUTING ------------------------------------------------------------
 
             [HttpGet("")]
-            public async Task<IActionResult> StartGroupGame()
+            public async Task<IActionResult> ViewGroupGamePage()
             {
                 ViewBag.FirstTeamName = GetTeamNameFromSession(firstTeamNameKey);
                 ViewBag.SecondTeamName = GetTeamNameFromSession(secondTeamNameKey);
-                await CreateInitialGameTeamJoins();
-                SetThisGamesMovie(SetThisGamesMovieId());
+                await InitializeNewGame();
+                PrintThisGamesDetails();
+
+                int firstTeamPoints = ViewBag.FirstTeamPoints = GetTeamsCurrentPoints(firstTeamGameTeamJoinIdKey);
+                int secondTeamPoints = ViewBag.SecondTeamPoints = GetTeamsCurrentPoints(secondTeamGameTeamJoinIdKey);
+
+                Console.WriteLine($"First Team Points: {firstTeamPoints}");
+                Console.WriteLine($"Second Team Points: {secondTeamPoints}");
                 return View("playgroup");
             }
 
 
-            [HttpGet("add_teams")]
+            [HttpGet("add_teams_form")]
             public IActionResult ViewAddTeamPage()
             {
                 return View("newteamform");
+            }
+
+
+            [HttpGet("quit_movie_page")]
+            public IActionResult ViewQuitCurrentMoviePage()
+            {
+                int thisGamesMovieId = GetMovieIdFromSession();
+                Movie thisGamesMovie = GetMovieInfoFromDatabase(thisGamesMovieId);
+
+                var movieTitle = ViewBag.MovieTitle = thisGamesMovie.Title;
+                var moviePoster = ViewBag.Poster = thisGamesMovie.Poster;
+
+                return View("groupgameoverquitmovie");
+            }
+
+
+            [HttpGet("correct_guess_page")]
+            public IActionResult ViewCorrectGuessPage()
+            {
+                Console.WriteLine("group guessed correctly");
+                int thisGamesMovieId = GetMovieIdFromSession();
+                Movie thisGamesMovie = GetMovieInfoFromDatabase(thisGamesMovieId);
+
+                var movieTitle = ViewBag.MovieTitle = thisGamesMovie.Title;
+                var moviePoster = ViewBag.Poster = thisGamesMovie.Poster;
+                return View("groupgameovercorrectguess");
             }
 
         #endregion MANAGE ROUTING ------------------------------------------------------------
@@ -65,19 +98,21 @@ namespace movieGame.Controllers.PlayTeamGameController
         #region SET TEAMS ------------------------------------------------------------
 
             // this is triggered in the 'NewTeamForm' html when the form is submitted
-            [HttpPost("set_group_game")]
-            public async Task<IActionResult> SetGroupGame (string firstTeamName, string secondTeamName)
+            [HttpPost("initialize_matchup")]
+            public async Task<IActionResult> InitializeNewMatchup(string firstTeamName, string secondTeamName)
             {
                 await CreateNewTeam(firstTeamName, firstTeamNameKey, firstTeamIdKey);
                 await CreateNewTeam(secondTeamName, secondTeamNameKey, secondTeamIdKey);
+                return RedirectToAction("ViewGroupGamePage");
+            }
+
+
+            [HttpPost("initialize_game")]
+            public async Task InitializeNewGame()
+            {
+                SetThisGamesMovie(SetThisGamesMovieId());
                 await CreateNewGame();
-
-                // await CreateMovieTeamJoin(GetTeamIdFromSession(firstTeamIdKey), 1, true);
-                // await CreateMovieTeamJoin(GetTeamIdFromSession(firstTeamIdKey), 4, true);
-                // await CreateMovieTeamJoin(GetTeamIdFromSession(secondTeamIdKey), 2, true);
-                // await CreateMovieTeamJoin(GetTeamIdFromSession(secondTeamIdKey), 7, true);
-
-                return RedirectToAction("StartGroupGame");
+                await CreateGameTeamJoins();
             }
 
         #endregion SET TEAMS ------------------------------------------------------------
@@ -151,7 +186,6 @@ namespace movieGame.Controllers.PlayTeamGameController
             {
                 int thisGamesMovieId = PickRandomMovieIdFromList();
                 SetMovieIdInSession(thisGamesMovieId);
-                PrintThisGamesDetails();
                 return thisGamesMovieId;
             }
 
@@ -236,7 +270,6 @@ namespace movieGame.Controllers.PlayTeamGameController
                 public int GetGameTeamJoinIdFromSession(string gameTeamJoinIdKey)
                 {
                     int gtjId = (int)HttpContext.Session.GetInt32(gameTeamJoinIdKey);
-                    // Console.WriteLine($"GTJ ID: {gtjId}");
                     return gtjId;
                 }
 
@@ -259,12 +292,9 @@ namespace movieGame.Controllers.PlayTeamGameController
                     MovieTeamJoin = new List<MovieTeamJoin> (),
                     GameTeamJoin = new List<GameTeamJoin> (),
                 };
-
                 await AddAndSaveChangesAsync(newTeam);
-
                 SetTeamNameInSession(teamNameKey, newTeam.TeamName);
                 SetTeamIdInSession(teamIdKey, newTeam.TeamId);
-
                 return newTeam;
             }
 
@@ -284,41 +314,15 @@ namespace movieGame.Controllers.PlayTeamGameController
             }
 
 
-            [HttpPost("create_initial_game_team_joins")]
-            public async Task CreateInitialGameTeamJoins()
+            [HttpPost("create_game_team_joins")]
+            public async Task CreateGameTeamJoins()
             {
                 Console.WriteLine($"Is there a current game in session? {isThereACurrentGameInSession}");
 
                 if(isThereACurrentGameInSession == false)
                 {
-                    await CreateGameTeamJoin(firstTeamIdKey, secondTeamIdKey);
-                    // GameTeamJoin initialGameFirstTeamJoin = new GameTeamJoin
-                    // {
-                    //     GameId = GetGameIdFromSession(),
-                    //     TeamId = GetTeamIdFromSession(firstTeamIdKey),
-                    //     OpponentId = GetTeamIdFromSession(secondTeamIdKey),
-                    //     WinFlag = false,
-                    //     TotalPoints = 0,
-                    //     TotalTimeTakenForGuesses = TimeSpan.Zero,
-                    //     ListOfMoviesGuessedCorrectly = new List<Movie>(),
-                    // };
-
-                    // await AddAndSaveChangesAsync(initialGameFirstTeamJoin);
-                    // SetGameTeamJoinIdInSession(firstTeamGameTeamJoinIdKey, initialGameFirstTeamJoin.GameTeamJoinId);
-
-                    GameTeamJoin initialGameSecondTeamJoin = new GameTeamJoin
-                    {
-                        GameId = GetGameIdFromSession(),
-                        TeamId = GetTeamIdFromSession(secondTeamIdKey),
-                        OpponentId = GetTeamIdFromSession(firstTeamIdKey),
-                        WinFlag = false,
-                        TotalPoints = 0,
-                        TotalTimeTakenForGuesses = TimeSpan.Zero,
-                        ListOfMoviesGuessedCorrectly = new List<Movie>(),
-                    };
-
-                    await AddAndSaveChangesAsync(initialGameSecondTeamJoin);
-                    SetGameTeamJoinIdInSession(secondTeamGameTeamJoinIdKey, initialGameSecondTeamJoin.GameTeamJoinId);
+                    await CreateGameTeamJoin(firstTeamIdKey, secondTeamIdKey, firstTeamGameTeamJoinIdKey);
+                    await CreateGameTeamJoin(secondTeamIdKey, firstTeamIdKey, secondTeamGameTeamJoinIdKey);
 
                     isThereACurrentGameInSession = true;
                     Console.WriteLine($"Is there a current game in session? {isThereACurrentGameInSession}");
@@ -329,7 +333,7 @@ namespace movieGame.Controllers.PlayTeamGameController
 
 
             [HttpPost("create_game_team_join")]
-            public async Task<GameTeamJoin> CreateGameTeamJoin(string teamKey, string opponentKey)
+            public async Task<GameTeamJoin> CreateGameTeamJoin(string teamKey, string opponentKey, string teamGameTeamJoinIdKey)
             {
                 GameTeamJoin newGameTeamJoin = new GameTeamJoin
                 {
@@ -341,59 +345,39 @@ namespace movieGame.Controllers.PlayTeamGameController
                     TotalTimeTakenForGuesses = TimeSpan.Zero,
                     ListOfMoviesGuessedCorrectly = new List<Movie>(),
                 };
-
                 await AddAndSaveChangesAsync(newGameTeamJoin);
-                SetGameTeamJoinIdInSession(firstTeamGameTeamJoinIdKey, newGameTeamJoin.GameTeamJoinId);
-
+                SetGameTeamJoinIdInSession(teamGameTeamJoinIdKey, newGameTeamJoin.GameTeamJoinId);
                 return newGameTeamJoin;
             }
 
 
             [HttpPost("create_movie_team_join")]
-            public async Task<MovieTeamJoin> CreateMovieTeamJoin(int teamId, bool winLoseBool, int movieId, int pointsReceived, int clueGameWonAt)
+            public async Task<MovieTeamJoin> CreateMovieTeamJoin(int teamId, int movieId, int pointsReceived, int clueGameWonAt)
             {
                 MovieTeamJoin newMovieTeamJoin = new MovieTeamJoin
                 {
                     TeamId = teamId,
                     MovieId = movieId,
-                    WinFlag = winLoseBool,
                     GameId = GetGameIdFromSession()
                 };
 
-                if(winLoseBool == true)
+                if(pointsReceived > 0)
+                {
+                    newMovieTeamJoin.WinFlag = true;
                     newMovieTeamJoin.PointsReceived = pointsReceived;
                     newMovieTeamJoin.ClueGameWonAt = clueGameWonAt;
+                }
 
-                if(winLoseBool == false)
+                if(pointsReceived == 0)
+                {
+                    newMovieTeamJoin.WinFlag = false;
                     newMovieTeamJoin.PointsReceived = 0;
                     newMovieTeamJoin.ClueGameWonAt = 0;
-
+                }
+                Console.WriteLine($"newMovieTeamJoin.WinFlag: {newMovieTeamJoin.WinFlag}");
                 await AddAndSaveChangesAsync(newMovieTeamJoin);
                 return newMovieTeamJoin;
             }
-
-
-            // [HttpPost("create_game_team_join")]
-            // public async Task<GameTeamJoin> CreateGameTeamJoin(int teamId, bool winLoseBool, int pointsReceived, int clueGameWonAt)
-            // {
-            //     Console.WriteLine($"Team Id: {teamId}");
-            //     Console.WriteLine($"Win?: {winLoseBool}");
-            //     Console.WriteLine($"Points Received: {pointsReceived}");
-            //     Console.WriteLine($"Game won at Clue #: {clueGameWonAt}");
-            //     Console.WriteLine();
-
-            //     GameTeamJoin newGameTeamJoin = new GameTeamJoin
-            //     {
-            //         GameId = GetGameIdFromSession(),
-            //         TeamId = teamId,
-            //         WinFlag = winLoseBool,
-            //         PointsReceived = pointsReceived,
-            //         ClueGameWonAt = clueGameWonAt,
-            //     };
-
-            //     await AddAndSaveChangesAsync(newGameTeamJoin);
-            //     return newGameTeamJoin;
-            // }
 
 
             public async Task AddAndSaveChangesAsync(object obj)
@@ -422,7 +406,6 @@ namespace movieGame.Controllers.PlayTeamGameController
             {
                 int thisGamesId = (int)HttpContext.Session.GetInt32(gameIdKey);
                 Models.Game thisGame = _context.Games.Include(gtj => gtj.GameTeamJoin).ThenInclude(t => t.Team).SingleOrDefault(game => game.GameId == thisGamesId);
-                // Models.Game thisGame = _context.Games.Include(gtj => gtj.GameTeamJoin).ThenInclude(t => t.Team).SingleOrDefault(game => game.GameId == gameId);
                 return thisGame;
             }
 
@@ -477,6 +460,15 @@ namespace movieGame.Controllers.PlayTeamGameController
                 return currentGtj;
             }
 
+
+            public int GetTeamsCurrentPoints(string key)
+            {
+                GameTeamJoin currentGtj = GetGameTeamJoin(GetGameTeamJoinIdFromSession(key));
+
+                int currentPoints = currentGtj.TotalPoints;
+                return currentPoints;
+            }
+
         #endregion GET INFO FROM DATABASE ------------------------------------------------------------
 
 
@@ -485,33 +477,24 @@ namespace movieGame.Controllers.PlayTeamGameController
         #region UPDATE DATABASE RECORD ------------------------------------------------------------
 
             [HttpPost("update_game_team_join")]
-            public async Task UpdateGameTeamJoin(int teamId, int pointsReceived, int movieId)
+            public async Task UpdateOneGameTeamJoin(int teamId, int pointsReceived, string gameTeamJoinIdKey)
             {
-                Movie movieGuessedCorrectly = GetMovieInfoFromDatabase(movieId);
-                Console.WriteLine($"Movie guessed is {movieGuessedCorrectly.Title}");
+                _h.StartMethod();
+                var joinKey = GetGameTeamJoinIdFromSession(firstTeamGameTeamJoinIdKey);
+                // var firstTeamGameJoinId = GetGameTeamJoinIdFromSession(firstTeamGameTeamJoinIdKey);
 
-                var firstTeamGameJoinId = GetGameTeamJoinIdFromSession(firstTeamGameTeamJoinIdKey);
-                var secondTeamGameJoinId = GetGameTeamJoinIdFromSession(secondTeamGameTeamJoinIdKey);
+                GameTeamJoin gameTeamJoin = await _context.GameTeamJoin.SingleOrDefaultAsync(gtj => gtj.GameTeamJoinId == joinKey);
 
-                var firstGameTeamJoin = await _context.GameTeamJoin.SingleOrDefaultAsync(gtj => gtj.GameTeamJoinId == firstTeamGameJoinId);
+                var teamCurrentPoints = gameTeamJoin.TotalPoints;
 
-                Console.WriteLine($"X First Team Id --> {firstGameTeamJoin.TeamId}");
+                var teamsUpdatedPoints = teamCurrentPoints + pointsReceived;
+                gameTeamJoin.TotalPoints = teamsUpdatedPoints;
 
-                var firstTeamCurrentPoints = firstGameTeamJoin.TotalPoints;
-                Console.WriteLine($"First team points before: {firstTeamCurrentPoints}");
+                var updatedTime = DateTime.Now;
+                gameTeamJoin.UpdatedAt = updatedTime;
 
-                var firstTeamUpdatedPoints = firstTeamCurrentPoints + pointsReceived;
-                Console.WriteLine($"First team updated points: {firstTeamUpdatedPoints}");
-                firstGameTeamJoin.TotalPoints = firstTeamUpdatedPoints;
-
-                _context.Update(firstGameTeamJoin);
+                _context.Update(gameTeamJoin);
                 await _context.SaveChangesAsync();
-            }
-
-
-            public async Task UpdateBothGameTeamJoins()
-            {
-
             }
 
         #endregion UPDATE DATABASE RECORD ------------------------------------------------------------
@@ -527,9 +510,9 @@ namespace movieGame.Controllers.PlayTeamGameController
                 List<Clue> thisMoviesClues = GetMoviesCluesInfoFromDatabase(GetMovieInfoFromDatabase(GetMovieIdFromSession()));
 
                 var thisClue = thisMoviesClues[clueNumber - 1];
-                Console.WriteLine($"Clue#: {thisClue.ClueDifficulty}. {thisClue.ClueText}");
+                // Console.WriteLine($"Clue#: {thisClue.ClueDifficulty}. {thisClue.ClueText}");
 
-                GetNameOfTeamGuessing(clueNumber);
+                // GetNameOfTeamGuessing(clueNumber);
 
                 return Json(clueNumber);
             }
@@ -686,3 +669,83 @@ namespace movieGame.Controllers.PlayTeamGameController
 
     }
 }
+
+
+
+
+// GameTeamJoin initialGameFirstTeamJoin = new GameTeamJoin
+// {
+//     GameId = GetGameIdFromSession(),
+//     TeamId = GetTeamIdFromSession(firstTeamIdKey),
+//     OpponentId = GetTeamIdFromSession(secondTeamIdKey),
+//     WinFlag = false,
+//     TotalPoints = 0,
+//     TotalTimeTakenForGuesses = TimeSpan.Zero,
+//     ListOfMoviesGuessedCorrectly = new List<Movie>(),
+// };
+
+// await AddAndSaveChangesAsync(initialGameFirstTeamJoin);
+// SetGameTeamJoinIdInSession(firstTeamGameTeamJoinIdKey, initialGameFirstTeamJoin.GameTeamJoinId);
+
+
+
+// GameTeamJoin initialGameSecondTeamJoin = new GameTeamJoin
+// {
+//     GameId = GetGameIdFromSession(),
+//     TeamId = GetTeamIdFromSession(secondTeamIdKey),
+//     OpponentId = GetTeamIdFromSession(firstTeamIdKey),
+//     WinFlag = false,
+//     TotalPoints = 0,
+//     TotalTimeTakenForGuesses = TimeSpan.Zero,
+//     ListOfMoviesGuessedCorrectly = new List<Movie>(),
+// };
+
+// await AddAndSaveChangesAsync(initialGameSecondTeamJoin);
+// SetGameTeamJoinIdInSession(secondTeamGameTeamJoinIdKey, initialGameSecondTeamJoin.GameTeamJoinId);
+
+
+
+
+// [HttpPost("create_game_team_join")]
+// public async Task<GameTeamJoin> CreateGameTeamJoin(int teamId, bool winLoseBool, int pointsReceived, int clueGameWonAt)
+// {
+//     Console.WriteLine($"Team Id: {teamId}");
+//     Console.WriteLine($"Win?: {winLoseBool}");
+//     Console.WriteLine($"Points Received: {pointsReceived}");
+//     Console.WriteLine($"Game won at Clue #: {clueGameWonAt}");
+//     Console.WriteLine();
+
+//     GameTeamJoin newGameTeamJoin = new GameTeamJoin
+//     {
+//         GameId = GetGameIdFromSession(),
+//         TeamId = teamId,
+//         WinFlag = winLoseBool,
+//         PointsReceived = pointsReceived,
+//         ClueGameWonAt = clueGameWonAt,
+//     };
+
+//     await AddAndSaveChangesAsync(newGameTeamJoin);
+//     return newGameTeamJoin;
+// }
+
+
+// [HttpPost("set_group_game")]
+// public async Task<IActionResult> SetGroupGame (string firstTeamName, string secondTeamName)
+// {
+//     // await CreateNewTeam(firstTeamName, firstTeamNameKey, firstTeamIdKey);
+//     // await CreateNewTeam(secondTeamName, secondTeamNameKey, secondTeamIdKey);
+//     await CreateNewGame();
+
+//     return RedirectToAction("StartGroupGame");
+// }
+
+
+// [HttpPost("select_next_movie")]
+// public async Task<IActionResult> StartNextGame()
+// {
+//     ViewBag.FirstTeamName = GetTeamNameFromSession(firstTeamNameKey);
+//     ViewBag.SecondTeamName = GetTeamNameFromSession(secondTeamNameKey);
+//     SetThisGamesMovie(SetThisGamesMovieId());
+//     await CreateNewGame();
+//     return View("playgroup");
+// }

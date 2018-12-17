@@ -241,12 +241,16 @@ ul.clueText li {
     padding: 10px;
 }
 
-.group_guess_buttons {
-    font-size: 2em;
+.group_button {
+    font-size: 1.5em;
 }
 
 #group_guess_button {
     background: blue;
+}
+
+#group_quit_button {
+    background: red;
 }
 
 #group_guess_input {
@@ -283,4 +287,32 @@ ul.clueText li {
 #group_clear {
     clear: both;
     margin-top: 20px;
+}
+
+.group_game_outcome_div {
+    height: 100%;
+    width: 100%;
+    text-align: center;
+}
+
+#group_quit_div {
+    background-color: red;
+}
+
+#group_correct_div {
+    background: #6492ed;
+}
+
+.group_game_outcome_div_header {
+    font-size: 4em;
+    text-align: center;
+}
+
+.group_game_outcome_movie_title {
+    font-size: 2em;
+    text-align: center;
+}
+
+.game_outcome_div_buttons {
+    width: 300px;
 }
