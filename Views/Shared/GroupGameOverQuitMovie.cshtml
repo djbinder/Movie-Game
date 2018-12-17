@@ -1,0 +1,38 @@
+@{
+ViewData["Title"] = "Quit Movie";
+}
+
+
+
+<div id="group_quit_div" class="group_game_outcome_div">
+    <div class="group_game_outcome_div_header ">
+        Congrats on your failure!
+    </div>
+
+    <hr>
+
+    <div class="group_game_outcome_movie_title">
+        @ViewBag.MovieTitle
+    </div>
+
+    <img src="@ViewBag.Poster" alt="no poster">
+
+    <br>
+    <br>
+
+    <a href="/group">
+        <button class="btn btn-primary game_outcome_div_buttons">Keep playing :(</button>
+    </a>
+    <!-- <form action="select_next_movie" method="POST">
+        <button class="btn btn-primary group_quit_div_buttons">Keep playing :(</button>
+    </form> -->
+
+    <br>
+    <br>
+
+    <button class="btn btn-primary game_outcome_div_buttons">We quit!!!</button>
+
+    <br>
+    <br>
+
+</div>

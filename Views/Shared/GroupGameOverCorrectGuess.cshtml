@@ -1,0 +1,34 @@
+@{
+ViewData["Title"] = "Correct";
+}
+
+
+<div id="group_correct_div" class="group_game_outcome_div">
+    <div class="group_game_outcome_div_header ">
+        Thag guess was (surprisingly) correct
+    </div>
+
+    <hr>
+
+    <div class="group_game_outcome_movie_title">
+        @ViewBag.MovieTitle
+    </div>
+
+    <img src="@ViewBag.Poster" alt="no poster">
+
+    <br>
+    <br>
+
+    <a href="/group">
+        <button class="btn btn-primary game_outcome_div_buttons">Keep playing :(</button>
+    </a>
+
+    <br>
+    <br>
+
+    <button class="btn btn-primary game_outcome_div_buttons">We quit!!!</button>
+
+    <br>
+    <br>
+
+</div>
