@@ -57,8 +57,6 @@ namespace movieGame.Models
 
         public Team Team { get; set; }
 
-        public TimeSpan TotalTimeTakenForGuesses { get; set; }
-
         public int OpponentId { get; set; }
 
         public bool WinFlag { get; set; }
