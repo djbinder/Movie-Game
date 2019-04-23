@@ -10,13 +10,13 @@ namespace movieGame.Models
         public DbSet<Clue> Clues {get;set;}
         public DbSet<Game> Games { get; set; }
         public DbSet<Movie> Movies {get;set;}
-        // public DbSet<Poster> Posters { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Hints> Hints { get; set; }
         public DbSet<GameTeamJoin> GameTeamJoin { get; set; }
         public DbSet<MovieUserJoin> MovieUserJoin { get; set; }
         public DbSet<MovieTeamJoin> MovieTeamJoin { get; set; }
+        public DbSet<Round> Rounds { get; set; }
     }
 }
 

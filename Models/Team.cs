@@ -12,13 +12,13 @@ namespace movieGame.Models
 
         public string TeamName { get; set; }
 
-        public int TeamPoints { get; set; }
+        public int AllTimePoints { get; set; }
 
-        public int GamesPlayed { get; set; }
+        public int AllTimeGamesPlayed { get; set; }
 
-        public int CountOfMoviesGuessedCorrectly { get; set; }
+        public int AllTimeCountOfMoviesGuessedCorrectly { get; set; }
 
-        public int CountOfMoviesGuessedIncorrectly { get; set; }
+        public int AllTimeCountOfMoviesGuessedIncorrectly { get; set; }
 
         public IList<MovieTeamJoin> MovieTeamJoin { get; set; } = new List<MovieTeamJoin>();
 

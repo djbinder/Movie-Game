@@ -1,16 +1,36 @@
-@model Team
+@model Team;
 
-@{
-ViewData["Title"] = "New Team";
-}
+@{ ViewData["Title"] = "New Team"; }
 
 <h4 class="text-center">Enter team names for this game</h4>
-<form action="initialize_matchup" method="POST">
-        <input style="width: 100%; color: black" type="text" id="firstTeamName" name="firstTeamName" placeholder="Enter first team's name" value="TeamA" />
-        <br>
-        <br>
-        <input style="width: 100%; color: black"  type="text" id="secondTeamName" name="secondTeamName" placeholder="Enter second team's name" value="TeamB" />
-        <br>
-        <br>
-        <button class="btn btn-primary" style="width: 100%">Begin Game</button>
+<form action="initialize_game" method="POST">
+    <input
+        style="width: 100%; color: black"
+        type="text"
+        id="firstTeamName"
+        name="firstTeamName"
+        placeholder="Enter first team's name"
+        value="TeamA"
+    />
+    <br />
+    <br />
+    <input
+        style="width: 100%; color: black"
+        type="text"
+        id="secondTeamName"
+        name="secondTeamName"
+        placeholder="Enter second team's name"
+        value="TeamB"
+    />
+    <br />
+    <br />
+    <strong>Select Guessing Order Type</strong>
+    <br />
+    <select id="guess_order_type" name="guess_order_type" style="color: black">
+        <option id="normal_guess_order" name="normal_guess_order" value="normal_guess_order" selected>Normal</option>
+        <option id="snake_guess_order" name="snake_guess_order" value="snake_guess_order">Snake</option>
+    </select>
+    <br />
+    <br />
+    <button class="btn btn-primary" style="width: 100%">Begin Game</button>
 </form>

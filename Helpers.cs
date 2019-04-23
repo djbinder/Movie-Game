@@ -348,6 +348,13 @@ namespace movieGame.Infrastructure
                 Console.ResetColor();
             }
 
+            public void DigObj(Object obj)
+            {
+                string json = JsonConvert.SerializeObject(obj, Formatting.Indented);
+                Console.WriteLine($"{obj} --------------------------- {json} --------------------------- {obj}");
+                Console.WriteLine();
+            }
+
             public void DigDeep<T>(T x)
             {
                 Console.ForegroundColor = ConsoleColor.DarkRed;

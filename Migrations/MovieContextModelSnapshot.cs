@@ -50,8 +50,6 @@ namespace movieGame.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<long>("DurationOfGame");
-
                     b.Property<int?>("FirstTeamTeamId");
 
                     b.Property<int?>("SecondTeamTeamId");
@@ -81,8 +79,6 @@ namespace movieGame.Migrations
                     b.Property<int>("TeamId");
 
                     b.Property<int>("TotalPoints");
-
-                    b.Property<TimeSpan>("TotalTimeTakenForGuesses");
 
                     b.Property<DateTime>("UpdatedAt");
 
@@ -131,6 +127,8 @@ namespace movieGame.Migrations
 
                     b.Property<int?>("GameId");
 
+                    b.Property<int?>("GameId1");
+
                     b.Property<int?>("GameTeamJoinId");
 
                     b.Property<string>("Genre");
@@ -152,6 +150,8 @@ namespace movieGame.Migrations
                     b.HasKey("MovieId");
 
                     b.HasIndex("GameId");
+
+                    b.HasIndex("GameId1");
 
                     b.HasIndex("GameTeamJoinId");
 
@@ -218,22 +218,68 @@ namespace movieGame.Migrations
                     b.ToTable("MovieUserJoin");
                 });
 
+            modelBuilder.Entity("movieGame.Models.Round", b =>
+                {
+                    b.Property<int>("RoundId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("BothTeamsQuitFlag");
+
+                    b.Property<int>("ClueGameIsWonAt");
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("FirstTeamGuesses");
+
+                    b.Property<int>("FirstTeamPointsReceived");
+
+                    b.Property<int?>("FirstTeamTeamId");
+
+                    b.Property<bool>("FirstTeamWinFlag");
+
+                    b.Property<int>("GameId");
+
+                    b.Property<int?>("MovieId");
+
+                    b.Property<int>("SecondTeamGuesses");
+
+                    b.Property<int>("SecondTeamPointsReceived");
+
+                    b.Property<int?>("SecondTeamTeamId");
+
+                    b.Property<bool>("SecondTeamWinFlag");
+
+                    b.Property<DateTime>("UpdatedAt");
+
+                    b.HasKey("RoundId");
+
+                    b.HasIndex("FirstTeamTeamId");
+
+                    b.HasIndex("GameId");
+
+                    b.HasIndex("MovieId");
+
+                    b.HasIndex("SecondTeamTeamId");
+
+                    b.ToTable("Rounds");
+                });
+
             modelBuilder.Entity("movieGame.Models.Team", b =>
                 {
                     b.Property<int>("TeamId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("CountOfMoviesGuessedCorrectly");
+                    b.Property<int>("AllTimeCountOfMoviesGuessedCorrectly");
 
-                    b.Property<int>("CountOfMoviesGuessedIncorrectly");
+                    b.Property<int>("AllTimeCountOfMoviesGuessedIncorrectly");
+
+                    b.Property<int>("AllTimeGamesPlayed");
+
+                    b.Property<int>("AllTimePoints");
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<int>("GamesPlayed");
-
                     b.Property<string>("TeamName");
-
-                    b.Property<int>("TeamPoints");
 
                     b.Property<DateTime>("UpdatedAt");
 
@@ -317,8 +363,12 @@ namespace movieGame.Migrations
             modelBuilder.Entity("movieGame.Models.Movie", b =>
                 {
                     b.HasOne("movieGame.Models.Game")
-                        .WithMany("MoviesGuessedCorrectly")
+                        .WithMany("ListOfMoviesGuessedCorrectly")
                         .HasForeignKey("GameId");
+
+                    b.HasOne("movieGame.Models.Game")
+                        .WithMany("ListOfMoviesQuit")
+                        .HasForeignKey("GameId1");
 
                     b.HasOne("movieGame.Models.GameTeamJoin")
                         .WithMany("ListOfMoviesGuessedCorrectly")
@@ -349,6 +399,26 @@ namespace movieGame.Migrations
                         .WithMany("MovieUserJoin")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("movieGame.Models.Round", b =>
+                {
+                    b.HasOne("movieGame.Models.Team", "FirstTeam")
+                        .WithMany()
+                        .HasForeignKey("FirstTeamTeamId");
+
+                    b.HasOne("movieGame.Models.Game", "Game")
+                        .WithMany("ListOfRounds")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("movieGame.Models.Movie", "Movie")
+                        .WithMany()
+                        .HasForeignKey("MovieId");
+
+                    b.HasOne("movieGame.Models.Team", "SecondTeam")
+                        .WithMany()
+                        .HasForeignKey("SecondTeamTeamId");
                 });
 #pragma warning restore 612, 618
         }
