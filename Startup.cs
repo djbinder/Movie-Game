@@ -1,3 +1,7 @@
+using System;
+using movieGame.Controllers.MixedControllers;
+using movieGame.Controllers.PlayerControllers.ManageUsersController;
+using movieGame.Interfaces;
 using movieGame.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -6,19 +10,21 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
-using movieGame.Controllers.MixedControllers;
+using Newtonsoft.Json.Serialization;
 
 namespace movieGame
 {
-    public class Startup {
-        public Startup (IConfiguration configuration) {
+    public class Startup
+    {
+        public Startup (IConfiguration configuration)
+        {
             this.Configuration = configuration;
         }
         public IConfiguration Configuration { get; private set; }
 
-        public Startup (IHostingEnvironment env) {
+        public Startup (IHostingEnvironment env)
+        {
             var builder = new ConfigurationBuilder ()
                 .SetBasePath (env.ContentRootPath)
                 .AddJsonFile ("appsettings.json", optional : true, reloadOnChange : true);
@@ -36,24 +42,44 @@ namespace movieGame
         // reference: https://github.com/aspnet/Security/issues/1310
         public void ConfigureServices (IServiceCollection services)
         {
-            services.AddMvc ().SetCompatibilityVersion (CompatibilityVersion.Version_2_1)
-                        .AddJsonOptions(options => {
-                            options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                            options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                        });
+            // INTERFACE --> movieGame.Interfaces.IDateTime
+            // CLASS --> movieGame.SystemDateTime
+            services.AddSingleton<IDateTime, SystemDateTime> ();
+            services.AddSingleton<ISessionUser, CurrentUser> ();
+            services.AddTransient<SessionUser2>();
 
-            services.AddMvc().AddControllersAsServices();
-            services.AddTransient<GetMovieInfoController>();
-            services.AddSession ();
+            services.AddMvc ().SetCompatibilityVersion (CompatibilityVersion.Version_2_1)
+                .AddJsonOptions (options =>
+                {
+                    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver ();
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                });
+
+            services.AddMvc ().AddControllersAsServices ();
+            services.AddTransient<GetMovieInfoController> ();
+            services.AddTransient<ManageUsersController> ();
+
+            services.AddDistributedMemoryCache ();
+            services.AddSession (options =>
+            {
+                // Set a short timeout for easy testing.
+                options.IdleTimeout = TimeSpan.FromDays(1);
+                options.Cookie.HttpOnly = true;
+                // Make the session cookie essential
+                options.Cookie.IsEssential = true;
+            });
+            // services.AddSession ();
 
             services.AddDbContext<MovieContext> (options => options.UseNpgsql (Configuration["DBInfo:ConnectionString"]));
         }
 
         // to switch to dev environment: export ASPNETCORE_ENVIRONMENT="Development"
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure (IApplicationBuilder app, ILoggerFactory loggerFactory, IHostingEnvironment env) {
+        public void Configure (IApplicationBuilder app, ILoggerFactory loggerFactory, IHostingEnvironment env)
+        {
 
-            if (env.IsDevelopment ()) {
+            if (env.IsDevelopment ())
+            {
                 loggerFactory.AddConsole ();
                 app.UseDeveloperExceptionPage ();
                 app.UseDatabaseErrorPage ();
@@ -63,7 +89,8 @@ namespace movieGame
             }
 
             // added for 2.1
-            else {
+            else
+            {
                 app.UseExceptionHandler ("/Error");
                 app.UseHsts ();
             }
@@ -136,6 +163,7 @@ namespace movieGame
             // });
             // #endregion
 
+            app.UseHttpsRedirection ();
             app.UseStaticFiles ();
             app.UseSession ();
             app.UseAuthentication ();
