@@ -1,59 +1,124 @@
 @model movieGame.Models.UserViewModel
-
-@{
-    ViewData["Title"] = "Index";
-}
+<!--  -->
+@{ ViewData["Title"] = "Index"; }
 
 <form asp-controller="ManageUsers" asp-action="loguserin" method="POST">
     <div class="form-group">
         <label asp-for="LoginViewModel.UserEmail" class="control-label"></label>
-        <input asp-for="LoginViewModel.UserEmail" class="form-control" placeholder="Enter Email Address">
-        <span class="error text-danger" asp-validation-for="LoginViewModel.UserEmail"></span>
+        <input
+            asp-for="LoginViewModel.UserEmail"
+            class="form-control"
+            placeholder="Enter Email Address"
+            value="dan@test.com"
+        />
+        <span
+            class="error text-danger"
+            asp-validation-for="LoginViewModel.UserEmail"
+        ></span>
     </div>
     <div class="form-group">
-        <label asp-for="LoginViewModel.UserPassword" class="control-label"></label>
-        <input asp-for="LoginViewModel.UserPassword" class="form-control" placeholder="Enter Password" value="password">
-        <span class="text-danger" asp-validation-for="LoginViewModel.UserPassword"></span>
+        <label
+            asp-for="LoginViewModel.UserPassword"
+            class="control-label"
+        ></label>
+        <input
+            asp-for="LoginViewModel.UserPassword"
+            class="form-control"
+            placeholder="Enter Password"
+            value="password"
+        />
+        <span
+            class="text-danger"
+            asp-validation-for="LoginViewModel.UserPassword"
+        ></span>
     </div>
     <div class="form-group">
         <input type="submit" value="Log In" class="btn btn-primary" />
     </div>
 </form>
 
-<hr class="linebreak2">
+<hr class="linebreak2" />
 
 <form asp-controller="ManageUsers" asp-action="registeruser" method="POST">
     <div class="form-group">
-        <label asp-for="RegisterViewModel.UserFirstName" class="control-label"></label>
-        <input asp-for="RegisterViewModel.UserFirstName" class="form-control" placeholder="Enter First Name">
-        <span class="error text-danger" asp-validation-for="RegisterViewModel.UserFirstName"></span>
+        <label
+            asp-for="RegisterViewModel.UserFirstName"
+            class="control-label"
+        ></label>
+        <input
+            asp-for="RegisterViewModel.UserFirstName"
+            class="form-control"
+            placeholder="Enter First Name"
+        />
+        <span
+            class="error text-danger"
+            asp-validation-for="RegisterViewModel.UserFirstName"
+        ></span>
     </div>
     <div class="form-group">
-        <label asp-for="RegisterViewModel.UserLastName" class="control-label"></label>
-        <input asp-for="RegisterViewModel.UserLastName" class="form-control" placeholder="Enter Last Name">
-        <span class="error text-danger" asp-validation-for="RegisterViewModel.UserLastName"></span>
+        <label
+            asp-for="RegisterViewModel.UserLastName"
+            class="control-label"
+        ></label>
+        <input
+            asp-for="RegisterViewModel.UserLastName"
+            class="form-control"
+            placeholder="Enter Last Name"
+        />
+        <span
+            class="error text-danger"
+            asp-validation-for="RegisterViewModel.UserLastName"
+        ></span>
     </div>
     <div class="form-group">
-        <label asp-for="RegisterViewModel.UserEmail" class="control-label"></label>
-        <input asp-for="RegisterViewModel.UserEmail" class="form-control" placeholder="Enter Email Address">
-        <span class="error text-danger" asp-validation-for="RegisterViewModel.UserEmail"></span>
+        <label
+            asp-for="RegisterViewModel.UserEmail"
+            class="control-label"
+        ></label>
+        <input
+            asp-for="RegisterViewModel.UserEmail"
+            class="form-control"
+            placeholder="Enter Email Address"
+        />
+        <span
+            class="error text-danger"
+            asp-validation-for="RegisterViewModel.UserEmail"
+        ></span>
     </div>
     <div class="form-group">
-        <label asp-for="RegisterViewModel.UserPassword" class="control-label"></label>
-        <input asp-for="RegisterViewModel.UserPassword" class="form-control" placeholder="Enter Password">
-        <span class="error text-danger" asp-validation-for="RegisterViewModel.UserPassword"></span>
+        <label
+            asp-for="RegisterViewModel.UserPassword"
+            class="control-label"
+        ></label>
+        <input
+            asp-for="RegisterViewModel.UserPassword"
+            class="form-control"
+            placeholder="Enter Password"
+        />
+        <span
+            class="error text-danger"
+            asp-validation-for="RegisterViewModel.UserPassword"
+        ></span>
     </div>
     <div class="form-group">
-        <label asp-for="RegisterViewModel.Confirm" class="control-label"></label>
-        <input asp-for="RegisterViewModel.Confirm" class="form-control" placeholder="Enter Password Again">
-        <span class="error text-danger" asp-validation-for="RegisterViewModel.Confirm"></span>
+        <label
+            asp-for="RegisterViewModel.Confirm"
+            class="control-label"
+        ></label>
+        <input
+            asp-for="RegisterViewModel.Confirm"
+            class="form-control"
+            placeholder="Enter Password Again"
+        />
+        <span
+            class="error text-danger"
+            asp-validation-for="RegisterViewModel.Confirm"
+        ></span>
     </div>
     <div class="form-group">
         <input type="submit" value="Register" class="btn btn-primary" />
     </div>
 </form>
-
-
 
 <!-- <form action="SetGamePlayer" method="POST">
     <div class="form-group">

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using movieGame.Models;
@@ -7,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using RestSharp;
-using System.Collections.Generic;
 
 namespace movieGame.Controllers.MixedControllers
 {
@@ -20,7 +20,7 @@ namespace movieGame.Controllers.MixedControllers
             _context = context;
         }
 
-        [HttpGet("movies")]
+        [HttpGet ("movies")]
         public IActionResult ViewAllMovies ()
         {
             ViewBag.Movies = _context.Movies.Include (w => w.Clues).OrderBy (d => d.MovieId).ToList ();
@@ -29,17 +29,16 @@ namespace movieGame.Controllers.MixedControllers
 
         public int GetCountOfMoviesInDb ()
         {
-            int movieCount = _context.Movies.Count();
+            int movieCount = _context.Movies.Count ();
             // Console.WriteLine($"GetCountOfMoviesInDb() : 'movieCount' = {movieCount}");
             return movieCount;
         }
 
-        public Movie GetAllMovieInfo(int movieId)
+        public Movie GetAllMovieInfo (int movieId)
         {
             Movie movie = _context.Movies.Include (w => w.Clues).SingleOrDefault (x => x.MovieId == movieId);
             return movie;
         }
-
 
         // get all of a movie's JSON info based on movie title and release year
         public JObject GetMovieJSON (string MovieName, int MovieYear)
@@ -48,117 +47,103 @@ namespace movieGame.Controllers.MixedControllers
 
             RestClient client = new RestClient (apiQueryTitleYear);
             RestRequest request = new RestRequest (Method.GET);
-                request.AddHeader ("Postman-Token", "688d818e-29a5-498f-9c1c-907c7cb77c7f")
-                        .AddHeader ("Cache-Control", "no-cache");
+            request.AddHeader ("Postman-Token", "688d818e-29a5-498f-9c1c-907c7cb77c7f")
+                .AddHeader ("Cache-Control", "no-cache");
 
             IRestResponse response = client.Execute (request);
-                string responseJSON = response.Content;
+            string responseJSON = response.Content;
 
             JObject movieJObject = JObject.Parse (responseJSON);
 
             return movieJObject;
         }
 
-
-        public int? GetMovieId(Movie movie)
+        public int? GetMovieId (Movie movie)
         {
             int? movieId = movie.MovieId;
             return movieId;
 
         }
 
-
-        public string GetMovieTitle(Movie movie)
+        public string GetMovieTitle (Movie movie)
         {
             string movieTitle = movie.Title;
             return movieTitle;
         }
 
-
-        public string GetMovieTitle(JObject movieJObject)
+        public string GetMovieTitle (JObject movieJObject)
         {
             string movieTitle = (string) movieJObject["Title"];
             return movieTitle;
         }
 
-
-        public int? GetMovieReleaseYear(Movie movie)
+        public int? GetMovieReleaseYear (Movie movie)
         {
             int? movieReleaseYear = movie.Year;
             return movieReleaseYear;
         }
 
-
-        public string GetMovieReleaseYear(JObject movieJObject)
+        public string GetMovieReleaseYear (JObject movieJObject)
         {
             string movieReleaseYear = (string) movieJObject["Year"];
             return movieReleaseYear;
         }
 
-
-        public string GetMovieGenre(Movie movie)
+        public string GetMovieGenre (Movie movie)
         {
             string movieGenre = movie.Genre;
             return movieGenre;
         }
 
-
-        public string GetMovieGenre(JObject movieJObject)
+        public string GetMovieGenre (JObject movieJObject)
         {
             string movieGenre = (string) movieJObject["Genre"];
             return movieGenre;
         }
 
-
-        public string GetMovieDirector(Movie movie)
+        public string GetMovieDirector (Movie movie)
         {
             string movieDirector = movie.Director;
             return movieDirector;
         }
 
-
-        public string GetMovieDirector(JObject movieJObject)
+        public string GetMovieDirector (JObject movieJObject)
         {
             string movieDirector = (string) movieJObject["Director"];
             return movieDirector;
         }
 
-
-        public List<Clue> GetMovieClues(Movie movie)
+        public List<Clue> GetMovieClues (Movie movie)
         {
-            List<Clue> clues = movie.Clues.ToList();
+            List<Clue> clues = movie.Clues.ToList ();
             return clues;
         }
 
-
-        public Hints GetMoviesHints(Movie movie)
+        public Hints GetMoviesHints (Movie movie)
         {
-            Hints thisMoviesHints = new Hints();
-            thisMoviesHints.Director = GetMovieDirector(movie);
-            thisMoviesHints.Genre = GetMovieGenre(movie);
-            thisMoviesHints.ReleaseYear = GetMovieReleaseYear(movie).ToString();
+            Hints thisMoviesHints = new Hints ();
+            thisMoviesHints.Director = GetMovieDirector (movie);
+            thisMoviesHints.Genre = GetMovieGenre (movie);
+            thisMoviesHints.ReleaseYear = GetMovieReleaseYear (movie).ToString ();
             return thisMoviesHints;
         }
 
-
-        public Hints GetMoviesHints(JObject movieJObject)
+        public Hints GetMoviesHints (JObject movieJObject)
         {
-            Hints thisMoviesHints = new Hints();
-            thisMoviesHints.Director = GetMovieDirector(movieJObject);
-            thisMoviesHints.Genre = GetMovieGenre(movieJObject);
-            thisMoviesHints.ReleaseYear = GetMovieReleaseYear(movieJObject);
+            Hints thisMoviesHints = new Hints ();
+            thisMoviesHints.Director = GetMovieDirector (movieJObject);
+            thisMoviesHints.Genre = GetMovieGenre (movieJObject);
+            thisMoviesHints.ReleaseYear = GetMovieReleaseYear (movieJObject);
 
             return thisMoviesHints;
         }
 
-
-        public void PrintHints(Hints h)
+        public void PrintHints (Hints h)
         {
-            Console.WriteLine($"HINTS: Genre = {h.Genre}  |  ReleaseYear = {h.ReleaseYear}  |  Director = {h.Director}");
+            Console.WriteLine ($"HINTS: Genre = {h.Genre}  |  ReleaseYear = {h.ReleaseYear}  |  Director = {h.Director}");
         }
 
-
-        [HttpGet("movie/{id}")]
+        [HttpGet ("movie/{id}")]
         public IActionResult ShowMovie (int id)
         {
             ViewBag.Movies = _context.Movies.Include (w => w.Clues).SingleOrDefault (x => x.MovieId == id);
@@ -182,14 +167,13 @@ namespace movieGame.Controllers.MixedControllers
             return View ("SingleMovie");
         }
 
-
         public JsonResult GetActorImage (string actorName)
         {
             var client = new RestClient ("https://api.themoviedb.org/3/search/person?api_key=1a1ef1aa4b51f19d38e4a7cb134a5699&language=en-US&query=" + actorName + "&page=1&include_adult=false");
 
             var request = new RestRequest (Method.GET);
             request.AddHeader ("Postman-Token", "dbfd1014-ebcb-4c79-80eb-1b0eac81a888")
-                    .AddHeader ("Cache-Control", "no-cache");
+                .AddHeader ("Cache-Control", "no-cache");
 
             IRestResponse response = client.Execute (request);
 
@@ -215,8 +199,6 @@ namespace movieGame.Controllers.MixedControllers
 
             return Json (actorJSON);
         }
-
-
 
     }
 }
