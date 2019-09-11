@@ -23,7 +23,7 @@ namespace movieGame.Models
 
 
 // Database Migrations
-// update appsettings.json first
-// delete old Migrations folder
-// dotnet ef migrations add YourMigrationName
-// dotnet ef database update
+// 1) update appsettings.json first
+// 2) delete old Migrations folder
+// 3) dotnet ef migrations add YourMigrationName
+// 4) dotnet ef database update

@@ -1,7 +1,6 @@
 using System;
 using movieGame.Controllers.MixedControllers;
 using movieGame.Controllers.PlayerControllers.ManageUsersController;
-using movieGame.Interfaces;
 using movieGame.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -42,11 +41,7 @@ namespace movieGame
         // reference: https://github.com/aspnet/Security/issues/1310
         public void ConfigureServices (IServiceCollection services)
         {
-            // INTERFACE --> movieGame.Interfaces.IDateTime
-            // CLASS --> movieGame.SystemDateTime
-            services.AddSingleton<IDateTime, SystemDateTime> ();
-            services.AddSingleton<ISessionUser, CurrentUser> ();
-            services.AddTransient<SessionUser2>();
+            services.AddTransient<SessionUser>();
 
             services.AddMvc ().SetCompatibilityVersion (CompatibilityVersion.Version_2_1)
                 .AddJsonOptions (options =>
@@ -59,16 +54,9 @@ namespace movieGame
             services.AddTransient<GetMovieInfoController> ();
             services.AddTransient<ManageUsersController> ();
 
-            services.AddDistributedMemoryCache ();
-            services.AddSession (options =>
-            {
-                // Set a short timeout for easy testing.
-                options.IdleTimeout = TimeSpan.FromDays(1);
-                options.Cookie.HttpOnly = true;
-                // Make the session cookie essential
-                options.Cookie.IsEssential = true;
-            });
-            // services.AddSession ();
+            // services.AddDistributedMemoryCache ();
+
+            services.AddSession ();
 
             services.AddDbContext<MovieContext> (options => options.UseNpgsql (Configuration["DBInfo:ConnectionString"]));
         }

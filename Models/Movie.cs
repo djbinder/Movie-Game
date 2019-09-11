@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;   // this allows you to use 'List< >'
+using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using movieGame.Infrastructure;
 using System.ComponentModel.DataAnnotations;
 
 namespace movieGame.Models
@@ -13,11 +11,11 @@ namespace movieGame.Models
         [Key]
         [DataMember]
         [Display(Name="Movie Id")]
-        public int MovieId { get; set;}
+        public int? MovieId { get; set;}
 
         [Display(Name="IMDB Id")]
         [DataMember]
-        public string imdbId { get; set; }
+        public string ImdbId { get; set; }
 
         [Display(Name="Movie Title")]
         [DataMember]
@@ -34,7 +32,7 @@ namespace movieGame.Models
 
         [Display(Name="Movie Release Year")]
         [DataMember]
-        public int Year { get; set;}
+        public int? Year { get; set;}
 
         [Display(Name="Movie Director")]
         [DataMember]

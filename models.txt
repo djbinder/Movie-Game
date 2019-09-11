@@ -1,0 +1,16 @@
+A) USER
+*
+
+B) MOVIE
+    1) Clues
+    2) Hints
+
+C) GAME
+    1) Type
+        1.1) Single Player Game
+            1.1.1) User
+            1.1.2) Movie
+        1.2) Multi Player Games
+            1.2.1) Teams
+            1.2.1) Movie
+
