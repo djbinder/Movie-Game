@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using movieGame.Controllers.MixedControllers;
 using movieGame.Infrastructure;
-using movieGame.Interfaces;
 using movieGame.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -16,10 +15,7 @@ namespace movieGame.Controllers.PlayerControllers.ManageUsersController
 {
     public class ManageUsersController : Controller
     {
-        // movieGame.Interfaces.IDateTime
-        // private readonly IDateTime _dateTime;
-        private readonly ISessionUser _sessionUser;
-        private readonly SessionUser2 _sessionUser2;
+        private readonly SessionUser _sessionUser;
 
         private static MovieContext _context;
         public Helpers _h = new Helpers ();
@@ -28,41 +24,14 @@ namespace movieGame.Controllers.PlayerControllers.ManageUsersController
 
         public static GetMovieInfoController GetMovie { get => _getMovie; set => _getMovie = value; }
 
-        public ManageUsersController (MovieContext context, ISessionUser sessionUser, SessionUser2 sessionUser2)
+        public ManageUsersController (MovieContext context, SessionUser sessionUser)
         {
             _context = context;
             _sessionUser = sessionUser;
-            _sessionUser2 = sessionUser2;
         }
-        // public ManageUsersController (MovieContext context, IDateTime dateTime, ISessionUser sessionUser)
-        // {
-        //     _context = context;
-        //     _dateTime = dateTime;
-        //     _sessionUser = sessionUser;
-        // }
+
 
         #region MANAGE ROUTING ------------------------------------------------------------
-
-        // [HttpGet ("")]
-        // public IActionResult ViewHomePage ()
-        // {
-        //     _h.StartMethod ();
-
-        //     var currentTime = _dateTime.Now;
-        //     Console.WriteLine ($"currentTime: {currentTime}");
-
-        //     var currentTimeString = currentTime.ToString ();
-        //     HttpContext.Session.SetString ("TIME", currentTimeString);
-        //     Console.WriteLine ($"currentTimeString: {currentTimeString}");
-
-        //     ISessionUser sUser = _sessionUser;
-        //     // sUser.SessionUser.SessionUserName = "DANNY BOY";
-        //     Console.WriteLine ($"sUser: {sUser}");
-        //     // Console.WriteLine ($"sUser: {sUser.SessionUser}");
-
-        //     // CheckSession ();
-        //     return View ("Index");
-        // }
 
         [HttpGet ("user/{id}")]
         public IActionResult ViewUserProfilePage (int id)
@@ -160,17 +129,16 @@ namespace movieGame.Controllers.PlayerControllers.ManageUsersController
                     }
 
                     SetUserIdInSession (existingUser.UserId);
-
                     SetUserNameInSession (existingUser.UserFirstName);
 
-                    _sessionUser2.SessionUser2Id = existingUser.UserId;
-                    var sessionUser2UserId = _sessionUser2.SessionUser2Id;
-                    Console.WriteLine($"sessionUser2UserId: {sessionUser2UserId}");
+                    // _sessionUser.SessionUserId = existingUser.UserId;
+                    // var sessionUserId = _sessionUser.SessionUserId;
+                    // Console.WriteLine($"sessionUserUserId: {sessionUserId}");
+
+                    // SetSessionUserIdInSession(sessionUserId);
 
                     string userFirstName = HttpContext.Session.GetString ("UserName");
-                    Console.WriteLine ($"userFirstName: {userFirstName}");
-
-                    CheckSession ();
+                    // Console.WriteLine ($"userFirstName: {userFirstName}");
 
                     return RedirectToAction ("ViewGameListPage", "ShowViews");
                 }
@@ -180,28 +148,33 @@ namespace movieGame.Controllers.PlayerControllers.ManageUsersController
 
         public void SetUserIdInSession (int userId)
         {
-            _h.StartMethod ();
-            Console.WriteLine ($"userId: {userId}");
+            // _h.StartMethod ();
+            // Console.WriteLine ($"userId: {userId}");
             HttpContext.Session.SetInt32 ("UserId", userId);
-
-
+        }
+        public void SetSessionUserIdInSession (int sessionUserId)
+        {
+            // _h.StartMethod ();
+            // Console.WriteLine ($"sessionUserId: {sessionUserId}");
+            HttpContext.Session.SetInt32 ("SessionUserId",sessionUserId);
         }
 
         public int GetUserIdFromSession ()
         {
-            _h.StartMethod ();
+            // _h.StartMethod ();
             int userId = (int) HttpContext.Session.GetInt32 ("UserId");
-            Console.WriteLine ($"userId: {userId}");
+            // Console.WriteLine ($"userId: {userId}");
             return userId;
         }
+
 
         public void SetUserNameInSession (string firstName)
         {
             _h.StartMethod ();
             Console.WriteLine ($"firstName: {firstName}");
             HttpContext.Session.SetString ("UserName", firstName);
-
         }
+
 
         [HttpGet ("log_player_out")]
         public IActionResult LogPlayerOut ()
@@ -210,23 +183,24 @@ namespace movieGame.Controllers.PlayerControllers.ManageUsersController
             return RedirectToAction ("Index");
         }
 
-        public int CheckSession ()
-        {
-            _h.StartMethod ();
-            int? userId = HttpContext.Session.GetInt32 ("UserId");
-            Console.WriteLine ($"userId': {userId}");
 
-            if (userId == null)
-            {
-                Console.WriteLine ("NO ID IN SESSION");
-                return 0;
-            }
+        // public int CheckSession ()
+        // {
+        //     _h.StartMethod ();
+        //     int? userId = HttpContext.Session.GetInt32 ("UserId");
+        //     Console.WriteLine ($"userId': {userId}");
 
-            HttpContext.Session.SetInt32 ("UserId", (int) userId);
-            Console.WriteLine ($"continuing session with id {userId}");
+        //     if (userId == null)
+        //     {
+        //         Console.WriteLine ("NO ID IN SESSION");
+        //         return 0;
+        //     }
 
-            return (int) userId;
-        }
+        //     HttpContext.Session.SetInt32 ("UserId", (int) userId);
+        //     Console.WriteLine ($"continuing session with id {userId}");
+
+        //     return (int) userId;
+        // }
 
         [HttpGet ("clear_session")]
         public IActionResult ClearSession ()

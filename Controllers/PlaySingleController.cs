@@ -28,32 +28,9 @@ namespace movieGame.Controllers.PlaySingleController
             _getMovieInfo = getMovieInfo;
 
         }
-        // public PlaySingleController (MovieContext context, GetMovieInfoController getMovieInfo, ManageUsersController manageUsers)
-        // {
-        //     _context = context;
-        //     _getMovieInfo = getMovieInfo;
-        //     _manageUsers = manageUsers;
-        // }
+
 
         #region MANAGE ROUTING ------------------------------------------------------------
-
-        // [HttpGet("")]
-        // public IActionResult PlaySinglePlayerGame()
-        // {
-
-        //     _h.StartMethod();
-
-        //     // var currentTime = HttpContext.Session.GetString ("TIME");
-        //     // Console.WriteLine ($"'currentTime' from session PLAY SINGLE: {currentTime}");
-
-        //     string thisGamesPlayerName = ViewBag.PlayerName = HttpContext.Session.GetString("UserName");
-        //     Console.WriteLine($"PlaySingleController > PlaySinglePlayerGame > 'thisGamesPlayerName': {thisGamesPlayerName}");
-
-        //     // _manageUsers.CheckSession ();
-        //     // SetThisGamesMovie ();
-        //     return View("PlaySingle");
-        // }
-
 
 
 
@@ -118,6 +95,7 @@ namespace movieGame.Controllers.PlaySingleController
 
             return currentMovieId;
         }
+
 
         public Movie SetThisGamesMovie ()
         {

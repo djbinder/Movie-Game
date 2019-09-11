@@ -121,20 +121,23 @@ namespace movieGame.Controllers.MixedControllers
 
         public Hints GetMoviesHints (Movie movie)
         {
-            Hints thisMoviesHints = new Hints ();
-            thisMoviesHints.Director = GetMovieDirector (movie);
-            thisMoviesHints.Genre = GetMovieGenre (movie);
-            thisMoviesHints.ReleaseYear = GetMovieReleaseYear (movie).ToString ();
+            Hints thisMoviesHints = new Hints
+            {
+                Director    = GetMovieDirector(movie),
+                Genre       = GetMovieGenre(movie),
+                ReleaseYear = GetMovieReleaseYear(movie).ToString()
+            };
             return thisMoviesHints;
         }
 
         public Hints GetMoviesHints (JObject movieJObject)
         {
-            Hints thisMoviesHints = new Hints ();
-            thisMoviesHints.Director = GetMovieDirector (movieJObject);
-            thisMoviesHints.Genre = GetMovieGenre (movieJObject);
-            thisMoviesHints.ReleaseYear = GetMovieReleaseYear (movieJObject);
-
+            Hints thisMoviesHints = new Hints
+            {
+                Director    = GetMovieDirector(movieJObject),
+                Genre       = GetMovieGenre(movieJObject),
+                ReleaseYear = GetMovieReleaseYear(movieJObject)
+            };
             return thisMoviesHints;
         }
 

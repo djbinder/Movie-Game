@@ -45,17 +45,11 @@ namespace movieGame.Models
         }
     }
 
+
+
     public class SessionUser
     {
         public int SessionUserId { get; set; }
         public string SessionUserName { get; set; }
-
-        public SessionUser () { }
-    }
-
-    public class SessionUser2
-    {
-        public int SessionUser2Id { get; set; }
-        public string SessionUser2Name { get; set; }
     }
 }
