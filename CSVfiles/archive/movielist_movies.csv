@@ -1,0 +1,13 @@
+﻿MovieId,CreatedAt,PlayerId,Title,UpdatedAt,Year,Decade,Director,Poster
+1,NOW(),null,Goodfellas,NOW(),1990,1990's,Martin Scorsese,https://m.media-amazon.com/images/M/MV5BY2NkZjEzMDgtN2RjYy00YzM1LWI4ZmQtMjIwYjFjNmI3ZGEwXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg
+2,NOW(),null,Napoleon Dynamite,NOW(),2004,2000's,Jared Hess,
+3,NOW(),null,Toy Story,NOW(),1995,1990's,John Lasseter,
+4,NOW(),null,The Shawshank Redemption,NOW(),1994,1990's,Frank Darabont,
+5,NOW(),null,Ferris Bueller's Day Off,NOW(),1986,1980's,John Hughes,
+6,NOW(),null,Jurassic Park,NOW(),1993,1990's,Steven Spielberg,
+7,NOW(),null,Forrest Gump,NOW(),1994,1990's,Robert Zemeckis,
+8,NOW(),null,The Wolf of Wall Street,NOW(),2013,2010's,Martin Scorsese,
+9,NOW(),null,Meet the Parents,NOW(),2000,2000's,Jay Roach,
+10,NOW(),null,Tommy Boy,NOW(),1995,1990's,Peter Segal,
+11,NOW(),null,La La Land,NOW(),2016,2010's,Damien Chazelle,
+12,NOW(),null,Superbad,NOW(),2007,2000's,Greg Mottola,

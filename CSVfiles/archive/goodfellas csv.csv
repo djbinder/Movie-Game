@@ -1,0 +1,11 @@
+﻿ClueId,ClueDifficulty,CluePoints,ClueText,CreatedAt,MovieId,UpdatedAt
+1,1,10,Helicopter,NOW(),1,NOW()
+2,2,9,Trunk,NOW(),1,NOW()
+3,3,8,Shovel,NOW(),1,NOW()
+4,4,7,Toupee,NOW(),1,NOW()
+5,5,6,Garlic,NOW(),1,NOW()
+6,6,5,Coke,NOW(),1,NOW()
+7,7,4,Fur coat,NOW(),1,NOW()
+8,8,3,Shine box,NOW(),1,NOW()
+9,9,2,Lufthansa,NOW(),1,NOW()
+10,10,1,Henry Hill,NOW(),1,NOW()

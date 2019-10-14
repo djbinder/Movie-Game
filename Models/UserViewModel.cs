@@ -1,7 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace movieGame.Models {
-    public class RegisterViewModel {
+    public class RegisterViewModel 
+    {
         [Required]
         [Display (Name = "First Name")]
         public string UserFirstName { get; set; }

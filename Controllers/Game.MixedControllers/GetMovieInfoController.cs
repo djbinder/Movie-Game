@@ -1,21 +1,21 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using movieGame.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using RestSharp;
+using C = System.Console;
+
 
 namespace movieGame.Controllers.MixedControllers
 {
     public class GetMovieInfoController : Controller
     {
-        private MovieContext _context;
+        private readonly MovieGameContext _context;
 
-        public GetMovieInfoController (MovieContext context)
+        public GetMovieInfoController (MovieGameContext context)
         {
             _context = context;
         }
@@ -30,7 +30,6 @@ namespace movieGame.Controllers.MixedControllers
         public int GetCountOfMoviesInDb ()
         {
             int movieCount = _context.Movies.Count ();
-            // Console.WriteLine($"GetCountOfMoviesInDb() : 'movieCount' = {movieCount}");
             return movieCount;
         }
 
@@ -45,13 +44,13 @@ namespace movieGame.Controllers.MixedControllers
         {
             string apiQueryTitleYear = "https://www.omdbapi.com/?t=" + MovieName + "&y=" + MovieYear + "&apikey=4514dc2d";
 
-            RestClient client = new RestClient (apiQueryTitleYear);
+            RestClient client   = new RestClient (apiQueryTitleYear);
             RestRequest request = new RestRequest (Method.GET);
             request.AddHeader ("Postman-Token", "688d818e-29a5-498f-9c1c-907c7cb77c7f")
                 .AddHeader ("Cache-Control", "no-cache");
 
             IRestResponse response = client.Execute (request);
-            string responseJSON = response.Content;
+            string responseJSON    = response.Content;
 
             JObject movieJObject = JObject.Parse (responseJSON);
 
@@ -60,90 +59,79 @@ namespace movieGame.Controllers.MixedControllers
 
         public int? GetMovieId (Movie movie)
         {
-            int? movieId = movie.MovieId;
-            return movieId;
-
+            return movie.MovieId;
         }
 
         public string GetMovieTitle (Movie movie)
         {
-            string movieTitle = movie.Title;
-            return movieTitle;
+            return movie.Title;
         }
 
         public string GetMovieTitle (JObject movieJObject)
         {
-            string movieTitle = (string) movieJObject["Title"];
-            return movieTitle;
+            return (string) movieJObject["Title"];
         }
 
         public int? GetMovieReleaseYear (Movie movie)
         {
-            int? movieReleaseYear = movie.Year;
-            return movieReleaseYear;
+            return movie.Year;
         }
 
         public string GetMovieReleaseYear (JObject movieJObject)
         {
-            string movieReleaseYear = (string) movieJObject["Year"];
-            return movieReleaseYear;
+            return (string) movieJObject["Year"];
         }
 
         public string GetMovieGenre (Movie movie)
         {
-            string movieGenre = movie.Genre;
-            return movieGenre;
+            return movie.Genre;
         }
 
         public string GetMovieGenre (JObject movieJObject)
         {
-            string movieGenre = (string) movieJObject["Genre"];
-            return movieGenre;
+            return (string) movieJObject["Genre"];
         }
 
         public string GetMovieDirector (Movie movie)
         {
-            string movieDirector = movie.Director;
-            return movieDirector;
+            return movie.Director;
         }
 
         public string GetMovieDirector (JObject movieJObject)
         {
-            string movieDirector = (string) movieJObject["Director"];
-            return movieDirector;
+            return (string) movieJObject["Director"];
         }
 
         public List<Clue> GetMovieClues (Movie movie)
         {
-            List<Clue> clues = movie.Clues.ToList ();
-            return clues;
+            return movie.Clues.ToList ();
         }
 
-        public Hints GetMoviesHints (Movie movie)
+        public Hint GetMoviesHint (Movie movie)
         {
-            Hints thisMoviesHints = new Hints
+            return new Hint
             {
                 Director    = GetMovieDirector(movie),
                 Genre       = GetMovieGenre(movie),
                 ReleaseYear = GetMovieReleaseYear(movie).ToString()
             };
-            return thisMoviesHints;
         }
 
-        public Hints GetMoviesHints (JObject movieJObject)
+
+
+        public Hint GetMoviesHint (JObject movieJObject)
         {
-            Hints thisMoviesHints = new Hints
+            return new Hint
             {
                 Director    = GetMovieDirector(movieJObject),
                 Genre       = GetMovieGenre(movieJObject),
                 ReleaseYear = GetMovieReleaseYear(movieJObject)
             };
-            return thisMoviesHints;
         }
 
-        public void PrintHints (Hints h)
+        public void PrintHints (Hint h)
         {
-            Console.WriteLine ($"HINTS: Genre = {h.Genre}  |  ReleaseYear = {h.ReleaseYear}  |  Director = {h.Director}");
+            C.WriteLine ($"HINTS: Genre = {h.Genre}  |  ReleaseYear = {h.ReleaseYear}  |  Director = {h.Director}");
         }
 
         [HttpGet ("movie/{id}")]
@@ -151,21 +139,21 @@ namespace movieGame.Controllers.MixedControllers
         {
             ViewBag.Movies = _context.Movies.Include (w => w.Clues).SingleOrDefault (x => x.MovieId == id);
 
-            var currentMovie = _context.Movies.Include (w => w.Clues).SingleOrDefault (x => x.MovieId == id);
-            var currentMovieTitle = currentMovie.Title;
-            var currentMovieYear = currentMovie.Year;
+            Movie currentMovie       = _context.Movies.Include (w => w.Clues).SingleOrDefault (x => x.MovieId == id);
+            string currentMovieTitle = currentMovie.Title;
+            int? currentMovieYear    = currentMovie.Year;
 
-            JObject movieJObject = GetMovieJSON (currentMovieTitle, currentMovieYear);
+            JObject movieJObject = GetMovieJSON (currentMovieTitle, (int)currentMovieYear);
 
-            string movieTitle = movieJObject["Title"].ToString ();
+            string movieTitle  = movieJObject["Title"].ToString ();
             string movieRating = (string) movieJObject["Rated"];
-            string movieYear = (string) movieJObject["Year"];
+            string movieYear   = (string) movieJObject["Year"];
 
-            string movieActors = ViewBag.Actors = (string) movieJObject["Actors"];
-            string movieWriter = ViewBag.MovieWriter = (string) movieJObject["Writer"];
+            string movieActors   = ViewBag.Actors = (string) movieJObject["Actors"];
+            string movieWriter   = ViewBag.MovieWriter = (string) movieJObject["Writer"];
             string movieDirector = ViewBag.MovieDirector = (string) movieJObject["Director"];
-            string movieGenre = ViewBag.MovieGenre = (string) movieJObject["Genre"];
-            string moviePoster = ViewBag.MoviePoster = (string) movieJObject["Poster"];
+            string movieGenre    = ViewBag.MovieGenre = (string) movieJObject["Genre"];
+            string moviePoster   = ViewBag.MoviePoster = (string) movieJObject["Poster"];
 
             return View ("SingleMovie");
         }
@@ -188,16 +176,16 @@ namespace movieGame.Controllers.MixedControllers
             string pictureBaseURL = "https://image.tmdb.org/t/p/w";
 
             // these are picture sizes
-            int pictureSizeLarge = 400;
-            int pictureSizeMedium = 300;
-            int pictureSizeSmall = 200;
+            int pictureSizeLarge    = 400;
+            int pictureSizeMedium   = 300;
+            int pictureSizeSmall    = 200;
             int pictureSizeSmallest = 92;
 
             string actorPictureURL = (string) actorJSON["results"][0]["profile_path"];
 
-            string actorPicLarge = ViewBag.ActorPicLarge = pictureBaseURL + pictureSizeLarge + actorPictureURL;
-            string actorPicMedium = ViewBag.ActorPicMedium = pictureBaseURL + pictureSizeMedium + actorPictureURL;
-            string actorPicSmall = ViewBag.ActorPicSmall = pictureBaseURL + pictureSizeSmall + actorPictureURL;
+            string actorPicLarge    = ViewBag.ActorPicLarge    = pictureBaseURL + pictureSizeLarge    + actorPictureURL;
+            string actorPicMedium   = ViewBag.ActorPicMedium   = pictureBaseURL + pictureSizeMedium   + actorPictureURL;
+            string actorPicSmall    = ViewBag.ActorPicSmall    = pictureBaseURL + pictureSizeSmall    + actorPictureURL;
             string actorPicSmallest = ViewBag.ActorPicSmallest = pictureBaseURL + pictureSizeSmallest + actorPictureURL;
 
             return Json (actorJSON);

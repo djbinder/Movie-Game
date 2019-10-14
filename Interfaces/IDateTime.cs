@@ -1,17 +1,17 @@
-using System;
-using movieGame.Models;
+// using System;
+// using movieGame.Models;
 
-namespace movieGame.Interfaces
-{
-    public interface IDateTime
-    {
-        // System.DateTime
-        // DateTime IDateTime.Now
-        DateTime Now { get; }
-    }
+// namespace movieGame.Interfaces
+// {
+//     public interface IDateTime
+//     {
+//         // System.DateTime
+//         // DateTime IDateTime.Now
+//         DateTime Now { get; }
+//     }
 
-    public interface ISessionUser
-    {
-        Models.SessionUser SessionUser { get; set; }
-    }
-}
+//     public interface ISessionUser
+//     {
+//         Models.SessionUser SessionUser { get; set; }
+//     }
+// }

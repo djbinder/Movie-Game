@@ -11,14 +11,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 
+
+#pragma warning disable CS1998
 namespace movieGame.Controllers.PlayTeamGameController
 {
-#pragma warning disable CS1998
     [Route ("group")]
     public class PlayTeamGameController : Controller
     {
-        private readonly MovieContext _context;
-        // private MovieContext _context;
+        private readonly MovieGameContext _context;
+        // private MovieGameContext _context;
         public Helpers _h = new Helpers ();
 
         public string firstTeamNameKey = "FirstTeamName";
@@ -33,7 +34,7 @@ namespace movieGame.Controllers.PlayTeamGameController
         public bool isThereACurrentGameInSession = false;
         private readonly GetMovieInfoController _getMovieInfoFromDatabase;
 
-        public PlayTeamGameController (MovieContext context, GetMovieInfoController getMovieInfoFromDatabase)
+        public PlayTeamGameController (MovieGameContext context, GetMovieInfoController getMovieInfoFromDatabase)
         {
             _context = context;
             _getMovieInfoFromDatabase = getMovieInfoFromDatabase;
@@ -56,6 +57,7 @@ namespace movieGame.Controllers.PlayTeamGameController
             Console.WriteLine ($"Second Team Points: {secondTeamPoints}");
             return View ("playgroup");
         }
+
 
         // this is referenced in the HTML
         [HttpGet ("add_teams_form")]
@@ -205,14 +207,14 @@ namespace movieGame.Controllers.PlayTeamGameController
         }
 
         [HttpPost ("create_game")]
-        public async Task<Models.Game> CreateNewGame ()
+        public async Task<TeamPlayGame> CreateNewGame ()
         {
-            Models.Game newGame = new Models.Game
+            TeamPlayGame newGame = new TeamPlayGame
             {
                 FirstTeam = GetTeamFromDatabase (GetTeamIdFromSession (firstTeamIdKey)),
                 SecondTeam = GetTeamFromDatabase (GetTeamIdFromSession (secondTeamIdKey)),
-                ListOfMoviesGuessedCorrectly = new List<Movie> (),
-                ListOfMoviesQuit = new List<Movie> (),
+                // ListOfMoviesGuessedCorrectly = new List<Movie> (),
+                // ListOfMoviesQuit = new List<Movie> (),
                 ListOfRounds = new List<Round> (),
                 GameTeamJoin = new List<GameTeamJoin> ()
             };
@@ -220,6 +222,7 @@ namespace movieGame.Controllers.PlayTeamGameController
             SetGameIdInSession (newGame.GameId);
             return newGame;
         }
+
 
         [HttpPost ("create_round")]
         public async Task<Round> CreateNewRound ()
@@ -342,6 +345,8 @@ namespace movieGame.Controllers.PlayTeamGameController
             Models.Game thisGame = _context.Games.Include (gtj => gtj.GameTeamJoin).ThenInclude (t => t.Team).SingleOrDefault (game => game.GameId == thisGamesId);
             return thisGame;
         }
+
+
 
         [HttpGet ("get_movie")]
         public Movie GetMovieFromDatabase ()
@@ -563,7 +568,7 @@ namespace movieGame.Controllers.PlayTeamGameController
         {
             Game thisGame = GetGameFromDatabase ();
             var thisGamesId = thisGame.GameId;
-            DateTime thisGameStartedAt = thisGame.CreatedAt;
+            DateTime thisGameStartedAt = thisGame.DateCreated;
 
             var thisGamesMovie = GetMovieFromDatabase ();
             var thisGamesMovieId = thisGamesMovie.MovieId;

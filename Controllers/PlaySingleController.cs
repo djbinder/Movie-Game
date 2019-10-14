@@ -15,14 +15,14 @@ namespace movieGame.Controllers.PlaySingleController
     [Route ("single")]
     public class PlaySingleController : Controller
     {
-        private readonly MovieContext _context;
+        private readonly MovieGameContext _context;
         public Helpers _h = new Helpers ();
 
         private readonly GetMovieInfoController _getMovieInfo;
 
         // private readonly ManageUsersController _manageUsers;
 
-        public PlaySingleController (MovieContext context, GetMovieInfoController getMovieInfo)
+        public PlaySingleController (MovieGameContext context, GetMovieInfoController getMovieInfo)
         {
             _context = context;
             _getMovieInfo = getMovieInfo;
@@ -109,7 +109,7 @@ namespace movieGame.Controllers.PlaySingleController
             SetMovieInfoInSession (thisGamesMovie);
             SetGameGuessCountInSession ();
 
-            Hints thisMoviesHints = _getMovieInfo.GetMoviesHints (thisGamesMovie);
+            Hint thisMoviesHints = _getMovieInfo.GetMoviesHint(thisGamesMovie);
 
             return thisGamesMovie;
         }
@@ -147,7 +147,7 @@ namespace movieGame.Controllers.PlaySingleController
 
         public void SetMovieIdInSession (Movie m)
         {
-            HttpContext.Session.SetInt32 ("SessionMovieId", m.MovieId);
+            HttpContext.Session.SetInt32 ("SessionMovieId", (int)m.MovieId);
         }
 
         [HttpGet ("get_movie_id")]
@@ -171,7 +171,7 @@ namespace movieGame.Controllers.PlaySingleController
 
         public void SetMovieReleaseYearInSession (Movie m)
         {
-            HttpContext.Session.SetInt32 ("SessionMovieReleaseYear", m.Year);
+            HttpContext.Session.SetInt32 ("SessionMovieReleaseYear", (int)m.Year);
         }
 
         [HttpGet ("get_movie_release_year")]
@@ -266,6 +266,7 @@ namespace movieGame.Controllers.PlaySingleController
             currentGuessCount = currentGuessCount - 1;
             HttpContext.Session.SetInt32 ("GuessCount", (int) currentGuessCount);
             // Console.WriteLine($"GuessMovie() : new guess count: {currentGuessCount}");
+
 
             string thisGamesMovieTitle = GetMovieTitleFromSession ();
 
