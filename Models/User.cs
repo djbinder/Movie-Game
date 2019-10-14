@@ -1,41 +1,48 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Microsoft.AspNetCore.Identity;
+using movieGame.Models;
 
 namespace movieGame.Models
 {
-    public class User : BaseEntity
+    public class User : IBaseEntity
     {
         [Key]
         [DataMember]
-        public int UserId { get; set; }
+        public int UserId                    { get; set; }
 
         [DataMember]
-        public string UserFirstName { get; set; }
+        public string UserFirstName          { get; set; }
 
-        public string UserLastName { get; set; }
+        public string UserLastName           { get; set; }
 
-        public string UserEmail { get; set; }
+        public string UserEmail              { get; set; }
 
-        public string UserPassword { get; set; }
+        public string UserPassword           { get; set; }
 
-        public string Confirm { get; set; }
+        public string Confirm                { get; set; }
+
+        public DateTime DateCreated { get; set; }
+        public DateTime DateUpdated { get; set; }
+
 
         [Display (Name = "Player Points")]
-        public int Points { get; set; }
+        public int? Points                    { get; set; }
+
 
         [Display (Name = "Games Attempted")]
-        public int GamesAttempted { get; set; }
+        public int? GamesAttempted            { get; set; }
+
 
         [Display (Name = "Games Won")]
-        public int GamesWon { get; set; }
+        public int? GamesWon                  { get; set; }
+
 
         [Display (Name = "Games Lost")]
-        public int GamesLost { get { return GamesAttempted - GamesWon; } }
+        public int? GamesLost { get { return GamesAttempted - GamesWon; } }
 
-        [Display (Name = "Player Coins")]
-        public int UserCoins { get; set; }
 
         public IList<MovieUserJoin> MovieUserJoin { get; set; }
 
@@ -44,7 +51,6 @@ namespace movieGame.Models
             MovieUserJoin = new List<MovieUserJoin> ();
         }
     }
-
 
 
     public class SessionUser

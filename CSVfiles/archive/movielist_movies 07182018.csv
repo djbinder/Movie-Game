@@ -1,0 +1,13 @@
+﻿MovieId,CreatedAt,Title,UpdatedAt,Year,Decade,Director,PlayerId,Poster,imdbId,Released,Runtime,Genre
+1,NOW(),Goodfellas,NOW(),1990,1990's,Martin Scorsese,null,https://m.media-amazon.com/images/M/MV5BY2NkZjEzMDgtN2RjYy00YzM1LWI4ZmQtMjIwYjFjNmI3ZGEwXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg,tt0099685,21-Sep-90,146 min,"Crime, Drama"
+2,NOW(),Napoleon Dynamite,NOW(),2004,2000's,Jared Hess,null,"https://m.media-amazon.com/images/M/MV5BNjYwNTA3MDIyMl5BMl5BanBnXkFtZTYwMjIxNjA3._V1_SX300.jpg""",tt0374900,27-Aug-04,96 min,Comedy
+3,NOW(),Toy Story,NOW(),1995,1990's,John Lasseter,null,https://m.media-amazon.com/images/M/MV5BMDU2ZWJlMjktMTRhMy00ZTA5LWEzNDgtYmNmZTEwZTViZWJkXkEyXkFqcGdeQXVyNDQ2OTk4MzI@._V1_SX300.jpg,tt0114709,22-Nov-95,81 min,"Animation, Adventure, Comedy"
+4,NOW(),The Shawshank Redemption,NOW(),1994,1990's,Frank Darabont,null,null,null,null,null,null
+5,NOW(),Ferris Bueller's Day Off,NOW(),1986,1980's,John Hughes,null,null,null,null,null,null
+6,NOW(),Jurassic Park,NOW(),1993,1990's,Steven Spielberg,null,null,null,null,null,null
+7,NOW(),Forrest Gump,NOW(),1994,1990's,Robert Zemeckis,null,null,null,null,null,null
+8,NOW(),The Wolf of Wall Street,NOW(),2013,2010's,Martin Scorsese,null,null,null,null,null,null
+9,NOW(),Meet the Parents,NOW(),2000,2000's,Jay Roach,null,null,null,null,null,null
+10,NOW(),Tommy Boy,NOW(),1995,1990's,Peter Segal,null,null,null,null,null,null
+11,NOW(),La La Land,NOW(),2016,2010's,Damien Chazelle,null,null,null,null,null,null
+12,NOW(),Superbad,NOW(),2007,2000's,Greg Mottola,null,https://m.media-amazon.com/images/M/MV5BMTc0NjIyMjA2OF5BMl5BanBnXkFtZTcwMzIxNDE1MQ@@._V1_SX300.jpg,null,null,null,null

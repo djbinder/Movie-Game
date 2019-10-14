@@ -10,22 +10,25 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
+using C = System.Console;
 
 namespace movieGame.Controllers.PlayerControllers.ManageUsersController
 {
+    
     public class ManageUsersController : Controller
     {
+        public Helpers _helpers;
+        private static MovieGameContext _context;
         private readonly SessionUser _sessionUser;
 
-        private static MovieContext _context;
-        public Helpers _h = new Helpers ();
 
         private static GetMovieInfoController _getMovie = new GetMovieInfoController (context: _context);
 
         public static GetMovieInfoController GetMovie { get => _getMovie; set => _getMovie = value; }
 
-        public ManageUsersController (MovieContext context, SessionUser sessionUser)
+        public ManageUsersController (Helpers helpers, MovieGameContext context, SessionUser sessionUser)
         {
+            _helpers = helpers;
             _context = context;
             _sessionUser = sessionUser;
         }
@@ -51,6 +54,7 @@ namespace movieGame.Controllers.PlayerControllers.ManageUsersController
             return View ("Userprofile");
         }
 
+
         #endregion MANAGE ROUTING ------------------------------------------------------------
 
         #region LOGIN AND REGISTER ------------------------------------------------------------
@@ -58,11 +62,14 @@ namespace movieGame.Controllers.PlayerControllers.ManageUsersController
         [HttpPost ("registeruser")]
         public IActionResult RegisterUser (UserViewModel model)
         {
-            var firstName = model.RegisterViewModel.UserFirstName;
-            var lastName = model.RegisterViewModel.UserLastName;
-            var email = model.RegisterViewModel.UserEmail;
-            var password = model.RegisterViewModel.UserPassword;
-            var confirmPassword = model.RegisterViewModel.Confirm;
+            _helpers.StartMethod();
+            string firstName       = model.RegisterViewModel.UserFirstName;
+            string lastName        = model.RegisterViewModel.UserLastName;
+            string email           = model.RegisterViewModel.UserEmail;
+            string password        = model.RegisterViewModel.UserPassword;
+            string confirmPassword = model.RegisterViewModel.Confirm;
+
+            C.WriteLine($"firstName : {firstName}\t lastName : {lastName}");
 
             if (ModelState.IsValid)
             {
@@ -82,9 +89,9 @@ namespace movieGame.Controllers.PlayerControllers.ManageUsersController
                     User newUser = new User ()
                     {
                         UserFirstName = firstName,
-                        UserLastName = lastName,
-                        UserPassword = hashedPassword,
-                        UserEmail = email,
+                        UserLastName  = lastName,
+                        UserPassword  = hashedPassword,
+                        UserEmail     = email,
                     };
                     _context.Add (newUser);
                     _context.SaveChanges ();
@@ -103,7 +110,7 @@ namespace movieGame.Controllers.PlayerControllers.ManageUsersController
         [HttpPost ("login")]
         public IActionResult LogUserIn (UserViewModel model)
         {
-            _h.StartMethod ();
+            _helpers.StartMethod ();
 
             var email = model.LoginViewModel.UserEmail;
             var password = model.LoginViewModel.UserPassword;
@@ -170,7 +177,7 @@ namespace movieGame.Controllers.PlayerControllers.ManageUsersController
 
         public void SetUserNameInSession (string firstName)
         {
-            _h.StartMethod ();
+            _helpers.StartMethod ();
             Console.WriteLine ($"firstName: {firstName}");
             HttpContext.Session.SetString ("UserName", firstName);
         }
@@ -241,14 +248,14 @@ namespace movieGame.Controllers.PlayerControllers.ManageUsersController
                 Movie _movie = new Movie
                 {
                     MovieId = movie.MovieId,
-                    Title = movie.Movie.Title,
-                    Year = movie.Movie.Year,
-                    Poster = movie.Movie.Poster
+                    Title   = movie.Movie.Title,
+                    Year    = movie.Movie.Year,
+                    Poster  = movie.Movie.Poster
                 };
 
-                GetMoviePosters (_movie.Title, _movie.Year);
+                GetMoviePosters (_movie.Title, (int)_movie.Year);
 
-                int gamesWon = thisUser.GamesWon;
+                int gamesWon = (int)thisUser.GamesWon;
                 if (movie.MovieId <= gamesWon)
                 {
                     usersMovies.Add (_movie);
@@ -260,8 +267,8 @@ namespace movieGame.Controllers.PlayerControllers.ManageUsersController
         public List<string> GetMoviePosters (string title, int year)
         {
             List<string> usersMoviesPosters = new List<string> ();
-            JObject UserMoviesJObject = GetMovie.GetMovieJSON (title, year);
-            string moviePoster = UserMoviesJObject["Poster"].ToString ();
+            JObject UserMoviesJObject       = GetMovie.GetMovieJSON (title, year);
+            string moviePoster              = UserMoviesJObject["Poster"].ToString ();
             usersMoviesPosters.Add (moviePoster);
 
             return usersMoviesPosters;
@@ -269,7 +276,7 @@ namespace movieGame.Controllers.PlayerControllers.ManageUsersController
 
         public IList<User> GetTopTenLeaders ()
         {
-            var topTenLeaders = _context.Users.OrderByDescending (t => t.Points).Take (10).ToList ();
+            List<User> topTenLeaders = _context.Users.OrderByDescending (t => t.Points).Take (10).ToList ();
             return topTenLeaders;
         }
 

@@ -11,16 +11,16 @@ namespace movieGame.Controllers
 {
     public class ShowViewsController : Controller
     {
+        public Helpers _helpers;
+        private static MovieGameContext _context;
         private readonly SessionUser _sessionUser;
-        private static MovieContext _context;
-
-        public Helpers _h = new Helpers ();
         private readonly ManageUsersController _manageUsers;
 
 
 
-        public ShowViewsController (MovieContext context, SessionUser sessionUser, ManageUsersController manageUsers)
+        public ShowViewsController (Helpers helpers, MovieGameContext context, SessionUser sessionUser, ManageUsersController manageUsers)
         {
+            _helpers = helpers;
             _context = context;
             _sessionUser = sessionUser;
             _manageUsers = manageUsers;
@@ -48,13 +48,14 @@ namespace movieGame.Controllers
         [HttpGet ("")]
         public IActionResult ViewHomePage ()
         {
-            // _h.StartMethod ();
+            _helpers.StartMethod();
             // var currentUserId = HttpContext.Session.GetInt32("SessionUserId");
             // Console.WriteLine($"currentUserId: {currentUserId}");
 
-            CheckSession ();
+            // CheckSession ();
             return View ("Index");
         }
+
 
 
 

@@ -1,561 +1,438 @@
+// Last true-upped with BaseballScraper on October 14, 2019
+
+
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Json;
 using System.Text;
-using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using movieGame.Models;
-// using MarkdownLog;
+using Microsoft.Extensions.DiagnosticAdapter;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using C = System.Console;
 
+
+#pragma warning disable CS0219, CS0414, IDE0044, IDE0052, IDE0059, IDE0060, IDE0063, IDE0067, IDE1006
 namespace movieGame.Infrastructure
-{
-    public class Helpers
+{public class Helpers
     {
-        private static string currentTime     = DateTime.Now.ToShortTimeString();
+        public Helpers() {}
 
-        public string Start { get; set; }    = "START";
+        private static string currentTime = DateTime.Now.ToShortTimeString();
 
-        public string Complete { get; set; } = "COMPLETE";
+
 
 
         #region LOGGERS ------------------------------------------------------------
 
-            public void Intro(Object obj, String str)
-            {
-                Console.WriteLine();
-                Console.ForegroundColor = ConsoleColor.Green;
 
-                string upperString = str.ToUpper();
+        public void Intro(object obj, string str)
+        {
+            C.ForegroundColor = ConsoleColor.Green;
+            StackFrame frame        = new StackFrame(1, true);
+            int lineNumber          = frame.GetFileLineNumber();
+            C.WriteLine($"\n{str.ToUpper()} --> {obj} --> [@ Line# {lineNumber}]\n");
+            C.ResetColor();
+        }
 
-                StackFrame frame = new StackFrame(1, true);
-
-                var lineNumber = frame.GetFileLineNumber();
-
-                Console.WriteLine($"// {upperString} --> {obj} --> [@ Line# {lineNumber}]");
-                Console.ResetColor();
-                Console.WriteLine();
-            }
-
-            public void GuardRails(string logMessage, int numberOfRails)
-            {
-                for(int topRails = 1; numberOfRails >= topRails; topRails++)
-                {
-                    Console.WriteLine("////////////////////////////////////////////////////////////");
-                }
-                Console.WriteLine();
-
-                Console.WriteLine(logMessage);
-
-                Console.WriteLine();
-                for(int bottomRails = 1; numberOfRails >= bottomRails; bottomRails++)
-                {
-                    Console.WriteLine("////////////////////////////////////////////////////////////");
-                }
-            }
-
-            public void TypeAndIntro(Object o, string x)
+            public void TypeAndIntro(object o, string x)
             {
                 Intro(o, x);
-                Console.WriteLine($"Type for {x} --> {o.GetType()}");
+                C.WriteLine($"Type for {x} --> {o.GetType()}");
             }
 
-            public void PrintKeysAndValues(Object obj)
+        public void PrintJObjectItems(JObject JObjectToPrint)
+        {
+            JObject responseToJson = JObjectToPrint;
+            foreach(KeyValuePair<string, JToken> jsonItem in responseToJson)
             {
-                foreach(PropertyInfo property in obj.GetType().GetProperties())
-                {
-                    var propertyValue = property.GetValue(obj, null).ToString();
-                    Console.WriteLine($"{property.Name} --> {propertyValue}");
-                }
+                C.ForegroundColor = ConsoleColor.DarkMagenta;
+                C.WriteLine($"{jsonItem.Key.ToUpper()}");
+                C.ResetColor();
+                C.WriteLine($"{jsonItem.Value}\n");
             }
+        }
 
-            public void PrintJObjectItems(JObject JObjectToPrint)
+
+
+        // * Serialize object JSON stream and print to console
+        public void PrintJsonFromObject (object obj)
+        {
+            // Create a stream to serialize object to
+            MemoryStream mS = new MemoryStream();
+
+            Type objType = obj.GetType();
+            C.WriteLine($"OBJECT TYPE BEING SERIALIZED IS: {objType}");
+
+            // Serialize object to stream
+            DataContractJsonSerializer serializer = new DataContractJsonSerializer(objType);
+
+            serializer.WriteObject(mS, obj);
+            byte[] json      = mS.ToArray();
+                    mS.Position = 0;
+
+            StreamReader sR = new StreamReader(mS);
+
+            // Print all object content in json format
+            C.WriteLine(sR.ReadToEnd());
+
+            sR.Dispose();
+            mS.Close();
+
+            C.WriteLine(Encoding.UTF8.GetString(json, 0, json.Length));
+        }
+
+
+        public void EnumerateOverRecords(IEnumerable<object> records)
+        {
+            IEnumerator<object> recordsEnumerator = records.GetEnumerator();
+            while(recordsEnumerator.MoveNext())
             {
-                var responseToJson = JObjectToPrint;
-                foreach(var jsonItem in responseToJson)
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                    Console.WriteLine($"{jsonItem.Key.ToUpper()}");
-                    Console.ResetColor();
-                    Console.WriteLine(jsonItem.Value);
-                    Console.WriteLine();
-                }
+                C.WriteLine(recordsEnumerator.Current);
             }
+        }
 
-            /// <summary> Serialize a given object to a JSON stream (i.e., take a given object and convert it to JSON ) and print to console </summary>
-            /// <param name="obj"> An object; typically a JObject (not certain how it deals with objects besides JObjects) </param>
-            public void PrintJsonFromObject (Object obj)
+
+        public void PrintKeyValuePairs(IEnumerable<KeyValuePair<string, dynamic>> keyValuePairs)
+        {
+            int kvpNumber = 1;
+            foreach(KeyValuePair<string, dynamic> kvp in keyValuePairs)
             {
-                // _c.StartMethod();
-                //Create a stream to serialize the object to.
-                MemoryStream mS = new MemoryStream();
-
-                var objType = obj.GetType();
-                Console.WriteLine($"OBJECT TYPE BEING SERIALIZED IS: {objType}");
-
-                // Serializer the given object to the stream
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(objType);
-
-                serializer.WriteObject(mS, obj);
-                byte[] json      = mS.ToArray();
-                     mS.Position = 0;
-
-                StreamReader sR = new StreamReader(mS);
-                // this prints all object content in json format
-                Console.WriteLine(sR.ReadToEnd());
-
-                mS.Close();
-
-                Console.WriteLine(Encoding.UTF8.GetString(json, 0, json.Length));
+                C.WriteLine(kvpNumber);
+                C.WriteLine($"KEY: {kvp.Key}  VALUE: {kvp.Value}");
+                C.WriteLine();
+                kvpNumber++;
             }
+        }
 
-            public void PrintTypes (Type type)
+
+        public void PrintKeyValuePairs(JObject obj)
+        {
+            foreach(KeyValuePair<string, JToken> keyValuePair in obj)
             {
-                Console.WriteLine("IsArray: {0}", type.IsArray);
-                Console.WriteLine("Name: {0}", type.Name);
-                Console.WriteLine("IsSealed: {0}", type.IsSealed);
-                Console.WriteLine("BaseType.Name: {0}", type.BaseType.Name);
-                Console.WriteLine();
+                string key   = keyValuePair.Key;
+                JToken value = keyValuePair.Value;
+                C.WriteLine($"Key: {keyValuePair.Key}    Value: {keyValuePair.Value}");
             }
+        }
 
-            // STATUS: this works
-            /// <summary> Print a data table in console </summary>
-            /// <param name="dataTable"> The data table that you want to print in console </param>
-            private void PrintDataTable (DataTable dataTable)
+
+        public void PrintNameSpaceControllerNameMethodName(Type type)
+        {
+            C.ForegroundColor = ConsoleColor.Blue;
+            StackTrace stackTrace   = new StackTrace();
+            StackFrame frame        = new StackFrame(skipFrames: 1, fNeedFileInfo: true);
+
+            string methodName;
+
+            try
             {
-                foreach (DataColumn col in dataTable.Columns)
-                {
-                    Console.Write ("{0,-14}", col.ColumnName);
-                }
-                Console.WriteLine ();
-
-                foreach (DataRow row in dataTable.Rows)
-                {
-                    foreach (DataColumn col in dataTable.Columns)
-                    {
-                        if (col.DataType.Equals (typeof (DateTime)))
-                            Console.Write ("{0,-14:d}", row[col]);
-
-                        else if (col.DataType.Equals (typeof (Decimal)))
-                            Console.Write ("{0,-14:C}", row[col]);
-
-                        else
-                            Console.Write ("{0,-14}", row[col]);
-                    }
-                    Console.WriteLine ();
-                }
-                Console.WriteLine ();
+                methodName = stackTrace.GetFrame(index: 2).GetMethod().Name;
             }
 
-            // STATUS: this works
-            // PRINT | ALL | VARIABLE KEYS AND VALUES
-            /// <summary> Print the keys and values from a given IEnumerable </summary>
-            /// <examples> PrintKeyValuePairs(pythonKeyValuePairs); </example>
-            /// <param name="keyValuePairs"> An IEnumerable containing variable keys and values</param>
-            public void PrintKeyValuePairs(IEnumerable<KeyValuePair<string, dynamic>> keyValuePairs)
+            catch(ArgumentNullException ex)
             {
-                int kvpNumber = 1;
-                foreach(var kvp in keyValuePairs)
-                {
-                    Console.WriteLine(kvpNumber);
-                    Console.WriteLine($"KEY: {kvp.Key}  VALUE: {kvp.Value}");
-                    Console.WriteLine();
-                    kvpNumber++;
-                }
+                methodName = stackTrace.GetFrame(index: 1).GetMethod().Name;
+                C.WriteLine(ex.Message);
             }
 
-            public void PrintKeyValuePairs(JObject obj)
-            {
-                // KEY VALUE PAIR --> KeyValuePair<string, JToken> recordObject
-                foreach(var keyValuePair in obj)
-                {
-                    var key   = keyValuePair.Key;
-                    var value = keyValuePair.Value;
-                    // Console.WriteLine($"Key: {keyValuePair.Key}    Value: {keyValuePair.Value}");
-                }
-            }
+            C.WriteLine($"NAME_SPACE : {type.Namespace}");
+            C.WriteLine($"CONTROLLER : {type.Name}");
+            C.WriteLine($"METHOD     : {methodName} @ LINE: {frame.GetFileLineNumber()}");
+
+            C.ResetColor();
+        }
+
 
         #endregion LOGGERS ------------------------------------------------------------
 
 
 
 
-        #region GETTERS ------------------------------------------------------------
-
-            // STATUS: //TODO: need to be able to pass a model in as a parameter; it's currently hardcoded into the function
-            /// <summary> Given a model / class, get the properties of that model </summary>
-            /// <returns> Model properties for a given class (e.g, FanGraphsPitcher) </returns>
-            // public PropertyInfo[] GetModelProperties()
-            // {
-            //     TheGameIsTheGameCategories model = new TheGameIsTheGameCategories();
-
-            //     Type         modelType          = model.GetType();
-            //     PropertyInfo [] modelProperties = modelType.GetProperties();
-            //     return modelProperties;
-            // }
-
-            // STATUS: //TODO: need to be able to pass a model in as a parameter to the GetModelProperties() function within the method
-            /// <summary> Given a model / class, create a list(string) of the models property names (e.g, Wins) </summary>
-            /// <returns> A list of property names </returns>
-            // public List<string> CreateListOfModelProperties()
-            // {
-            //     PropertyInfo [] modelProperties           = GetModelProperties();
-            //     List         <String> modelPropertiesList = new List<string>();
-
-            //     int headerCount = 1;
-            //     foreach(var prop in modelProperties)
-            //     {
-            //         // Console.WriteLine($"Header {headerCount}: {prop.Name}");
-            //         modelPropertiesList.Add(prop.Name);
-            //         headerCount++;
-            //     }
-            //     Console.WriteLine($"Final list item count: {modelPropertiesList.Count}");
-            //     return modelPropertiesList;
-            // }
-
-        #endregion GETTERS ------------------------------------------------------------
-
-
-
 
         #region ITERATORS ------------------------------------------------------------
 
-            public void IterateForEach(List<dynamic> list)
-            {
-                foreach(var listItem in list)
-                {
-                    Console.WriteLine(listItem);
-                }
-            }
 
-            public void IterateForEach(IEnumerable<dynamic> list)
-            {
-                foreach(var listItem in list)
-                {
-                    Console.WriteLine(listItem);
-                }
-            }
+        public void IterateForEach(List<dynamic> list) => list.ForEach(i => C.WriteLine(i));
+
+        public void IterateForEach(IEnumerable<dynamic> enumerable) => enumerable.ToList().ForEach(i => C.WriteLine(i));
+
 
         #endregion ITERATORS ------------------------------------------------------------
 
 
 
 
+
         #region MARKERS ------------------------------------------------------------
 
-            public void Spotlight (String message)
+
+        public void Spotlight (string message)
+        {
+            string fullMessage = JsonConvert.SerializeObject(message, Formatting.Indented).ToUpper(CultureInfo.InvariantCulture);
+
+            StackFrame frame      = new StackFrame(skipFrames: 1, fNeedFileInfo: true);
+            int lineNumber = frame.GetFileLineNumber();
+
+            using (StringWriter writer = new StringWriter())
             {
-                string fullMessage = JsonConvert.SerializeObject(message, Formatting.Indented).ToUpper();
-
-                StackFrame frame      = new StackFrame(1, true);
-                var        lineNumber = frame.GetFileLineNumber();
-                // var lineNumber = GetCurrentLineNumber();
-
-                using (var writer = new System.IO.StringWriter())
-                {
-                    // change text color
-                    Console.ForegroundColor = ConsoleColor.Magenta;
-                    Console.WriteLine($"{fullMessage} @ Line#: {lineNumber}");
-                    Console.Write(writer.ToString());
-                    Console.ResetColor();
-                }
+                C.ForegroundColor = ConsoleColor.Magenta;
+                C.WriteLine($"{fullMessage} @ Line#: {lineNumber}");
+                C.Write(writer.ToString());
+                C.ResetColor();
             }
+        }
 
-            public void Highlight (String message)
+
+        public void Highlight (string message)
+        {
+            string fullMessage = JsonConvert.SerializeObject(message, Formatting.Indented).ToUpper(CultureInfo.InvariantCulture);
+
+            using (StringWriter writer = new StringWriter())
             {
-                string fullMessage = JsonConvert.SerializeObject(message, Formatting.Indented).ToUpper();
-
-                using (var writer = new System.IO.StringWriter())
-                {
-                    // change text color
-                    Console.ForegroundColor = ConsoleColor.Magenta;
-                    Console.WriteLine($"{fullMessage}");
-                    Console.Write(writer.ToString());
-                    Console.ResetColor();
-                }
+                C.ForegroundColor = ConsoleColor.Magenta;
+                C.WriteLine($"{fullMessage}");
+                C.Write(writer.ToString());
+                C.ResetColor();
             }
+        }
 
-            // https://msdn.microsoft.com/en-us/library/system.io.path.getfilename(v=vs.110).aspx
-            public void StartMethod()
-            {
-                Console.ForegroundColor = ConsoleColor.Blue;
-                Console.WriteLine();
 
-                StackTrace stackTrace = new StackTrace();
+        public string GetMethodName()
+        {
+            C.ForegroundColor     = ConsoleColor.Blue;
+            StackTrace stackTrace = new StackTrace();
 
-                // var methodName = GetMethodName();
-                var methodName = stackTrace.GetFrame(1).GetMethod().Name;
+            StackFrame frame    = new StackFrame(skipFrames: 1, fNeedFileInfo: true);
+            MethodBase method   = frame.GetMethod();
+            string fileName     = frame.GetFileName();
 
-                StackFrame frame    = new StackFrame(1, true);
-                var        method   = frame.GetMethod();
-                var        fileName = frame.GetFileName();
+            Type type              = MethodBase.GetCurrentMethod().DeclaringType;
+            string typeString      = type.ToString();
+            string fileNameTrimmed = Path.GetFileName(path: fileName);
+            string methodDetails   = $"{typeString} > {fileNameTrimmed}";
 
-                var lineNumber = frame.GetFileLineNumber();
+            C.WriteLine($"frame: {frame}\t method: {method}\t fileName: {fileName}\t fileNameTrimmed: {fileNameTrimmed}");
+            C.ResetColor();
+            return methodDetails;
+        }
 
-                string fileNameTrimmed = Path.GetFileName(fileName);
 
-                Console.WriteLine($"--------------->|     {fileNameTrimmed} ---> START {methodName}  [Line: {lineNumber} @ {currentTime}]     |<---------------");
+        // See : https://msdn.microsoft.com/en-us/library/system.io.path.getfilename(v=vs.110).aspx
+        public void StartMethod()
+        {
+            C.ForegroundColor = ConsoleColor.Blue;
 
-                Console.ResetColor();
-                Console.WriteLine();
-            }
-            // https://msdn.microsoft.com/en-us/library/system.io.path.getfilename(v=vs.110).aspx
-            public void CompleteMethod()
-            {
-                Console.ForegroundColor = ConsoleColor.Blue;
-                Console.WriteLine();
+            StackTrace stackTrace = new StackTrace();
+            string methodName     = stackTrace.GetFrame(1).GetMethod().Name;
 
-                StackTrace stackTrace = new StackTrace();
+            StackFrame frame    = new StackFrame(1, true);
+            MethodBase method   = frame.GetMethod();
+            string fileName     = frame.GetFileName();
 
-                // var methodName = GetMethodName();
-                var methodName = stackTrace.GetFrame(1).GetMethod().Name;
+            int lineNumber = frame.GetFileLineNumber();
 
-                StackFrame frame    = new StackFrame(1, true);
-                var        method   = frame.GetMethod();
-                var        fileName = frame.GetFileName();
+            string fileNameTrimmed = Path.GetFileName(fileName);
 
-                var lineNumber = frame.GetFileLineNumber();
+            C.WriteLine($"\n**********|\t{fileNameTrimmed} ---> START {methodName}  [Line: {lineNumber} @ {currentTime}]\t|**********\n");
 
-                string fileNameTrimmed = Path.GetFileName(fileName);
+            C.ResetColor();
+        }
 
-                Console.WriteLine($"--------------->|     {fileNameTrimmed} ---> Complete {methodName}  [Line: {lineNumber} @ {currentTime}]     |<---------------");
 
-                Console.ResetColor();
-                Console.WriteLine();
-            }
+        // See : https://msdn.microsoft.com/en-us/library/system.io.path.getfilename(v=vs.110).aspx
+        public void CompleteMethod()
+        {
+            C.ForegroundColor = ConsoleColor.Blue;
+            StackTrace stackTrace = new StackTrace();
+
+            string methodName = stackTrace.GetFrame(1).GetMethod().Name;
+
+            StackFrame frame = new StackFrame(1, true);
+
+            string fileName = frame.GetFileName();
+            int lineNumber  = frame.GetFileLineNumber();
+
+            string fileNameTrimmed = Path.GetFileName(fileName);
+
+            C.WriteLine($"\n**********|\t{fileNameTrimmed} ---> COMPLETED {methodName}  [Line: {lineNumber} @ {currentTime}]\t|**********\n");
+
+            C.ResetColor();
+        }
+
+
+        // * If non-async method, set frameNumber to 1
+        // * If async method, set frameNumber to 3
+        public void OpenMethod(int frameNumber)
+        {
+            C.ForegroundColor = ConsoleColor.Green;
+
+            StackTrace stackTrace  = new StackTrace();
+            string methodName      = stackTrace.GetFrame(index: frameNumber).GetMethod().Name;
+            StackFrame frame       = new StackFrame(skipFrames: 1, fNeedFileInfo: true);
+            string fileName        = frame.GetFileName();
+            int lineNumber         = frame.GetFileLineNumber();
+            string fileNameTrimmed = Path.GetFileName(path: fileName);
+
+            C.WriteLine($"OPEN  [ Line {lineNumber} @ {currentTime} ] {fileNameTrimmed} > {methodName} [{frameNumber}]");
+            C.ResetColor();
+        }
+
+
+        public void CloseMethod(int frameNumber)
+        {
+            C.ForegroundColor = ConsoleColor.Red;
+
+            StackTrace stackTrace  = new StackTrace();
+            string methodName      = stackTrace.GetFrame(frameNumber).GetMethod().Name;
+            StackFrame frame       = new StackFrame(1, fNeedFileInfo: true);
+            string fileName        = frame.GetFileName();
+            int lineNumber         = frame.GetFileLineNumber();
+            string fileNameTrimmed = Path.GetFileName(fileName);
+
+            C.WriteLine($"CLOSE [ Line {lineNumber} @ {currentTime} ] {fileNameTrimmed} > {methodName} [{frameNumber}]");
+            C.ResetColor();
+        }
+
 
         #endregion MARKERS ------------------------------------------------------------
 
 
 
 
+
         #region PROBES ------------------------------------------------------------
 
-            public void Dig<T>(T x)
+
+        public void Dig<T>(T x)
+        {
+            C.ForegroundColor = ConsoleColor.DarkCyan;
+            string json = JsonConvert.SerializeObject(x, Formatting.Indented);
+
+            C.WriteLine($"\n------------------------------------------------------------------");
+            C.WriteLine("BEGIN DIG");
+            C.WriteLine("------------------------------------------------------------------");
+            C.WriteLine(json);
+            C.WriteLine($"------------------------------------------------------------------\n");
+            C.ResetColor();
+        }
+
+
+        public void DigObj(object obj)
+        {
+            string json = JsonConvert.SerializeObject(obj, Formatting.Indented);
+            C.WriteLine($"\n------------------------------------------------------------------");
+            C.WriteLine("BEGIN DIG");
+            C.WriteLine("------------------------------------------------------------------");
+            C.WriteLine($"{obj} --------------------------- {json} --------------------------- {obj}");
+            C.WriteLine($"------------------------------------------------------------------\n");
+            C.WriteLine();
+        }
+
+
+        public void DigDeep<T>(T x)
+        {
+            C.ForegroundColor = ConsoleColor.DarkRed;
+
+            using (StringWriter writer = new StringWriter())
             {
-                Console.ForegroundColor = ConsoleColor.DarkCyan;
-
-                string json = JsonConvert.SerializeObject(x, Formatting.Indented);
-
-                Console.WriteLine($"{x} --------------------------- {json} --------------------------- {x}");
-                Console.WriteLine();
-                Console.ResetColor();
+                ObjectDumper.Dumper.Dump(x, "Object Dumper", writer);
+                C.Write(writer.ToString());
             }
+            C.WriteLine();
+            C.ResetColor();
+        }
 
-            public void DigObj(Object obj)
-            {
-                string json = JsonConvert.SerializeObject(obj, Formatting.Indented);
-                Console.WriteLine($"{obj} --------------------------- {json} --------------------------- {obj}");
-                Console.WriteLine();
-            }
-
-            public void DigDeep<T>(T x)
-            {
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-
-                using (var writer = new System.IO.StringWriter())
-                {
-                    ObjectDumper.Dumper.Dump(x, "Object Dumper", writer);
-                    Console.Write(writer.ToString());
-                }
-                Console.WriteLine();
-                Console.ResetColor();
-            }
 
         #endregion PROBES ------------------------------------------------------------
 
 
 
 
-        #region CONVERTERS ------------------------------------------------------------
 
-            public string ConvertJTokenToString(JToken valueJToken)
+        #region DIAGNOSTICS ------------------------------------------------------------
+
+
+        // * DIAGNOSER: Option 1
+        // * See : https://andrewlock.net/logging-using-diagnosticsource-in-asp-net-core/
+        public class MiddlewareDiagnoser
+        {
+            private readonly RequestDelegate  _next;
+            private readonly DiagnosticSource _diagnostics;
+
+            public MiddlewareDiagnoser(RequestDelegate next, DiagnosticSource diagnosticSource)
             {
-                string valueString = valueJToken.ToObject<string>();
-                return valueString;
+                _next        = next;
+                _diagnostics = diagnosticSource;
             }
 
-            public int ConvertStringToInt(string valueString)
+            public async Task Invoke(HttpContext context)
             {
-                int valueInt = Int32.Parse(valueString);
-                return valueInt;
-            }
-
-            // HttpContext.Session.SetObjectAsJson("TheList", NewList);
-            public void SetObjectAsJson (ISession session, string key, object value)
-            {
-                session.SetString (key, JsonConvert.SerializeObject (value));
-            }
-
-            //List<object> Retrieve = HttpContext.Session.GetObjectFromJson<List<object>>("TheList");
-            public T GetObjectFromJson<T> (ISession session, string key)
-            {
-                var value = session.GetString (key);
-                return value == null ? default (T) : JsonConvert.DeserializeObject<T> (value);
-            }
-
-        #endregion CONVERTERS ------------------------------------------------------------
-
-
-
-
-        #region ENUMERATORS ------------------------------------------------------------
-
-            // STATUS: this works
-            // example:
-                // var dynamicRecords = csvReader.GetRecords<dynamic>();
-                // EnumerateOverRecordsDynamic(dynamicRecords);
-            public void EnumerateOverRecordsDynamic(IEnumerable<dynamic> records)
-            {
-                // DYNAMIC RECORDS --> CsvHelper.CsvReader+<GetRecords>d__63`1[System.Object]
-                // DYNAMIC RECORDS --> System.Collections.Generic.IEnumerable<dynamic> dynamicRecords
-                // DYNAMIC RECORD type --> System.Dynamic.ExpandoObject
-                foreach(var record in records)
+                C.WriteLine("Diagnostics > Invoke");
+                if (_diagnostics.IsEnabled("DiagnosticListenerExample.MiddlewareStarting"))
                 {
-                    Console.WriteLine(record);
+                    _diagnostics.Write("DiagnosticListenerExample.MiddlewareStarting",
+                        new
+                        {
+                            httpContext = context,
+                        });
                 }
-            }
 
-            public void EnumerateOverRecordsObject(IEnumerable<object> records)
-            {
-                foreach(var record in records)
-                {
-                    // Console.WriteLine(record);
-                    Dig(record);
-                }
-            }
-
-            public void EnumerateOverRecords(IEnumerable<object> records)
-            {
-                var recordsEnumerator = records.GetEnumerator();
-                while(recordsEnumerator.MoveNext())
-                {
-                    Console.WriteLine(recordsEnumerator.Current);
-                    // recordsEnumerator.Dig();
-                }
-            }
-
-        #endregion ENUMERATORS ------------------------------------------------------------
-
-
-
-
-        #region UTILS ------------------------------------------------------------
-
-            // https://msdn.microsoft.com/en-us/library/system.consolekeyinfo(v=vs.110).aspx
-            public void ConsoleKey ()
-            {
-                ConsoleKeyInfo key = Console.ReadKey();
-                Console.WriteLine(key);
-                Console.WriteLine();
-                Console.WriteLine("Character Entered: " + key.KeyChar);
-                Console.WriteLine("Special Keys: " + key.Modifiers);
-            }
-
-            /// <summary> </summary>
-            /// <param name="itemsToList"> e.g., string[] planet = { "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune" };</param>
-            // public static void CreateNumberedList(string[] itemsToList)
-            // {
-            //     Console.Write(itemsToList.ToMarkdownNumberedList());
-            // }
-            // public static void CreateBulletedList(string[] itemsToList)
-            // {
-            //     Console.Write(itemsToList.ToMarkdownBulletedList());
-            // }
-
-            // public int CountRecords(IEnumerable<object> records)
-            // {
-            //     int count = 0;
-            //     foreach(var record in records)
-            //     {
-            //         count++;
-            //     }
-            //     Console.WriteLine($"Retrieved {count} records from csv");
-            //     return count;
-            // }
-
-        #endregion UTILS ------------------------------------------------------------
-
-    }
-
-
-
-    // to call:
-    // var json = JToken.Parse(/* JSON string */);
-    // var fieldsCollector = new JsonFieldsCollector(json);
-    // var fields = fieldsCollector.GetAllFields();
-    // foreach (var field in fields) Console.WriteLine($"{field.Key}: '{field.Value}'");
-    public class JsonFieldsCollector
-    {
-        private readonly Dictionary<string, JValue> fields;
-
-        public JsonFieldsCollector (JToken token)
-        {
-            fields = new Dictionary<string, JValue> ();
-            CollectFields (token);
-        }
-
-        private void CollectFields (JToken jToken)
-        {
-            switch (jToken.Type)
-            {
-                case JTokenType.Object:
-                    foreach (var child in jToken.Children<JProperty> ())
-                        CollectFields (child);
-                    break;
-                case JTokenType.Array:
-                    foreach (var child in jToken.Children ())
-                        CollectFields (child);
-                    break;
-                case JTokenType.Property:
-                    CollectFields (((JProperty) jToken).Value);
-                    break;
-                default:
-                    fields.Add (jToken.Path, (JValue) jToken);
-                    break;
+                await _next.Invoke(context).ConfigureAwait(false);
             }
         }
 
-        public IEnumerable<KeyValuePair<string, JValue>> GetAllFields () => fields;
-    }
-
-
-    public class RunTimeSerializer : JsonConverter
-    {
-        public override bool CanConvert (Type objectType)
+        // * DIAGNOSER: Option 1
+        // * See : https://andrewlock.net/logging-using-diagnosticsource-in-asp-net-core/
+        public class MiddlewareDiagnoserListener
         {
-            return objectType == typeof (TimeSpan);
+            [DiagnosticName("DiagnosticListenerExample.MiddlewareStarting")]
+            public virtual void OnMiddlewareStarting(HttpContext httpContext)
+            {
+                C.WriteLine($"\n----------------------------------------------------------\nPATH >{httpContext.Request.Path}");
+                C.WriteLine("----------------------------------------------------------\n");
+                C.WriteLine($"Method       : {httpContext.Request.Method}");
+                C.WriteLine($"Query        : {httpContext.Request.Query}");
+                C.WriteLine($"Content Type : {httpContext.Request.ContentType}");
+                C.WriteLine("----------------------------------------------------------\n");
+            }
         }
 
-        public override object ReadJson (JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+
+        // * DIAGNOSER: Option 2
+        // * See : https://andrewlock.net/understanding-your-middleware-pipeline-with-the-middleware-analysis-package/
+        public class FullDiagnosticListener
         {
-            if (reader.TokenType == JsonToken.Null)
-                return null;
-
-            JToken jt = JToken.Load (reader);
-            String value = jt.Value<String> ();
-
-            Regex rx = new Regex ("(\\s*)min$");
-            value = rx.Replace (value, (m) => "");
-
-            int timespanMin;
-            if (!Int32.TryParse (value, out timespanMin))
+            [DiagnosticName("Microsoft.AspNetCore.MiddlewareAnalysis.MiddlewareStarting")]
+            public virtual void OnMiddlewareStarting(HttpContext httpContext, string name)
             {
-                throw new NotSupportedException ();
+                C.WriteLine("MIDDLEWARE STARTING");
+                C.WriteLine($"{name}; {httpContext.Request.Path}\n");
             }
 
-            return new TimeSpan (0, timespanMin, 0);
+            [DiagnosticName("Microsoft.AspNetCore.MiddlewareAnalysis.MiddlewareException")]
+            public virtual void OnMiddlewareException(Exception exception, string name)
+            {
+                C.WriteLine("MIDDLEWARE EXCEPTION");
+                C.WriteLine($"{name}; {exception.Message}\n");
+            }
+
+            [DiagnosticName("Microsoft.AspNetCore.MiddlewareAnalysis.MiddlewareFinished")]
+            public virtual void OnMiddlewareFinished(HttpContext httpContext, string name)
+            {
+                C.WriteLine("MIDDLEWARE FINISHED");
+                C.WriteLine($"{name}; {httpContext.Response.StatusCode}\n");
+            }
         }
 
-        public override void WriteJson (JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            serializer.Serialize (writer, value);
-        }
+
+        #endregion DIAGNOSTICS ------------------------------------------------------------
+
     }
 }

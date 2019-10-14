@@ -9,9 +9,9 @@ namespace movieGame.Controllers.MixedControllers
 {
     public class ManageOutcomesController : Controller
     {
-        private MovieContext _context;
+        private MovieGameContext _context;
 
-        public ManageOutcomesController (MovieContext context)
+        public ManageOutcomesController (MovieGameContext context)
         {
             _context = context;
         }
@@ -68,6 +68,7 @@ namespace movieGame.Controllers.MixedControllers
                     };
                     _context.Add (MPJ_A);
                 }
+
 
                 // first time player attempted this movie
                 else
@@ -141,14 +142,14 @@ namespace movieGame.Controllers.MixedControllers
 
             // update number of games attempted
             var currGamesAttempted = retrievedPlayer.GamesAttempted;
-            int newGamesAttempted = currGamesAttempted + 1;
+            int newGamesAttempted = (int)currGamesAttempted + 1;
             retrievedPlayer.GamesAttempted = newGamesAttempted;
 
             // if the player won, update games won
             if (gameOutcome == 1)
             {
                 var currGamesWon = retrievedPlayer.GamesWon;
-                int newGamesWon = currGamesWon + 1;
+                int newGamesWon = (int)currGamesWon + 1;
                 retrievedPlayer.GamesWon = newGamesWon;
                 CreateMovieUserJoin (1);
             }
@@ -156,9 +157,11 @@ namespace movieGame.Controllers.MixedControllers
             {
                 CreateMovieUserJoin (0);
             }
-            retrievedPlayer.UpdatedAt = DateTime.Now;
+            retrievedPlayer.DateUpdated = DateTime.Now;
             _context.SaveChanges ();
         }
+
+
 
 
         [HttpPost("update_player_points")]
@@ -170,7 +173,7 @@ namespace movieGame.Controllers.MixedControllers
             _clueList.Add (clueInfo);
 
             // 1 means the player won, 0 means the player lost
-            int oneGameOutcome = clueInfo.MovieId;
+            int? oneGameOutcome = clueInfo.MovieId;
 
             if (oneGameOutcome > 0)
             {
@@ -179,11 +182,11 @@ namespace movieGame.Controllers.MixedControllers
                 // CURRENT POINTS --> players current points from DB
                 // NEW POINTS --> value of clue movie was correctly guessed on; from 'UpdatePlayerPoints' js func.
                 var currentPoints = retrievedPlayer.Points;
-                int newPoints = clueInfo.CluePoints;
-                HttpContext.Session.SetInt32 ("NewPoints", newPoints);
+                int? newPoints = clueInfo.CluePoints;
+                HttpContext.Session.SetInt32 ("NewPoints", (int)newPoints);
 
                 // adds current points and new points; then saves them to the database
-                retrievedPlayer.Points = newPoints + currentPoints;
+                retrievedPlayer.Points = (int)newPoints + currentPoints;
 
                 UpdatePlayerGames (1, (int) playerId);
             }
